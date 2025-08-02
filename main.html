@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>ギャルペグリンっぽゲーム💕</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #fff0f5;
+      font-family: sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #container {
+      display: flex;
+      height: 700px;
+      width: 1280px;
+      border: 8px solid #ff69b4;
+      box-sizing: content-box;
+      position: relative;
+      overflow: hidden;
+    }
+    #game-wrapper {
+      position: relative;
+      width: 880px;
+      height: 100%;
+      background: #fff0f5;
+      overflow: hidden;
+      z-index: 1;
+    }
+    #side-panel {
+      width: 400px;
+      height: 100%;
+      background: #fff;
+      border-left: 8px solid #ff69b4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 10px;
+      box-sizing: border-box;
+      z-index: 2;
+    }
+    #player-hp-container {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 8px 12px;
+      border: 2px solid #ff69b4;
+      border-radius: 8px;
+      z-index: 10;
+    }
+    #player-hp-text {
+      font-size: 14px;
+      font-weight: bold;
+      color: #ff1493;
+      margin-bottom: 4px;
+    }
+    #player-hp-bar {
+      width: 200px;
+      height: 12px;
+      background: #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #ff69b4;
+    }
+    #player-hp-fill {
+      height: 100%;
+      background: linear-gradient(to right, #00bfff, #87cefa);
+      width: 100%;
+    }
+    .hp-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-bottom: 8px;
+    }
+    .hp-value {
+      font-size: 14px;
+      color: #ff1493;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    #hp-bar {
+      width: 240px;
+      height: 16px;
+      background: #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid #ff69b4;
+      position: relative;
+    }
+    #hp-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(to right, #ff1493, #ffa6c9);
+      transition: width 0.2s;
+    }
+    #hp-text {
+      position: absolute;
+      top: -24px;
+      right: 0;
+      font-weight: bold;
+      color: #ff1493;
+      font-size: 14px;
+    }
+    #enemy-girl {
+      width: 400px;
+    }
+    canvas {
+      display: block;
+    }
+    .aim-dot {
+      fill: #ff69b4;
+      opacity: 0.7;
+    }
+    .damage-text {
+      position: absolute;
+      color: #ff1493;
+      font-weight: bold;
+      font-size: 18px;
+      pointer-events: none;
+      animation: rise 1s ease-out forwards;
+      z-index: 11;
+    }
+    @keyframes rise {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-30px); }
+    }
+    .heart-beam {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background: url('https://emoji.slack-edge.com/T0S8T5D56/heartpulse/31d84141ba56ec9b.png') no-repeat center/contain;
+      pointer-events: none;
+      animation: heartAttack 0.8s ease-out forwards;
+      z-index: 10;
+      --dx: -700px;
+      --dy: -300px;
+    }
+    @keyframes heartAttack {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(0.5);
+      }
+    }
+    .flash-effect {
+      animation: flashBlink 0.3s ease-in-out;
+    }
+    @keyframes flashBlink {
+      0%   { filter: brightness(2) blur(1px); }
+      50%  { filter: brightness(0.8) blur(0); }
+      100% { filter: brightness(1) blur(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="player-hp-container">
+      <div id="player-hp-text">HP: <span id="player-hp-value">100</span> / 100</div>
+      <div id="player-hp-bar">
+        <div id="player-hp-fill"></div>
+      </div>
+    </div>
+    <div id="game-wrapper">
+      <svg id="aim-svg" width="880" height="700" style="position:absolute;top:0;left:0;z-index:5;"></svg>
+    </div>
+    <div id="side-panel">
+      <div class="hp-container">
+        <div class="hp-value" id="hp-display">100 / 100</div>
+        <div id="hp-bar">
+          <div id="hp-fill"></div>
+          <div id="hp-text">100</div>
+        </div>
+      </div>
+      <img id="enemy-girl" src="enemy_normal.png" alt="敵の女の子">
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
+      const width = 880;
+      const height = 700;
+      const engine = Engine.create();
+      const world = engine.world;
+
+      const render = Render.create({
+        element: document.getElementById("game-wrapper"),
+        engine: engine,
+        options: {
+          width,
+          height,
+          wireframes: false,
+          background: '#fff0f5'
+        }
+      });
+      Render.run(render);
+      Runner.run(Runner.create(), engine);
+
+      const wallOptions = { isStatic: true, render: { fillStyle: '#ff69b4' } };
+      const walls = [
+        Bodies.rectangle(width / 2, height + 25, width, 50, wallOptions),
+        Bodies.rectangle(width / 2, -25, width, 50, wallOptions),
+        Bodies.rectangle(-25, height / 2, 50, height, wallOptions),
+        Bodies.rectangle(width + 25, height / 2, 50, height, wallOptions)
+      ];
+      World.add(world, walls);
+
+      const bottomSensor = Bodies.rectangle(width / 2, height - 10, width, 20, {
+        isStatic: true,
+        isSensor: true,
+        label: "bottom-sensor",
+        render: { visible: false }
+      });
+      World.add(world, bottomSensor);
+
+      const pegs = [];
+      for (let y = 150; y < height - 200; y += 100) {
+        for (let x = 100; x < width - 50; x += 100) {
+          const peg = Bodies.circle(x + (y % 200 === 0 ? 50 : 0), y, 10, {
+            isStatic: true,
+            render: { fillStyle: "#ff69b4" },
+            label: "peg"
+          });
+          pegs.push(peg);
+        }
+      }
+      World.add(world, pegs);
+
+      const firePoint = { x: width / 2, y: 50 };
+      const aimSvg = document.getElementById("aim-svg");
+      function drawSimulatedPath(angle, speed) {
+        while (aimSvg.firstChild) aimSvg.removeChild(aimSvg.firstChild);
+        const ghostEngine = Engine.create({ gravity: engine.gravity });
+        const ghostBall = Bodies.circle(firePoint.x, firePoint.y, 15, {
+          isSensor: true,
+          render: { visible: false }
+        });
+        Body.setVelocity(ghostBall, {
+          x: Math.cos(angle) * speed,
+          y: Math.sin(angle) * speed
+        });
+        World.add(ghostEngine.world, ghostBall);
+        for (let i = 0; i < 20; i++) {
+          Engine.update(ghostEngine, 1000 / 60);
+          const { x, y } = ghostBall.position;
+          if (x < 0 || x > width || y < 0 || y > height) break;
+          const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          dot.setAttribute("cx", x);
+          dot.setAttribute("cy", y);
+          dot.setAttribute("r", 3);
+          dot.setAttribute("class", "aim-dot");
+          aimSvg.appendChild(dot);
+        }
+      }
+
+      let currentBall = null;
+      let playerHP = 100;
+      let enemyHP = 100;
+
+      const hpFill = document.getElementById("hp-fill");
+      const hpText = document.getElementById("hp-text");
+      const hpDisplay = document.getElementById("hp-display");
+      const playerHpValue = document.getElementById("player-hp-value");
+      const playerHpFill = document.getElementById("player-hp-fill");
+
+      function updateHPBar() {
+        const percent = Math.max(0, enemyHP);
+        hpFill.style.width = `${percent}%`;
+        hpText.textContent = `${percent}`;
+        hpDisplay.textContent = `${percent} / 100`;
+        if (enemyHP <= 0) {
+          setTimeout(() => {
+            alert("🎉女の子を倒した！ギャル勝利👑");
+            location.reload();
+          }, 200);
+        }
+      }
+
+      function updatePlayerHP() {
+        const percent = Math.max(0, playerHP);
+        playerHpValue.textContent = `${percent}`;
+        playerHpFill.style.width = `${percent}%`;
+
+        const hpBox = document.getElementById("player-hp-container");
+        hpBox.classList.add("flash-effect");
+        setTimeout(() => hpBox.classList.remove("flash-effect"), 300);
+
+        if (playerHP <= 0) {
+          setTimeout(() => {
+            alert("💀やられちゃった… ギャル敗北😭");
+            location.reload();
+          }, 200);
+        }
+      }
+
+      function launchHeartAttack() {
+        const heart = document.createElement("div");
+        heart.className = "heart-beam";
+        heart.style.left = "1050px";
+        heart.style.top = "400px";
+        const dx = -700 + Math.floor(Math.random() * 100) - 50;
+        const dy = -300 + Math.floor(Math.random() * 60) - 30;
+        heart.style.setProperty('--dx', `${dx}px`);
+        heart.style.setProperty('--dy', `${dy}px`);
+        document.getElementById("container").appendChild(heart);
+        setTimeout(() => heart.remove(), 800);
+      }
+
+      window.addEventListener("mousemove", (e) => {
+        const rect = aimSvg.getBoundingClientRect();
+        const dx = e.clientX - rect.left - firePoint.x;
+        const dy = e.clientY - rect.top - firePoint.y;
+        const angle = Math.atan2(dy, dx);
+        drawSimulatedPath(angle, 10);
+      });
+
+      window.addEventListener("click", (e) => {
+        if (currentBall) return;
+        const rect = aimSvg.getBoundingClientRect();
+        const dx = e.clientX - rect.left - firePoint.x;
+        const dy = e.clientY - rect.top - firePoint.y;
+        const angle = Math.atan2(dy, dx);
+        const power = 10;
+        const ball = Bodies.circle(firePoint.x, firePoint.y, 15, {
+          restitution: 0.9,
+          render: { fillStyle: "#00bfff" },
+          label: "ball"
+        });
+        Body.setVelocity(ball, {
+          x: Math.cos(angle) * power,
+          y: Math.sin(angle) * power
+        });
+        World.add(world, ball);
+        currentBall = ball;
+      });
+
+      Events.on(engine, 'collisionStart', (event) => {
+        event.pairs.forEach(pair => {
+          const labels = [pair.bodyA.label, pair.bodyB.label];
+          if (labels.includes("ball") && labels.includes("peg")) {
+            const peg = pair.bodyA.label === "peg" ? pair.bodyA : pair.bodyB;
+            World.remove(world, peg);
+            enemyHP -= 10;
+            updateHPBar();
+          }
+          if (labels.includes("ball") && labels.includes("bottom-sensor")) {
+            const ball = pair.bodyA.label === "ball" ? pair.bodyA : pair.bodyB;
+            World.remove(world, ball);
+            currentBall = null;
+            setTimeout(() => {
+              launchHeartAttack();
+              setTimeout(() => {
+                playerHP -= 10;
+                updatePlayerHP();
+              }, 500);
+            }, 300);
+          }
+        });
+      });
+
+      updateHPBar();
+      updatePlayerHP();
+    });
+  </script>
+</body>
+</html>
