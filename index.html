@@ -305,6 +305,7 @@
       let currentBall = null;
       let playerHP = 100;
       let enemyHP = 100;
+      let pendingDamage = 0;
 
       const hpFill = document.getElementById("hp-fill");
       const hpText = document.getElementById("hp-text");
@@ -429,9 +430,7 @@
           if (labels.includes("ball") && labels.includes("peg")) {
             const peg = pair.bodyA.label === "peg" ? pair.bodyA : pair.bodyB;
             World.remove(world, peg);
-            enemyHP -= 10;
-            flashEnemyDamage();
-            updateHPBar();
+            pendingDamage += 10;
             showDamageText(peg.position.x, peg.position.y, "-10");
             showHitSpark(peg.position.x, peg.position.y);
           }
@@ -440,6 +439,10 @@
             const { x, y } = ball.position;
             World.remove(world, ball);
             currentBall = null;
+            enemyHP -= pendingDamage;
+            updateHPBar();
+            flashEnemyDamage();
+            pendingDamage = 0;
             playerHP -= 10;
             updatePlayerHP();
             showDamageOverlay();
