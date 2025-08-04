@@ -273,6 +273,7 @@
       const hpDisplay = document.getElementById("hp-display");
       const playerHpValue = document.getElementById("player-hp-value");
       const playerHpFill = document.getElementById("player-hp-fill");
+      const enemyGirl = document.getElementById("enemy-girl");
 
       function updateHPBar() {
         const percent = Math.max(0, enemyHP);
@@ -302,6 +303,13 @@
             location.reload();
           }, 200);
         }
+      }
+
+      function flashEnemyDamage() {
+        enemyGirl.src = "enemy_damage.png";
+        setTimeout(() => {
+          enemyGirl.src = "enemy_normal.png";
+        }, 200);
       }
 
       function launchHeartAttack() {
@@ -352,6 +360,7 @@
             const peg = pair.bodyA.label === "peg" ? pair.bodyA : pair.bodyB;
             World.remove(world, peg);
             enemyHP -= 10;
+            flashEnemyDamage();
             updateHPBar();
           }
           if (labels.includes("ball") && labels.includes("bottom-sensor")) {
