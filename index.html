@@ -249,7 +249,7 @@
     <img id="enemy-girl" src="enemy_normal.png" alt="敵の女の子">
     </div>
     <div id="victory-overlay">
-      <img src="enemy_defete.png" alt="倒された女の子">
+      <img id="victory-img" src="enemy_defete.png" alt="倒された女の子">
       <button id="retry-button">リトライ</button>
     </div>
   </div>
@@ -349,7 +349,9 @@
       const playerHpFill = document.getElementById("player-hp-fill");
       const enemyGirl = document.getElementById("enemy-girl");
       const victoryOverlay = document.getElementById("victory-overlay");
+      const victoryImg = document.getElementById("victory-img");
       const retryButton = document.getElementById("retry-button");
+      const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
       retryButton.addEventListener("click", () => location.reload());
 
       function updateHPBar() {
@@ -359,7 +361,9 @@
         hpDisplay.textContent = `${percent} / 100`;
         if (enemyHP <= 0 && !gameOver) {
           setTimeout(() => {
-            enemyGirl.src = "enemy_defete.png";
+            const defeatImage = defeatImages[Math.floor(Math.random() * defeatImages.length)];
+            enemyGirl.src = defeatImage;
+            victoryImg.src = defeatImage;
             victoryOverlay.style.display = "flex";
             gameOver = true;
             Runner.stop(runner);
