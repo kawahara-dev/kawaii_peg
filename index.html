@@ -281,10 +281,10 @@
     </div>
     <div id="side-panel">
       <div class="hp-container">
-        <div class="hp-value" id="hp-display">100 / 100</div>
+      <div class="hp-value" id="hp-display">200 / 200</div>
         <div id="hp-bar">
         <div id="hp-fill"></div>
-        <div id="hp-text">100</div>
+        <div id="hp-text">200</div>
       </div>
     </div>
     <img id="enemy-girl" src="enemy_normal.png" alt="敵の女の子">
@@ -411,7 +411,8 @@
 
       let currentBall = null;
       let playerHP = 100;
-      let enemyHP = 100;
+      const maxEnemyHP = 200;
+      let enemyHP = maxEnemyHP;
       let pendingDamage = 0;
       let gameOver = false;
       let ammo = 3;
@@ -431,10 +432,10 @@
       retryButton.addEventListener("click", () => location.reload());
 
       function updateHPBar() {
-        const percent = Math.max(0, enemyHP);
+        const percent = Math.max(0, (enemyHP / maxEnemyHP) * 100);
         hpFill.style.width = `${percent}%`;
-        hpText.textContent = `${percent}`;
-        hpDisplay.textContent = `${percent} / 100`;
+        hpText.textContent = `${enemyHP}`;
+        hpDisplay.textContent = `${enemyHP} / ${maxEnemyHP}`;
         if (enemyHP <= 0 && !gameOver) {
           setTimeout(() => {
             const defeatImage = defeatImages[Math.floor(Math.random() * defeatImages.length)];
