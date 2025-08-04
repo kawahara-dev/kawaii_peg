@@ -178,9 +178,22 @@
       animation: spark 0.4s ease-out forwards;
       z-index: 9;
     }
+    .bomb-explosion {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, #ffa500 0%, rgba(255,69,0,0) 70%);
+      pointer-events: none;
+      animation: boom 0.5s ease-out forwards;
+      z-index: 9;
+    }
     @keyframes spark {
       from { transform: scale(0.5); opacity: 1; }
       to   { transform: scale(2); opacity: 0; }
+    }
+    @keyframes boom {
+      from { transform: scale(0.5); opacity: 1; }
+      to   { transform: scale(1.5); opacity: 0; }
     }
     #damage-overlay {
       position: absolute;
@@ -497,6 +510,15 @@
         setTimeout(() => spark.remove(), 400);
       }
 
+      function showBombExplosion(x, y) {
+        const boom = document.createElement("div");
+        boom.className = "bomb-explosion";
+        boom.style.left = `${x - 80}px`;
+        boom.style.top = `${y - 80}px`;
+        document.getElementById("game-wrapper").appendChild(boom);
+        setTimeout(() => boom.remove(), 500);
+      }
+
       function showDamageOverlay() {
         const overlay = document.createElement("div");
         overlay.id = "damage-overlay";
@@ -525,6 +547,7 @@
 
       function explodeBomb(peg, ball) {
         const { x, y } = peg.position;
+        showBombExplosion(x, y);
         const bodies = Composite.allBodies(engine.world);
         let addedDamage = 0;
         bodies.forEach(body => {
