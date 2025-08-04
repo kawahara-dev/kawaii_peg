@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>ギャルペグリンっぽゲーム💕</title>
   <style>
     html, body {
@@ -17,7 +18,8 @@
     #container {
       display: flex;
       height: 700px;
-      width: 1280px;
+      width: 100%;
+      max-width: 1280px;
       border: 8px solid #ff69b4;
       box-sizing: content-box;
       position: relative;
@@ -541,39 +543,68 @@
         Body.setVelocity(ball, { x: (bx / len) * 20, y: (by / len) * 20 });
       }
 
-      window.addEventListener("mousemove", (e) => {
-        const rect = aimSvg.getBoundingClientRect();
-        const dx = e.clientX - rect.left - firePoint.x;
-        const dy = e.clientY - rect.top - firePoint.y;
-        const angle = Math.atan2(dy, dx);
-        drawSimulatedPath(angle, 10);
-      });
+        window.addEventListener("mousemove", (e) => {
+          const rect = aimSvg.getBoundingClientRect();
+          const dx = e.clientX - rect.left - firePoint.x;
+          const dy = e.clientY - rect.top - firePoint.y;
+          const angle = Math.atan2(dy, dx);
+          drawSimulatedPath(angle, 10);
+        });
 
-      window.addEventListener("click", (e) => {
-        if (currentBall || gameOver) return;
-        if (ammo <= 0) {
-          reload();
-          return;
+        window.addEventListener("touchmove", (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const rect = aimSvg.getBoundingClientRect();
+          const dx = touch.clientX - rect.left - firePoint.x;
+          const dy = touch.clientY - rect.top - firePoint.y;
+          const angle = Math.atan2(dy, dx);
+          drawSimulatedPath(angle, 10);
+        });
+
+        function shootBall(angle) {
+          const power = 10;
+          const ball = Bodies.circle(firePoint.x, firePoint.y, 15, {
+            restitution: 0.9,
+            render: { fillStyle: "#00bfff" },
+            label: "ball"
+          });
+          Body.setVelocity(ball, {
+            x: Math.cos(angle) * power,
+            y: Math.sin(angle) * power
+          });
+          World.add(world, ball);
+          currentBall = ball;
+          ammo--;
+          updateAmmo();
         }
-        const rect = aimSvg.getBoundingClientRect();
-        const dx = e.clientX - rect.left - firePoint.x;
-        const dy = e.clientY - rect.top - firePoint.y;
-        const angle = Math.atan2(dy, dx);
-        const power = 10;
-        const ball = Bodies.circle(firePoint.x, firePoint.y, 15, {
-          restitution: 0.9,
-          render: { fillStyle: "#00bfff" },
-          label: "ball"
+
+        window.addEventListener("click", (e) => {
+          if (currentBall || gameOver) return;
+          if (ammo <= 0) {
+            reload();
+            return;
+          }
+          const rect = aimSvg.getBoundingClientRect();
+          const dx = e.clientX - rect.left - firePoint.x;
+          const dy = e.clientY - rect.top - firePoint.y;
+          const angle = Math.atan2(dy, dx);
+          shootBall(angle);
         });
-        Body.setVelocity(ball, {
-          x: Math.cos(angle) * power,
-          y: Math.sin(angle) * power
+
+        window.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          if (currentBall || gameOver) return;
+          if (ammo <= 0) {
+            reload();
+            return;
+          }
+          const touch = e.touches[0];
+          const rect = aimSvg.getBoundingClientRect();
+          const dx = touch.clientX - rect.left - firePoint.x;
+          const dy = touch.clientY - rect.top - firePoint.y;
+          const angle = Math.atan2(dy, dx);
+          shootBall(angle);
         });
-        World.add(world, ball);
-        currentBall = ball;
-        ammo--;
-        updateAmmo();
-      });
 
       Events.on(engine, 'collisionStart', (event) => {
         event.pairs.forEach(pair => {
