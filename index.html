@@ -213,6 +213,8 @@
     }
     #victory-overlay img {
       max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
     }
     #retry-button {
       margin-top: 20px;
@@ -272,7 +274,8 @@
         }
       });
       Render.run(render);
-      Runner.run(Runner.create(), engine);
+      const runner = Runner.create();
+      Runner.run(runner, engine);
 
       const wallOptions = { isStatic: true, render: { fillStyle: '#ff69b4' } };
       const walls = [
@@ -337,6 +340,7 @@
       let playerHP = 100;
       let enemyHP = 100;
       let pendingDamage = 0;
+      let gameOver = false;
 
       const hpFill = document.getElementById("hp-fill");
       const hpText = document.getElementById("hp-text");
@@ -353,10 +357,13 @@
         hpFill.style.width = `${percent}%`;
         hpText.textContent = `${percent}`;
         hpDisplay.textContent = `${percent} / 100`;
-        if (enemyHP <= 0) {
+        if (enemyHP <= 0 && !gameOver) {
           setTimeout(() => {
             enemyGirl.src = "enemy_defete.png";
             victoryOverlay.style.display = "flex";
+            gameOver = true;
+            Runner.stop(runner);
+            Render.stop(render);
           }, 200);
         }
       }
@@ -441,7 +448,7 @@
       });
 
       window.addEventListener("click", (e) => {
-        if (currentBall) return;
+        if (currentBall || gameOver) return;
         const rect = aimSvg.getBoundingClientRect();
         const dx = e.clientX - rect.left - firePoint.x;
         const dy = e.clientY - rect.top - firePoint.y;
