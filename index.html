@@ -198,6 +198,31 @@
       75% { transform: translate(-5px, -5px); }
       100% { transform: translate(0, 0); }
     }
+    #victory-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+    }
+    #victory-overlay img {
+      max-width: 80%;
+    }
+    #retry-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 20px;
+      border: 2px solid #ff69b4;
+      background: #fff;
+      color: #ff1493;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -215,11 +240,15 @@
       <div class="hp-container">
         <div class="hp-value" id="hp-display">100 / 100</div>
         <div id="hp-bar">
-          <div id="hp-fill"></div>
-          <div id="hp-text">100</div>
-        </div>
+        <div id="hp-fill"></div>
+        <div id="hp-text">100</div>
       </div>
-      <img id="enemy-girl" src="enemy_normal.png" alt="敵の女の子">
+    </div>
+    <img id="enemy-girl" src="enemy_normal.png" alt="敵の女の子">
+    </div>
+    <div id="victory-overlay">
+      <img src="enemy_defete.png" alt="倒された女の子">
+      <button id="retry-button">リトライ</button>
     </div>
   </div>
 
@@ -313,6 +342,9 @@
       const playerHpValue = document.getElementById("player-hp-value");
       const playerHpFill = document.getElementById("player-hp-fill");
       const enemyGirl = document.getElementById("enemy-girl");
+      const victoryOverlay = document.getElementById("victory-overlay");
+      const retryButton = document.getElementById("retry-button");
+      retryButton.addEventListener("click", () => location.reload());
 
       function updateHPBar() {
         const percent = Math.max(0, enemyHP);
@@ -321,8 +353,8 @@
         hpDisplay.textContent = `${percent} / 100`;
         if (enemyHP <= 0) {
           setTimeout(() => {
-            alert("🎉女の子を倒した！ギャル勝利👑");
-            location.reload();
+            enemyGirl.src = "enemy_defete.png";
+            victoryOverlay.style.display = "flex";
           }, 200);
         }
       }
@@ -347,7 +379,9 @@
       function flashEnemyDamage() {
         enemyGirl.src = "enemy_damage.png";
         setTimeout(() => {
-          enemyGirl.src = "enemy_normal.png";
+          if (enemyHP > 0) {
+            enemyGirl.src = "enemy_normal.png";
+          }
         }, 500);
       }
 
