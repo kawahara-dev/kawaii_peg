@@ -292,15 +292,17 @@
       World.add(world, bottomSensor);
 
       const pegs = [];
-      for (let y = 150; y < height - 200; y += 100) {
-        for (let x = 100; x < width - 50; x += 100) {
-          const peg = Bodies.circle(x + (y % 200 === 0 ? 50 : 0), y, 10, {
-            isStatic: true,
-            render: { fillStyle: "#ff69b4" },
-            label: "peg"
-          });
-          pegs.push(peg);
-        }
+      const pegCount = 50;
+      for (let i = 0; i < pegCount; i++) {
+        const x = 50 + Math.random() * (width - 100);
+        const y = 150 + Math.random() * (height - 250);
+        const isYellow = Math.random() < 0.2;
+        const peg = Bodies.circle(x, y, 10, {
+          isStatic: true,
+          render: { fillStyle: isYellow ? "#ffd700" : "#ff69b4" },
+          label: isYellow ? "peg-yellow" : "peg"
+        });
+        pegs.push(peg);
       }
       World.add(world, pegs);
 
@@ -461,11 +463,12 @@
       Events.on(engine, 'collisionStart', (event) => {
         event.pairs.forEach(pair => {
           const labels = [pair.bodyA.label, pair.bodyB.label];
-          if (labels.includes("ball") && labels.includes("peg")) {
-            const peg = pair.bodyA.label === "peg" ? pair.bodyA : pair.bodyB;
+          if (labels.includes("ball") && (labels.includes("peg") || labels.includes("peg-yellow"))) {
+            const peg = pair.bodyA.label === "ball" ? pair.bodyB : pair.bodyA;
             World.remove(world, peg);
-            pendingDamage += 10;
-            showDamageText(peg.position.x, peg.position.y, "+10");
+            const damage = peg.label === "peg-yellow" ? 20 : 10;
+            pendingDamage += damage;
+            showDamageText(peg.position.x, peg.position.y, "+" + pendingDamage);
             showHitSpark(peg.position.x, peg.position.y);
           }
           if (labels.includes("ball") && labels.includes("bottom-sensor")) {
