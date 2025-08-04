@@ -73,6 +73,12 @@
       background: linear-gradient(to right, #00bfff, #87cefa);
       width: 100%;
     }
+    #ammo-text {
+      font-size: 14px;
+      font-weight: bold;
+      color: #ff1493;
+      margin-top: 4px;
+    }
     .hp-container {
       display: flex;
       flex-direction: column;
@@ -234,6 +240,7 @@
       <div id="player-hp-bar">
         <div id="player-hp-fill"></div>
       </div>
+      <div id="ammo-text">弾: <span id="ammo-value">3</span></div>
     </div>
     <div id="game-wrapper">
       <svg id="aim-svg" width="880" height="700" style="position:absolute;top:0;left:0;z-index:5;"></svg>
@@ -357,12 +364,15 @@
       let enemyHP = 100;
       let pendingDamage = 0;
       let gameOver = false;
+      let ammo = 3;
+      const maxAmmo = 3;
 
       const hpFill = document.getElementById("hp-fill");
       const hpText = document.getElementById("hp-text");
       const hpDisplay = document.getElementById("hp-display");
       const playerHpValue = document.getElementById("player-hp-value");
       const playerHpFill = document.getElementById("player-hp-fill");
+      const ammoValue = document.getElementById("ammo-value");
       const enemyGirl = document.getElementById("enemy-girl");
       const victoryOverlay = document.getElementById("victory-overlay");
       const victoryImg = document.getElementById("victory-img");
@@ -403,6 +413,10 @@
             location.reload();
           }, 200);
         }
+      }
+
+      function updateAmmo() {
+        ammoValue.textContent = ammo;
       }
 
       function flashEnemyDamage() {
@@ -459,6 +473,19 @@
         setTimeout(() => cont.classList.remove("shake"), 300);
       }
 
+      function enemyAttack() {
+        playerHP -= 10;
+        updatePlayerHP();
+        showDamageOverlay();
+        shakeContainer();
+      }
+
+      function reload() {
+        enemyAttack();
+        ammo = maxAmmo;
+        updateAmmo();
+      }
+
       function explodeBomb(peg, ball) {
         const { x, y } = peg.position;
         const bodies = Composite.allBodies(engine.world);
@@ -494,6 +521,10 @@
 
       window.addEventListener("click", (e) => {
         if (currentBall || gameOver) return;
+        if (ammo <= 0) {
+          reload();
+          return;
+        }
         const rect = aimSvg.getBoundingClientRect();
         const dx = e.clientX - rect.left - firePoint.x;
         const dy = e.clientY - rect.top - firePoint.y;
@@ -510,6 +541,8 @@
         });
         World.add(world, ball);
         currentBall = ball;
+        ammo--;
+        updateAmmo();
       });
 
       Events.on(engine, 'collisionStart', (event) => {
@@ -543,10 +576,7 @@
             flashEnemyDamage();
             showDamageText(x, y, "-" + totalDamage);
             pendingDamage = 0;
-            playerHP -= 10;
-            updatePlayerHP();
-            showDamageOverlay();
-            shakeContainer();
+            enemyAttack();
             showHitSpark(x, y);
             launchHeartAttack();
           }
@@ -555,6 +585,7 @@
 
       updateHPBar();
       updatePlayerHP();
+      updateAmmo();
     });
   </script>
 </body>
