@@ -348,7 +348,7 @@
         enemyGirl.src = "enemy_damage.png";
         setTimeout(() => {
           enemyGirl.src = "enemy_normal.png";
-        }, 200);
+        }, 500);
       }
 
       function launchHeartAttack() {
@@ -442,6 +442,10 @@
             const { x, y } = ball.position;
             World.remove(world, ball);
             currentBall = null;
+            enemyHP -= pendingDamage;
+            updateHPBar();
+            flashEnemyDamage();
+            pendingDamage = 0;
             playerHP -= 10;
             updatePlayerHP();
             showDamageOverlay();
