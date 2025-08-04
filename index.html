@@ -431,7 +431,10 @@
             const peg = pair.bodyA.label === "peg" ? pair.bodyA : pair.bodyB;
             World.remove(world, peg);
             pendingDamage += 10;
-            showDamageText(peg.position.x, peg.position.y, "-10");
+            enemyHP -= 10;
+            flashEnemyDamage();
+            updateHPBar();
+            showDamageText(peg.position.x, peg.position.y, "-" + pendingDamage);
             showHitSpark(peg.position.x, peg.position.y);
           }
           if (labels.includes("ball") && labels.includes("bottom-sensor")) {
@@ -447,9 +450,10 @@
             updatePlayerHP();
             showDamageOverlay();
             shakeContainer();
-            showDamageText(x, y, "-10");
+            showDamageText(x, y, "-" + pendingDamage);
             showHitSpark(x, y);
             launchHeartAttack();
+            pendingDamage = 0;
           }
         });
       });
