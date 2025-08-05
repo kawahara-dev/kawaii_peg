@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="viewport" content="width=1280,user-scalable=yes" />
   <title>ギャルペグリンっぽゲーム💕</title>
   <style>
     html, body {
@@ -581,13 +581,15 @@
         });
 
         window.addEventListener("touchmove", (e) => {
-          e.preventDefault();
-          const touch = e.touches[0];
-          const rect = aimSvg.getBoundingClientRect();
-          const dx = touch.clientX - rect.left - firePoint.x;
-          const dy = touch.clientY - rect.top - firePoint.y;
-          const angle = Math.atan2(dy, dx);
-          drawSimulatedPath(angle, 10);
+          if (e.touches.length === 1) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = aimSvg.getBoundingClientRect();
+            const dx = touch.clientX - rect.left - firePoint.x;
+            const dy = touch.clientY - rect.top - firePoint.y;
+            const angle = Math.atan2(dy, dx);
+            drawSimulatedPath(angle, 10);
+          }
         });
 
         function shootBall(angle) {
@@ -621,6 +623,7 @@
         });
 
         window.addEventListener("touchstart", (e) => {
+          if (e.touches.length !== 1) return;
           e.preventDefault();
           if (currentBall || gameOver) return;
           if (ammo <= 0) {
