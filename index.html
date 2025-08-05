@@ -516,6 +516,7 @@
       let gameOver = false;
       let ammo = Array(3).fill("normal");
       const maxAmmo = 3;
+      let specialAmmo = [];
       let reloading = false;
 
       const hpFill = document.getElementById("hp-fill");
@@ -537,13 +538,13 @@
       retryButton.addEventListener("click", () => location.reload());
       gameOverRetryButton.addEventListener("click", () => location.reload());
       document.querySelectorAll(".reward-button").forEach(btn => {
-        btn.addEventListener("click", () => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
           const type = btn.dataset.type;
           rewardOverlay.style.display = "none";
           stage++;
+          specialAmmo.push(type);
           startStage();
-          ammo.push(type);
-          updateAmmo();
         });
       });
 
@@ -594,7 +595,7 @@
 
       function updateAmmo() {
         ammoValue.innerHTML = "";
-        ammo.forEach(type => {
+        [...specialAmmo, ...ammo].forEach(type => {
           const icon = document.createElement("span");
           icon.className = "ammo-ball";
           if (type === "split") icon.style.background = "#dda0dd";
@@ -771,7 +772,7 @@
 
         window.addEventListener("click", (e) => {
           if (currentBalls.length > 0 || gameOver) return;
-          if (ammo.length <= 0) {
+          if (ammo.length + specialAmmo.length <= 0) {
             reload();
             return;
           }
@@ -779,7 +780,11 @@
           const dx = e.clientX - rect.left - firePoint.x;
           const dy = e.clientY - rect.top - firePoint.y;
           const angle = Math.atan2(dy, dx);
-          const type = ammo.splice(Math.floor(Math.random() * ammo.length), 1)[0];
+          const total = ammo.length + specialAmmo.length;
+          const idx = Math.floor(Math.random() * total);
+          const type = idx < specialAmmo.length
+            ? specialAmmo[idx]
+            : ammo.splice(idx - specialAmmo.length, 1)[0];
           shootBall(angle, type);
         });
 
@@ -787,7 +792,7 @@
           if (e.touches.length !== 1) return;
           e.preventDefault();
           if (currentBalls.length > 0 || gameOver) return;
-          if (ammo.length <= 0) {
+          if (ammo.length + specialAmmo.length <= 0) {
             reload();
             return;
           }
@@ -796,7 +801,11 @@
           const dx = touch.clientX - rect.left - firePoint.x;
           const dy = touch.clientY - rect.top - firePoint.y;
           const angle = Math.atan2(dy, dx);
-          const type = ammo.splice(Math.floor(Math.random() * ammo.length), 1)[0];
+          const total = ammo.length + specialAmmo.length;
+          const idx = Math.floor(Math.random() * total);
+          const type = idx < specialAmmo.length
+            ? specialAmmo[idx]
+            : ammo.splice(idx - specialAmmo.length, 1)[0];
           shootBall(angle, type);
         });
 
