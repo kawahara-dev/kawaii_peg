@@ -304,6 +304,21 @@
       color: #ff1493;
       cursor: pointer;
     }
+    #reload-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      color: #ff1493;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: bold;
+      z-index: 40;
+    }
     #retry-button {
       margin-top: 20px;
       padding: 10px 20px;
@@ -370,6 +385,7 @@
       <h2>gameover😭</h2>
       <button id="game-over-retry-button">リトライ</button>
     </div>
+    <div id="reload-overlay">リロード中…</div>
   </div>
 
   <div id="version-history">
@@ -500,6 +516,7 @@
       let gameOver = false;
       let ammo = Array(3).fill("normal");
       const maxAmmo = 3;
+      let reloading = false;
 
       const hpFill = document.getElementById("hp-fill");
       const hpText = document.getElementById("hp-text");
@@ -515,6 +532,7 @@
       const retryButton = document.getElementById("retry-button");
       const gameOverOverlay = document.getElementById("game-over-overlay");
       const gameOverRetryButton = document.getElementById("game-over-retry-button");
+      const reloadOverlay = document.getElementById("reload-overlay");
       const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
       retryButton.addEventListener("click", () => location.reload());
       gameOverRetryButton.addEventListener("click", () => location.reload());
@@ -657,9 +675,16 @@
       }
 
       function reload() {
-        enemyAttack();
-        ammo = Array(maxAmmo).fill("normal");
-        updateAmmo();
+        if (reloading) return;
+        reloading = true;
+        reloadOverlay.style.display = "flex";
+        setTimeout(() => {
+          enemyAttack();
+          ammo = Array(maxAmmo).fill("normal");
+          updateAmmo();
+          reloadOverlay.style.display = "none";
+          reloading = false;
+        }, 2000);
       }
 
       function explodeBomb(peg, ball) {
