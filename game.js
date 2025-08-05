@@ -100,6 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let currentBalls = [];
   let currentShotType = null;
   let playerHP = 100;
+  let playerMaxHP = 100;
   let stage = 1;
   let maxEnemyHP = 100;
   let enemyHP = maxEnemyHP;
@@ -110,10 +111,15 @@ window.addEventListener('DOMContentLoaded', () => {
   let specialAmmo = [];
   let reloading = false;
 
+  let permXP = parseInt(localStorage.getItem("permXP") || "0");
+  let hpLevel = parseInt(localStorage.getItem("hpLevel") || "0");
+  let atkLevel = parseInt(localStorage.getItem("atkLevel") || "0");
+
   const hpFill = document.getElementById("hp-fill");
   const hpText = document.getElementById("hp-text");
   const hpDisplay = document.getElementById("hp-display");
   const playerHpValue = document.getElementById("player-hp-value");
+  const playerHpMaxText = document.getElementById("player-hp-max");
   const playerHpFill = document.getElementById("player-hp-fill");
   const ammoValue = document.getElementById("ammo-value");
   const stageValue = document.getElementById("stage-value");
@@ -127,21 +133,60 @@ window.addEventListener('DOMContentLoaded', () => {
   const reloadOverlay = document.getElementById("reload-overlay");
   const menuOverlay = document.getElementById("menu-overlay");
   const startButton = document.getElementById("start-button");
+  const xpOverlay = document.getElementById("xp-overlay");
+  const xpGained = document.getElementById("xp-gained");
+  const xpContinueButton = document.getElementById("xp-continue-button");
+  const xpValue = document.getElementById("xp-value");
+  const upgradeHpButton = document.getElementById("upgrade-hp");
+  const upgradeAtkButton = document.getElementById("upgrade-atk");
   const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
   retryButton.addEventListener("click", () => location.reload());
   gameOverRetryButton.addEventListener("click", () => location.reload());
+  function updateMenu() {
+    xpValue.textContent = permXP;
+    upgradeHpButton.textContent = `HPアップ Lv${hpLevel} (10XP)`;
+    upgradeAtkButton.textContent = `攻撃アップ Lv${atkLevel} (10XP)`;
+  }
+  updateMenu();
+
+  upgradeHpButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (permXP >= 10) {
+      permXP -= 10;
+      hpLevel++;
+      localStorage.setItem("permXP", permXP);
+      localStorage.setItem("hpLevel", hpLevel);
+      updateMenu();
+    }
+  });
+
+  upgradeAtkButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (permXP >= 10) {
+      permXP -= 10;
+      atkLevel++;
+      localStorage.setItem("permXP", permXP);
+      localStorage.setItem("atkLevel", atkLevel);
+      updateMenu();
+    }
+  });
+
   startButton.addEventListener("click", (e) => {
     e.stopPropagation();
     menuOverlay.style.display = "none";
+    playerMaxHP = 100 + hpLevel * 10;
+    playerHP = playerMaxHP;
     startStage();
     updatePlayerHP();
   });
+  xpContinueButton.addEventListener("click", () => location.reload());
   document.querySelectorAll(".reward-button").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const type = btn.dataset.type;
       rewardOverlay.style.display = "none";
       stage++;
+      if (stage > 5) stage = 5;
       specialAmmo.push(type);
       startStage();
     });
@@ -168,14 +213,23 @@ window.addEventListener('DOMContentLoaded', () => {
     hpDisplay.textContent = `${enemyHP} / ${maxEnemyHP}`;
     if (enemyHP <= 0 && !gameOver) {
       setTimeout(() => {
-        rewardOverlay.style.display = "flex";
+        if (stage >= 5) {
+          const gained = 10;
+          permXP += gained;
+          localStorage.setItem("permXP", permXP);
+          xpGained.textContent = gained;
+          xpOverlay.style.display = "flex";
+        } else {
+          rewardOverlay.style.display = "flex";
+        }
       }, 200);
     }
   }
 
   function updatePlayerHP() {
-    const percent = Math.max(0, playerHP);
-    playerHpValue.textContent = `${percent}`;
+    const percent = Math.max(0, (playerHP / playerMaxHP) * 100);
+    playerHpValue.textContent = `${playerHP}`;
+    playerHpMaxText.textContent = `${playerMaxHP}`;
     playerHpFill.style.width = `${percent}%`;
 
     const hpBox = document.getElementById("player-hp-container");
@@ -298,9 +352,9 @@ window.addEventListener('DOMContentLoaded', () => {
         const dy = body.position.y - y;
       if (Math.sqrt(dx * dx + dy * dy) <= 80) {
         World.remove(world, body);
-        let dmg = 10;
-        if (body.label === "peg-yellow") dmg = 20;
+        let dmg = body.label === "peg-yellow" ? 20 : 10;
         dmg *= ball.damageMultiplier || 1;
+        dmg *= 1 + atkLevel * 0.1;
         addedDamage += dmg;
         showHitSpark(body.position.x, body.position.y);
       }
@@ -426,6 +480,7 @@ window.addEventListener('DOMContentLoaded', () => {
         World.remove(world, peg);
         let damage = peg.label === "peg-yellow" ? 20 : 10;
         damage *= ball.damageMultiplier || 1;
+        damage *= 1 + atkLevel * 0.1;
         pendingDamage += damage;
         showDamageText(peg.position.x, peg.position.y, "+" + pendingDamage);
         showHitSpark(peg.position.x, peg.position.y);
@@ -438,7 +493,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (currentBalls.length === 0) {
           const totalDamage = pendingDamage;
           if (currentShotType === "heal") {
-            playerHP += totalDamage;
+            playerHP = Math.min(playerMaxHP, playerHP + totalDamage);
             updatePlayerHP();
             showDamageText(x, y, "+" + totalDamage);
           } else {
