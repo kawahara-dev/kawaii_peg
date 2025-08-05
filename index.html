@@ -6,13 +6,18 @@
   <title>ギャルペグリンっぽゲーム💕</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+  <body>
   <div id="menu-overlay">
+    <div id="xp-display">経験値: <span id="xp-value">0</span></div>
+    <div id="upgrade-buttons">
+      <button id="upgrade-hp">HPアップ(+10) 10XP</button>
+      <button id="upgrade-atk">攻撃アップ(+10%) 10XP</button>
+    </div>
     <button id="start-button">スタート</button>
   </div>
   <div id="container">
     <div id="player-hp-container">
-      <div id="player-hp-text">HP: <span id="player-hp-value">100</span> / 100</div>
+      <div id="player-hp-text">HP: <span id="player-hp-value">100</span> / <span id="player-hp-max">100</span></div>
       <div id="player-hp-bar">
         <div id="player-hp-fill"></div>
       </div>
@@ -42,6 +47,10 @@
       <button class="reward-button" data-type="heal">回復ボール</button>
       <button class="reward-button" data-type="big">デカボール</button>
     </div>
+    <div id="xp-overlay">
+      <h2>経験値GET! +<span id="xp-gained">0</span></h2>
+      <button id="xp-continue-button">メニューへ</button>
+    </div>
     <div id="game-over-overlay">
       <h2>gameover😭</h2>
       <button id="game-over-retry-button">リトライ</button>
@@ -52,6 +61,7 @@
   <div id="version-history">
     <h3>バージョン履歴</h3>
     <ul>
+      <li>v1.0 (2025-08-05) ステージ5クリアで経験値獲得＆スキル強化追加</li>
       <li>v0.9.2 (2025-08-05) プレイヤーHP0で敗北オーバーレイ表示</li>
       <li>v0.9.1 (2025-08-05) 初期ボール数を3に設定</li>
       <li>v0.9 (2025-08-05) 弾数制限とリロードを実装</li>
