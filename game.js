@@ -125,9 +125,17 @@ window.addEventListener('DOMContentLoaded', () => {
   const gameOverOverlay = document.getElementById("game-over-overlay");
   const gameOverRetryButton = document.getElementById("game-over-retry-button");
   const reloadOverlay = document.getElementById("reload-overlay");
+  const menuOverlay = document.getElementById("menu-overlay");
+  const startButton = document.getElementById("start-button");
   const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
   retryButton.addEventListener("click", () => location.reload());
   gameOverRetryButton.addEventListener("click", () => location.reload());
+  startButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    menuOverlay.style.display = "none";
+    startStage();
+    updatePlayerHP();
+  });
   document.querySelectorAll(".reward-button").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -449,6 +457,4 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  startStage();
-  updatePlayerHP();
 });
