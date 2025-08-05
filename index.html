@@ -82,6 +82,12 @@
       color: #ff1493;
       margin-top: 4px;
     }
+    #stage-text {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff1493;
+      margin-bottom: 8px;
+    }
     .ammo-ball {
       display: inline-block;
       width: 16px;
@@ -340,14 +346,15 @@
       <svg id="aim-svg" width="880" height="700" style="position:absolute;top:0;left:0;z-index:5;"></svg>
     </div>
     <div id="side-panel">
+      <div id="stage-text">ステージ: <span id="stage-value">1</span></div>
       <div class="hp-container">
-      <div class="hp-value" id="hp-display">200 / 200</div>
+        <div class="hp-value" id="hp-display">200 / 200</div>
         <div id="hp-bar">
-        <div id="hp-fill"></div>
-        <div id="hp-text">200</div>
+          <div id="hp-fill"></div>
+          <div id="hp-text">200</div>
+        </div>
       </div>
-    </div>
-    <img id="enemy-girl" src="enemy_normal.png" alt="敵の女の子">
+      <img id="enemy-girl" src="enemy_normal.png" alt="敵の女の子">
     </div>
     <div id="victory-overlay">
       <img id="victory-img" src="enemy_defete.png" alt="倒された女の子">
@@ -487,7 +494,7 @@
       let currentShotType = null;
       let playerHP = 100;
       let stage = 1;
-      let maxEnemyHP = 200;
+      let maxEnemyHP = 100;
       let enemyHP = maxEnemyHP;
       let pendingDamage = 0;
       let gameOver = false;
@@ -500,6 +507,7 @@
       const playerHpValue = document.getElementById("player-hp-value");
       const playerHpFill = document.getElementById("player-hp-fill");
       const ammoValue = document.getElementById("ammo-value");
+      const stageValue = document.getElementById("stage-value");
       const enemyGirl = document.getElementById("enemy-girl");
       const victoryOverlay = document.getElementById("victory-overlay");
       const victoryImg = document.getElementById("victory-img");
@@ -524,7 +532,7 @@
       function startStage() {
         enemyGirl.src = "enemy_normal.png";
         generatePegs(50 + (stage - 1) * 10);
-        maxEnemyHP = 200 + (stage - 1) * 50;
+        maxEnemyHP = 100 + (stage - 1) * 100;
         enemyHP = maxEnemyHP;
         pendingDamage = 0;
         currentBalls = [];
@@ -532,6 +540,7 @@
         ammo = Array(maxAmmo).fill("normal");
         updateHPBar();
         updateAmmo();
+        stageValue.textContent = stage;
       }
 
       function updateHPBar() {
