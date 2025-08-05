@@ -783,7 +783,7 @@
           const total = ammo.length + specialAmmo.length;
           const idx = Math.floor(Math.random() * total);
           const type = idx < specialAmmo.length
-            ? specialAmmo[idx]
+            ? specialAmmo.splice(idx, 1)[0]
             : ammo.splice(idx - specialAmmo.length, 1)[0];
           shootBall(angle, type);
         });
@@ -804,7 +804,7 @@
           const total = ammo.length + specialAmmo.length;
           const idx = Math.floor(Math.random() * total);
           const type = idx < specialAmmo.length
-            ? specialAmmo[idx]
+            ? specialAmmo.splice(idx, 1)[0]
             : ammo.splice(idx - specialAmmo.length, 1)[0];
           shootBall(angle, type);
         });
