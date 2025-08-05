@@ -82,6 +82,15 @@
       color: #ff1493;
       margin-top: 4px;
     }
+    .ammo-ball {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #00bfff;
+      border: 1px solid #ff69b4;
+      margin-right: 4px;
+    }
     .hp-container {
       display: flex;
       flex-direction: column;
@@ -302,7 +311,7 @@
       <div id="player-hp-bar">
         <div id="player-hp-fill"></div>
       </div>
-      <div id="ammo-text">弾: <span id="ammo-value">3</span></div>
+      <div id="ammo-text">弾: <span id="ammo-value"></span></div>
     </div>
     <div id="game-wrapper">
       <svg id="aim-svg" width="880" height="700" style="position:absolute;top:0;left:0;z-index:5;"></svg>
@@ -520,7 +529,12 @@
       }
 
       function updateAmmo() {
-        ammoValue.textContent = ammo;
+        ammoValue.innerHTML = "";
+        for (let i = 0; i < ammo; i++) {
+          const icon = document.createElement("span");
+          icon.className = "ammo-ball";
+          ammoValue.appendChild(icon);
+        }
       }
 
       function flashEnemyDamage() {
