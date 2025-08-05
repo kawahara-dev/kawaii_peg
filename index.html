@@ -8,12 +8,16 @@
 </head>
   <body>
   <div id="menu-overlay">
-    <div id="xp-display">経験値: <span id="xp-value">0</span></div>
+    <div id="main-menu">
+      <button id="start-button" class="menu-option">スタート</button>
+      <button id="upgrade-menu-button" class="menu-option">アップグレード</button>
+      <button id="reset-progress" class="menu-option">進捗リセット</button>
+    </div>
     <div id="upgrade-buttons">
+      <div id="xp-display">経験値: <span id="xp-value">0</span></div>
       <button id="upgrade-hp">HPアップ(+10) 10XP</button>
       <button id="upgrade-atk">攻撃アップ(+10%) 10XP</button>
     </div>
-    <button id="start-button">スタート</button>
   </div>
   <div id="container">
     <div id="player-hp-container">

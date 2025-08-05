@@ -133,12 +133,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const reloadOverlay = document.getElementById("reload-overlay");
   const menuOverlay = document.getElementById("menu-overlay");
   const startButton = document.getElementById("start-button");
+  const upgradeMenuButton = document.getElementById("upgrade-menu-button");
+  const resetProgressButton = document.getElementById("reset-progress");
   const xpOverlay = document.getElementById("xp-overlay");
   const xpGained = document.getElementById("xp-gained");
   const xpContinueButton = document.getElementById("xp-continue-button");
   const xpValue = document.getElementById("xp-value");
   const upgradeHpButton = document.getElementById("upgrade-hp");
   const upgradeAtkButton = document.getElementById("upgrade-atk");
+  const upgradeMenu = document.getElementById("upgrade-buttons");
   const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
   retryButton.addEventListener("click", () => location.reload());
   gameOverRetryButton.addEventListener("click", () => location.reload());
@@ -148,6 +151,18 @@ window.addEventListener('DOMContentLoaded', () => {
     upgradeAtkButton.textContent = `攻撃アップ Lv${atkLevel} (10XP)`;
   }
   updateMenu();
+
+  upgradeMenuButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    updateMenu();
+    upgradeMenu.style.display = upgradeMenu.style.display === "flex" ? "none" : "flex";
+  });
+
+  resetProgressButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    localStorage.clear();
+    location.reload();
+  });
 
   upgradeHpButton.addEventListener("click", (e) => {
     e.stopPropagation();

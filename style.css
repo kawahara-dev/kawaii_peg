@@ -354,7 +354,14 @@ canvas {
   z-index: 50;
 }
 
-#start-button {
+#main-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.menu-option {
   padding: 20px 40px;
   font-size: 24px;
   border: 2px solid #ff69b4;
@@ -362,6 +369,7 @@ canvas {
   color: #ff1493;
   cursor: pointer;
   border-radius: 8px;
+  margin: 10px 0;
 }
 
 #xp-display {
@@ -371,10 +379,10 @@ canvas {
 }
 
 #upgrade-buttons {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 #upgrade-buttons button {
