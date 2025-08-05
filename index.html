@@ -384,36 +384,39 @@
       });
       World.add(world, bottomSensor);
 
-      const pegs = [];
-      const pegCount = 50;
-      for (let i = 0; i < pegCount; i++) {
-        const x = 50 + Math.random() * (width - 100);
-        const y = 150 + Math.random() * (height - 250);
-        const r = Math.random();
-        let peg;
-        if (r < 0.1) {
-          peg = Bodies.circle(x, y, 10, {
-            isStatic: true,
-            render: { fillStyle: "#808080" },
-            label: "peg-bomb"
-          });
-          peg.bombHits = 0;
-        } else if (r < 0.3) {
-          peg = Bodies.circle(x, y, 10, {
-            isStatic: true,
-            render: { fillStyle: "#ffd700" },
-            label: "peg-yellow"
-          });
-        } else {
-          peg = Bodies.circle(x, y, 10, {
-            isStatic: true,
-            render: { fillStyle: "#ff69b4" },
-            label: "peg"
-          });
+      let pegs = [];
+      function generatePegs(count) {
+        pegs.forEach((p) => World.remove(world, p));
+        pegs = [];
+        for (let i = 0; i < count; i++) {
+          const x = 50 + Math.random() * (width - 100);
+          const y = 150 + Math.random() * (height - 250);
+          const r = Math.random();
+          let peg;
+          if (r < 0.1) {
+            peg = Bodies.circle(x, y, 10, {
+              isStatic: true,
+              render: { fillStyle: "#808080" },
+              label: "peg-bomb"
+            });
+            peg.bombHits = 0;
+          } else if (r < 0.3) {
+            peg = Bodies.circle(x, y, 10, {
+              isStatic: true,
+              render: { fillStyle: "#ffd700" },
+              label: "peg-yellow"
+            });
+          } else {
+            peg = Bodies.circle(x, y, 10, {
+              isStatic: true,
+              render: { fillStyle: "#ff69b4" },
+              label: "peg"
+            });
+          }
+          pegs.push(peg);
         }
-        pegs.push(peg);
+        World.add(world, pegs);
       }
-      World.add(world, pegs);
 
       const firePoint = { x: width / 2, y: 50 };
       const aimSvg = document.getElementById("aim-svg");
@@ -444,7 +447,8 @@
 
       let currentBall = null;
       let playerHP = 100;
-      const maxEnemyHP = 200;
+      let stage = 1;
+      let maxEnemyHP = 200;
       let enemyHP = maxEnemyHP;
       let pendingDamage = 0;
       let gameOver = false;
@@ -467,6 +471,23 @@
       retryButton.addEventListener("click", () => location.reload());
       gameOverRetryButton.addEventListener("click", () => location.reload());
 
+      function startStage() {
+        enemyGirl.src = "enemy_normal.png";
+        generatePegs(50 + (stage - 1) * 10);
+        maxEnemyHP = 200 + (stage - 1) * 50;
+        enemyHP = maxEnemyHP;
+        pendingDamage = 0;
+        currentBall = null;
+        ammo = maxAmmo;
+        updateHPBar();
+        updateAmmo();
+      }
+
+      function nextStage() {
+        stage++;
+        startStage();
+      }
+
       function updateHPBar() {
         const percent = Math.max(0, (enemyHP / maxEnemyHP) * 100);
         hpFill.style.width = `${percent}%`;
@@ -474,13 +495,7 @@
         hpDisplay.textContent = `${enemyHP} / ${maxEnemyHP}`;
         if (enemyHP <= 0 && !gameOver) {
           setTimeout(() => {
-            const defeatImage = defeatImages[Math.floor(Math.random() * defeatImages.length)];
-            enemyGirl.src = defeatImage;
-            victoryImg.src = defeatImage;
-            victoryOverlay.style.display = "flex";
-            gameOver = true;
-            Runner.stop(runner);
-            Render.stop(render);
+            nextStage();
           }, 200);
         }
       }
@@ -714,9 +729,8 @@
         });
       });
 
-      updateHPBar();
+      startStage();
       updatePlayerHP();
-      updateAmmo();
     });
   </script>
 </body>
