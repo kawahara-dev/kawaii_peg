@@ -424,7 +424,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener("click", (e) => {
-      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none") return;
+      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" || getComputedStyle(menuOverlay).display !== "none") return;
       if (ammo.length + specialAmmo.length <= 0) {
         reload();
         return;
@@ -444,7 +444,7 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener("touchstart", (e) => {
       if (e.touches.length !== 1) return;
       e.preventDefault();
-      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none") return;
+      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" || getComputedStyle(menuOverlay).display !== "none") return;
       if (ammo.length + specialAmmo.length <= 0) {
         reload();
         return;
