@@ -430,9 +430,9 @@ window.addEventListener('DOMContentLoaded', () => {
         if (currentBalls.length === 0) {
           const totalDamage = pendingDamage;
           if (currentShotType === "heal") {
-            playerHP = Math.min(100, playerHP + totalDamage);
+            playerHP += totalDamage;
             updatePlayerHP();
-            showDamageText(x, y, "+HP" + totalDamage);
+            showDamageText(x, y, "+" + totalDamage);
           } else {
             enemyHP -= totalDamage;
             updateHPBar();
