@@ -106,24 +106,9 @@ window.addEventListener('DOMContentLoaded', () => {
   let enemyHP = maxEnemyHP;
   let pendingDamage = 0;
   let gameOver = false;
-  const maxAmmo = 3;
   let ammo = [];
-  let ownedBalls = JSON.parse(localStorage.getItem("ownedBalls") || "[]");
-  ownedBalls = Array.from(new Set(ownedBalls));
-  let deck = JSON.parse(localStorage.getItem("deck") || "[]");
-  let ballLevels = JSON.parse(localStorage.getItem("ballLevels") || "{}");
-  if (deck.length === 0) deck = Array(maxAmmo).fill("normal");
-  while (deck.length < maxAmmo) deck.push("normal");
-  if (!ballLevels["normal"]) ballLevels["normal"] = 1;
-  ownedBalls.forEach(type => {
-    if (!ballLevels[type]) ballLevels[type] = 1;
-  });
-  function saveDeckData() {
-    localStorage.setItem("ownedBalls", JSON.stringify(ownedBalls));
-    localStorage.setItem("deck", JSON.stringify(deck));
-    localStorage.setItem("ballLevels", JSON.stringify(ballLevels));
-  }
-  saveDeckData();
+  let ownedBalls = [];
+  let ballLevels = { normal: 1 };
   let reloading = false;
 
   let permXP = parseInt(localStorage.getItem("permXP") || "0");
@@ -157,16 +142,10 @@ window.addEventListener('DOMContentLoaded', () => {
   const upgradeHpButton = document.getElementById("upgrade-hp");
   const upgradeAtkButton = document.getElementById("upgrade-atk");
   const upgradeMenu = document.getElementById("upgrade-buttons");
-  const deckOverlay = document.getElementById("deck-overlay");
-  const deckButton = document.getElementById("deck-edit-button");
-  const closeDeckButton = document.getElementById("close-deck");
-  const ownedList = document.getElementById("owned-balls");
-  const deckSlots = document.getElementById("deck-slots");
   const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
   retryButton.style.display = "none";
   retryButton.addEventListener("click", () => location.reload());
   gameOverRetryButton.addEventListener("click", () => location.reload());
-  window.addEventListener("beforeunload", saveDeckData);
   function updateMenu() {
     xpValue.textContent = permXP;
     upgradeHpButton.textContent = `HPアップ Lv${hpLevel} (10XP)`;
@@ -208,61 +187,13 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function getBallColor(type) {
-    if (type === "split") return "#dda0dd";
-    if (type === "heal") return "#90ee90";
-    if (type === "big") return "#ffa500";
-    return "#00bfff";
-  }
-
-  function renderDeckEditor() {
-    ownedList.innerHTML = "";
-    deckSlots.innerHTML = "";
-    ownedBalls.forEach((type, idx) => {
-      const div = document.createElement("div");
-      div.className = "ball-item";
-      div.style.background = getBallColor(type);
-      div.addEventListener("click", () => {
-        const slot = deck.indexOf("normal");
-        if (slot !== -1) {
-          deck[slot] = type;
-          ownedBalls.splice(idx, 1);
-          saveDeckData();
-          renderDeckEditor();
-        }
-      });
-      ownedList.appendChild(div);
-    });
-    deck.forEach((type, idx) => {
-      const div = document.createElement("div");
-      div.className = "ball-item";
-      div.style.background = getBallColor(type);
-      div.addEventListener("click", () => {
-        if (type !== "normal") {
-          ownedBalls.push(type);
-          deck[idx] = "normal";
-          saveDeckData();
-          renderDeckEditor();
-        }
-      });
-      deckSlots.appendChild(div);
-    });
-  }
-
-  deckButton.addEventListener("click", (e) => {
-    e.stopPropagation();
-    renderDeckEditor();
-    deckOverlay.style.display = "flex";
-  });
-
-  closeDeckButton.addEventListener("click", (e) => {
-    e.stopPropagation();
-    deckOverlay.style.display = "none";
-  });
 
   startButton.addEventListener("click", (e) => {
     e.stopPropagation();
     menuOverlay.style.display = "none";
+    stage = 1;
+    ownedBalls = ["normal", "normal", "normal"];
+    ballLevels = { normal: 1 };
     playerMaxHP = 100 + hpLevel * 10;
     playerHP = playerMaxHP;
     startStage();
@@ -282,7 +213,6 @@ window.addEventListener('DOMContentLoaded', () => {
         ownedBalls.push(type);
         ballLevels[type] = 1;
       }
-      saveDeckData();
       startStage();
     });
   });
@@ -295,7 +225,7 @@ window.addEventListener('DOMContentLoaded', () => {
     pendingDamage = 0;
     currentBalls = [];
     currentShotType = null;
-    ammo = deck.slice();
+    ammo = ownedBalls.slice();
     updateHPBar();
     updateAmmo();
     stageValue.textContent = stage;
@@ -449,7 +379,7 @@ window.addEventListener('DOMContentLoaded', () => {
     reloadOverlay.style.display = "flex";
     setTimeout(() => {
       enemyAttack();
-      ammo = Array(maxAmmo).fill("normal");
+      ammo = Array(ownedBalls.length).fill("normal");
       updateAmmo();
       reloadOverlay.style.display = "none";
       reloading = false;
