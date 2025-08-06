@@ -357,7 +357,12 @@ canvas {
   z-index: 30;
   text-align: center;
 }
-#event-overlay h2 {
+#event-title {
+  color: #ff1493;
+  animation: sparkle 0.8s infinite alternate;
+}
+
+#event-message {
   color: #000;
 }
 #event-overlay button {
@@ -369,6 +374,11 @@ canvas {
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
+}
+
+@keyframes sparkle {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
 }
 #progress-indicator {
   position: absolute;
