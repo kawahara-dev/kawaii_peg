@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let gameOver = false;
   let ammo = Array(3).fill("normal");
   const maxAmmo = 3;
-  let specialAmmo = [];
+  let specialAmmo = JSON.parse(localStorage.getItem("specialAmmo") || "[]");
   let reloading = false;
 
   let permXP = parseInt(localStorage.getItem("permXP") || "0");
@@ -143,8 +143,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const upgradeAtkButton = document.getElementById("upgrade-atk");
   const upgradeMenu = document.getElementById("upgrade-buttons");
   const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
+  retryButton.style.display = "none";
   retryButton.addEventListener("click", () => location.reload());
   gameOverRetryButton.addEventListener("click", () => location.reload());
+
+  function saveSpecialAmmo() {
+    localStorage.setItem("specialAmmo", JSON.stringify(specialAmmo));
+  }
   function updateMenu() {
     xpValue.textContent = permXP;
     upgradeHpButton.textContent = `HPアップ Lv${hpLevel} (10XP)`;
@@ -203,6 +208,7 @@ window.addEventListener('DOMContentLoaded', () => {
       stage++;
       if (stage > 5) stage = 5;
       specialAmmo.push(type);
+      saveSpecialAmmo();
       startStage();
     });
   });
@@ -218,6 +224,7 @@ window.addEventListener('DOMContentLoaded', () => {
     ammo = Array(maxAmmo).fill("normal");
     updateHPBar();
     updateAmmo();
+    saveSpecialAmmo();
     stageValue.textContent = stage;
   }
 
@@ -228,15 +235,20 @@ window.addEventListener('DOMContentLoaded', () => {
     hpDisplay.textContent = `${enemyHP} / ${maxEnemyHP}`;
     if (enemyHP <= 0 && !gameOver) {
       setTimeout(() => {
-        if (stage >= 5) {
-          const gained = 10;
-          permXP += gained;
-          localStorage.setItem("permXP", permXP);
-          xpGained.textContent = gained;
-          xpOverlay.style.display = "flex";
-        } else {
-          rewardOverlay.style.display = "flex";
-        }
+        victoryImg.src = defeatImages[Math.floor(Math.random() * defeatImages.length)];
+        victoryOverlay.style.display = "flex";
+        setTimeout(() => {
+          victoryOverlay.style.display = "none";
+          if (stage >= 5) {
+            const gained = 10;
+            permXP += gained;
+            localStorage.setItem("permXP", permXP);
+            xpGained.textContent = gained;
+            xpOverlay.style.display = "flex";
+          } else {
+            rewardOverlay.style.display = "flex";
+          }
+        }, 1000);
       }, 200);
     }
   }
@@ -466,6 +478,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const type = idx < specialAmmo.length
         ? specialAmmo.splice(idx, 1)[0]
         : ammo.splice(idx - specialAmmo.length, 1)[0];
+      saveSpecialAmmo();
       shootBall(angle, type);
     });
 
@@ -487,6 +500,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const type = idx < specialAmmo.length
         ? specialAmmo.splice(idx, 1)[0]
         : ammo.splice(idx - specialAmmo.length, 1)[0];
+      saveSpecialAmmo();
       shootBall(angle, type);
     });
 
