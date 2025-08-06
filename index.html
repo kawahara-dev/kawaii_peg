@@ -13,6 +13,7 @@
       <div id="main-menu">
         <h1 id="game-title">Peggy Girls</h1>
         <button id="start-button" class="menu-option">スタート</button>
+        <button id="deck-edit-button" class="menu-option">デッキ編集</button>
         <button id="upgrade-menu-button" class="menu-option">アップグレード</button>
         <button id="reset-progress" class="menu-option">進捗リセット</button>
       </div>
@@ -60,6 +61,18 @@
     <div id="game-over-overlay">
       <h2>gameover😭</h2>
       <button id="game-over-retry-button">リトライ</button>
+    </div>
+    <div id="deck-overlay">
+      <h2>デッキ編集</h2>
+      <div id="owned-container">
+        <h3>所持ボール</h3>
+        <div id="owned-balls" class="ball-list"></div>
+      </div>
+      <div id="deck-container">
+        <h3>デッキ</h3>
+        <div id="deck-slots" class="ball-list"></div>
+      </div>
+      <button id="close-deck">閉じる</button>
     </div>
     <div id="reload-overlay">リロード中…</div>
   </div>
