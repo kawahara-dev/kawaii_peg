@@ -138,6 +138,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const victoryImg = document.getElementById("victory-img");
   const rewardOverlay = document.getElementById("reward-overlay");
   const eventOverlay = document.getElementById("event-overlay");
+  const eventTitle = document.getElementById("event-title");
   const eventMessage = document.getElementById("event-message");
   const eventContinueButton = document.getElementById("event-continue-button");
   const retryButton = document.getElementById("retry-button");
@@ -243,6 +244,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   function triggerRandomEvent() {
     const events = ["power", "remove", "duplicate", "heal"];
+    const bgColors = [
+      "rgba(255, 255, 255, 0.9)",
+      "rgba(255, 228, 225, 0.9)",
+      "rgba(240, 255, 255, 0.9)",
+      "rgba(255, 240, 245, 0.9)"
+    ];
+    eventOverlay.style.background = bgColors[Math.floor(Math.random() * bgColors.length)];
+    eventTitle.textContent = "ランダムイベント発生☆";
     const ev = events[Math.floor(Math.random() * events.length)];
     if (ev === "power") {
       const type = ownedBalls[Math.floor(Math.random() * ownedBalls.length)];
@@ -267,7 +276,8 @@ window.addEventListener('DOMContentLoaded', () => {
       eventMessage.textContent = `HPが${heal}回復したよ！`;
     }
     eventOverlay.style.display = "flex";
-    eventContinueButton.onclick = () => {
+    eventContinueButton.onclick = (e) => {
+      e.stopPropagation();
       eventOverlay.style.display = "none";
       startStage();
     };
