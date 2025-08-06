@@ -109,6 +109,8 @@ window.addEventListener('DOMContentLoaded', () => {
   let ammo = Array(3).fill("normal");
   const maxAmmo = 3;
   let specialAmmo = JSON.parse(localStorage.getItem("specialAmmo") || "[]");
+  // ensure stored value exists so reloading the page doesn't drop rewards
+  saveSpecialAmmo();
   let reloading = false;
 
   let permXP = parseInt(localStorage.getItem("permXP") || "0");
@@ -215,7 +217,6 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   function startStage() {
-    specialAmmo = JSON.parse(localStorage.getItem("specialAmmo") || "[]");
     enemyGirl.src = "enemy_normal.png";
     generatePegs(50 + (stage - 1) * 10);
     maxEnemyHP = 100 + (stage - 1) * 100;
