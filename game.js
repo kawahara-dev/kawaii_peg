@@ -386,27 +386,25 @@ window.addEventListener('DOMContentLoaded', () => {
     const { x, y } = peg.position;
     showBombExplosion(x, y);
     const bodies = Composite.allBodies(engine.world);
-    let addedDamage = 0;
     bodies.forEach(body => {
       if (["peg", "peg-yellow", "peg-bomb"].includes(body.label)) {
         const dx = body.position.x - x;
         const dy = body.position.y - y;
-      if (Math.sqrt(dx * dx + dy * dy) <= 80) {
-        World.remove(world, body);
-        let dmg = body.label === "peg-yellow" ? 20 : 10;
-        dmg *= ball.damageMultiplier || 1;
-        dmg *= 1 + atkLevel * 0.1;
-        addedDamage += dmg;
-        if (ball.ballType === "heal") {
-          showHealSpark(body.position.x, body.position.y);
-        } else {
-          showHitSpark(body.position.x, body.position.y);
+        if (Math.sqrt(dx * dx + dy * dy) <= 80) {
+          World.remove(world, body);
+          let dmg = body.label === "peg-yellow" ? 20 : 10;
+          dmg *= ball.damageMultiplier || 1;
+          dmg *= 1 + atkLevel * 0.1;
+          pendingDamage += dmg;
+          showDamageText(body.position.x, body.position.y, "+" + pendingDamage, ball.ballType === "heal");
+          if (ball.ballType === "heal") {
+            showHealSpark(body.position.x, body.position.y);
+          } else {
+            showHitSpark(body.position.x, body.position.y);
+          }
         }
       }
-    }
     });
-    pendingDamage += addedDamage;
-    showDamageText(x, y, "+" + pendingDamage, ball.ballType === "heal");
     const bx = ball.position.x - x;
     const by = ball.position.y - y;
     const len = Math.sqrt(bx * bx + by * by) || 1;
