@@ -334,6 +334,7 @@ canvas {
   background: #fff;
   color: #ff1493;
   cursor: pointer;
+  display: none;
 }
 #version-history {
   width: 100%;
