@@ -378,7 +378,9 @@ window.addEventListener('DOMContentLoaded', () => {
     reloading = true;
     reloadOverlay.style.display = "flex";
     setTimeout(() => {
-      enemyAttack();
+      if (enemyHP > 0) {
+        enemyAttack();
+      }
       ammo = Array(ownedBalls.length).fill("normal");
       updateAmmo();
       reloadOverlay.style.display = "none";
