@@ -144,6 +144,10 @@ canvas {
   animation: rise 1s ease-out forwards;
   z-index: 11;
 }
+
+.heal-text {
+  color: #32cd32;
+}
 @keyframes rise {
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-30px); }
@@ -182,6 +186,16 @@ canvas {
   width: 20px;
   height: 20px;
   background: radial-gradient(circle, #ff69b4 0%, rgba(255,105,180,0) 70%);
+  pointer-events: none;
+  animation: spark 0.4s ease-out forwards;
+  z-index: 9;
+}
+
+.heal-spark {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #90ee90 0%, rgba(144,238,144,0) 70%);
   pointer-events: none;
   animation: spark 0.4s ease-out forwards;
   z-index: 9;
