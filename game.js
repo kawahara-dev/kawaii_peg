@@ -546,22 +546,28 @@ window.addEventListener('DOMContentLoaded', () => {
             totalDamage = Math.min(totalDamage, Math.max(enemyHP, 0));
           }
           if (currentShotType === "heal") {
+            if (enemyHP > 0) {
+              enemyAttack();
+              launchHeartAttack();
+            }
             playerHP = Math.min(playerMaxHP, playerHP + totalDamage);
             updatePlayerHP();
             showDamageText(x, y, "+" + totalDamage, true);
             showHealSpark(x, y);
-          } else if (totalDamage > 0) {
-            enemyHP -= totalDamage;
-            updateHPBar();
-            flashEnemyDamage();
-            showDamageText(x, y, "-" + totalDamage);
-            showHitSpark(x, y);
+          } else {
+            if (totalDamage > 0) {
+              enemyHP -= totalDamage;
+              updateHPBar();
+              flashEnemyDamage();
+              showDamageText(x, y, "-" + totalDamage);
+              showHitSpark(x, y);
+            }
+            if (enemyHP > 0) {
+              enemyAttack();
+              launchHeartAttack();
+            }
           }
           pendingDamage = 0;
-          if (enemyHP > 0) {
-            enemyAttack();
-            launchHeartAttack();
-          }
           currentShotType = null;
         }
       }
