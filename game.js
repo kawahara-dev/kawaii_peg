@@ -37,10 +37,12 @@ window.addEventListener('DOMContentLoaded', () => {
   World.add(world, bottomSensor);
 
   let pegs = [];
+  let initialPegCount = 0;
   function generatePegs(count) {
+    initialPegCount = count;
     pegs.forEach((p) => World.remove(world, p));
     pegs = [];
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count - 1; i++) {
       const x = 50 + Math.random() * (width - 100);
       const y = 150 + Math.random() * (height - 250);
       const r = Math.random();
@@ -67,6 +69,14 @@ window.addEventListener('DOMContentLoaded', () => {
       }
       pegs.push(peg);
     }
+    const bx = 50 + Math.random() * (width - 100);
+    const by = 150 + Math.random() * (height - 250);
+    const bluePeg = Bodies.circle(bx, by, 10, {
+      isStatic: true,
+      render: { fillStyle: "#1e90ff" },
+      label: "peg-blue"
+    });
+    pegs.push(bluePeg);
     World.add(world, pegs);
   }
 
@@ -145,7 +155,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const upgradeHpButton = document.getElementById("upgrade-hp");
   const upgradeAtkButton = document.getElementById("upgrade-atk");
   const upgradeMenu = document.getElementById("upgrade-buttons");
-  const progressFill = document.getElementById("progress-fill");
+  const progressIndicator = document.getElementById("progress-indicator");
   const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
   retryButton.style.display = "none";
   retryButton.addEventListener("click", () => location.reload());
@@ -222,8 +232,13 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   function updateProgress() {
-    const percent = Math.max(0, Math.min(100, ((stage - 1) / 5) * 100));
-    progressFill.style.height = `${percent}%`;
+    const steps = 3;
+    const filled = Math.min(stage, steps);
+    const dots = [];
+    for (let i = 1; i <= steps; i++) {
+      dots.push(i <= filled ? "●" : "○");
+    }
+    progressIndicator.textContent = dots.join("→");
   }
 
   function triggerRandomEvent() {
@@ -290,7 +305,7 @@ window.addEventListener('DOMContentLoaded', () => {
             permXP += gained;
             localStorage.setItem("permXP", permXP);
             xpGained.textContent = gained;
-            progressFill.style.height = "100%";
+            updateProgress();
             xpOverlay.style.display = "flex";
           } else {
             rewardOverlay.style.display = "flex";
@@ -575,6 +590,21 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
           explodeBomb(peg, ball);
         }
+      } else if (labels.includes("ball") && labels.includes("peg-blue")) {
+        const peg = pair.bodyA.label === "peg-blue" ? pair.bodyA : pair.bodyB;
+        const ball = pair.bodyA.label === "ball" ? pair.bodyA : pair.bodyB;
+        World.remove(world, peg);
+        let damage = 10;
+        damage *= ball.damageMultiplier || 1;
+        damage *= 1 + atkLevel * 0.1;
+        pendingDamage += damage;
+        showDamageText(peg.position.x, peg.position.y, "+" + pendingDamage, ball.ballType === "heal");
+        if (ball.ballType === "heal") {
+          showHealSpark(peg.position.x, peg.position.y);
+        } else {
+          showHitSpark(peg.position.x, peg.position.y);
+        }
+        generatePegs(initialPegCount);
       } else if (labels.includes("ball") && (labels.includes("peg") || labels.includes("peg-yellow"))) {
         const peg = pair.bodyA.label === "ball" ? pair.bodyB : pair.bodyA;
         const ball = pair.bodyA.label === "ball" ? pair.bodyA : pair.bodyB;
