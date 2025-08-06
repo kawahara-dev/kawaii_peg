@@ -150,6 +150,7 @@ window.addEventListener('DOMContentLoaded', () => {
   function saveSpecialAmmo() {
     localStorage.setItem("specialAmmo", JSON.stringify(specialAmmo));
   }
+  window.addEventListener("beforeunload", saveSpecialAmmo);
   function updateMenu() {
     xpValue.textContent = permXP;
     upgradeHpButton.textContent = `HPアップ Lv${hpLevel} (10XP)`;
@@ -214,6 +215,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   function startStage() {
+    specialAmmo = JSON.parse(localStorage.getItem("specialAmmo") || "[]");
     enemyGirl.src = "enemy_normal.png";
     generatePegs(50 + (stage - 1) * 10);
     maxEnemyHP = 100 + (stage - 1) * 100;
