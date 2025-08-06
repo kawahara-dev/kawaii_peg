@@ -377,6 +377,7 @@ window.addEventListener('DOMContentLoaded', () => {
       enemyAttack();
       ammo = Array(maxAmmo).fill("normal");
       updateAmmo();
+      saveSpecialAmmo();
       reloadOverlay.style.display = "none";
       reloading = false;
     }, 2000);
@@ -468,7 +469,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener("click", (e) => {
       if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" || getComputedStyle(menuOverlay).display !== "none") return;
-      if (ammo.length + specialAmmo.length <= 0) {
+      if (ammo.length <= 0) {
         reload();
         return;
       }
@@ -488,7 +489,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (e.touches.length !== 1) return;
       e.preventDefault();
       if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" || getComputedStyle(menuOverlay).display !== "none") return;
-      if (ammo.length + specialAmmo.length <= 0) {
+      if (ammo.length <= 0) {
         reload();
         return;
       }
