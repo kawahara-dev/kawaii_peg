@@ -295,9 +295,9 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => heart.remove(), 800);
   }
 
-  function showDamageText(x, y, text) {
+  function showDamageText(x, y, text, isHeal = false) {
     const dmg = document.createElement("div");
-    dmg.className = "damage-text";
+    dmg.className = isHeal ? "damage-text heal-text" : "damage-text";
     dmg.textContent = text;
     dmg.style.left = `${x}px`;
     dmg.style.top = `${y}px`;
@@ -308,6 +308,15 @@ window.addEventListener('DOMContentLoaded', () => {
   function showHitSpark(x, y) {
     const spark = document.createElement("div");
     spark.className = "hit-spark";
+    spark.style.left = `${x - 10}px`;
+    spark.style.top = `${y - 10}px`;
+    document.getElementById("game-wrapper").appendChild(spark);
+    setTimeout(() => spark.remove(), 400);
+  }
+
+  function showHealSpark(x, y) {
+    const spark = document.createElement("div");
+    spark.className = "heal-spark";
     spark.style.left = `${x - 10}px`;
     spark.style.top = `${y - 10}px`;
     document.getElementById("game-wrapper").appendChild(spark);
@@ -371,12 +380,16 @@ window.addEventListener('DOMContentLoaded', () => {
         dmg *= ball.damageMultiplier || 1;
         dmg *= 1 + atkLevel * 0.1;
         addedDamage += dmg;
-        showHitSpark(body.position.x, body.position.y);
+        if (ball.ballType === "heal") {
+          showHealSpark(body.position.x, body.position.y);
+        } else {
+          showHitSpark(body.position.x, body.position.y);
+        }
       }
     }
     });
     pendingDamage += addedDamage;
-    showDamageText(x, y, "+" + pendingDamage);
+    showDamageText(x, y, "+" + pendingDamage, ball.ballType === "heal");
     const bx = ball.position.x - x;
     const by = ball.position.y - y;
     const len = Math.sqrt(bx * bx + by * by) || 1;
@@ -497,8 +510,12 @@ window.addEventListener('DOMContentLoaded', () => {
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + atkLevel * 0.1;
         pendingDamage += damage;
-        showDamageText(peg.position.x, peg.position.y, "+" + damage);
-        showHitSpark(peg.position.x, peg.position.y);
+        showDamageText(peg.position.x, peg.position.y, "+" + pendingDamage, ball.ballType === "heal");
+        if (ball.ballType === "heal") {
+          showHealSpark(peg.position.x, peg.position.y);
+        } else {
+          showHitSpark(peg.position.x, peg.position.y);
+        }
       }
       if (labels.includes("ball") && labels.includes("bottom-sensor")) {
         const ball = pair.bodyA.label === "ball" ? pair.bodyA : pair.bodyB;
@@ -510,16 +527,17 @@ window.addEventListener('DOMContentLoaded', () => {
           if (currentShotType === "heal") {
             playerHP = Math.min(playerMaxHP, playerHP + totalDamage);
             updatePlayerHP();
-            showDamageText(x, y, "+" + totalDamage);
+            showDamageText(x, y, "+" + totalDamage, true);
+            showHealSpark(x, y);
           } else {
             enemyHP -= totalDamage;
             updateHPBar();
             flashEnemyDamage();
             showDamageText(x, y, "-" + totalDamage);
+            showHitSpark(x, y);
           }
           pendingDamage = 0;
           enemyAttack();
-          showHitSpark(x, y);
           launchHeartAttack();
           currentShotType = null;
         }
