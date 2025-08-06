@@ -523,13 +523,16 @@ window.addEventListener('DOMContentLoaded', () => {
         World.remove(world, ball);
         currentBalls = currentBalls.filter(b => b !== ball);
         if (currentBalls.length === 0) {
-          const totalDamage = pendingDamage;
+          let totalDamage = pendingDamage;
+          if (currentShotType !== "heal") {
+            totalDamage = Math.min(totalDamage, Math.max(enemyHP, 0));
+          }
           if (currentShotType === "heal") {
             playerHP = Math.min(playerMaxHP, playerHP + totalDamage);
             updatePlayerHP();
             showDamageText(x, y, "+" + totalDamage, true);
             showHealSpark(x, y);
-          } else {
+          } else if (totalDamage > 0) {
             enemyHP -= totalDamage;
             updateHPBar();
             flashEnemyDamage();
@@ -537,8 +540,10 @@ window.addEventListener('DOMContentLoaded', () => {
             showHitSpark(x, y);
           }
           pendingDamage = 0;
-          enemyAttack();
-          launchHeartAttack();
+          if (enemyHP > 0) {
+            enemyAttack();
+            launchHeartAttack();
+          }
           currentShotType = null;
         }
       }
