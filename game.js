@@ -237,8 +237,9 @@ window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         victoryImg.src = defeatImages[Math.floor(Math.random() * defeatImages.length)];
         victoryOverlay.style.display = "flex";
-        setTimeout(() => {
+        const proceed = () => {
           victoryOverlay.style.display = "none";
+          victoryOverlay.removeEventListener("click", proceed);
           if (stage >= 5) {
             const gained = 10;
             permXP += gained;
@@ -248,7 +249,8 @@ window.addEventListener('DOMContentLoaded', () => {
           } else {
             rewardOverlay.style.display = "flex";
           }
-        }, 1000);
+        };
+        victoryOverlay.addEventListener("click", proceed, { once: true });
       }, 200);
     }
   }
