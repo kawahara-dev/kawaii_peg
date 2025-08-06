@@ -481,7 +481,6 @@ window.addEventListener('DOMContentLoaded', () => {
       const type = idx < specialAmmo.length
         ? specialAmmo.splice(idx, 1)[0]
         : ammo.splice(idx - specialAmmo.length, 1)[0];
-      saveSpecialAmmo();
       shootBall(angle, type);
     });
 
@@ -503,7 +502,6 @@ window.addEventListener('DOMContentLoaded', () => {
       const type = idx < specialAmmo.length
         ? specialAmmo.splice(idx, 1)[0]
         : ammo.splice(idx - specialAmmo.length, 1)[0];
-      saveSpecialAmmo();
       shootBall(angle, type);
     });
 
@@ -568,6 +566,7 @@ window.addEventListener('DOMContentLoaded', () => {
           }
           pendingDamage = 0;
           currentShotType = null;
+          saveSpecialAmmo();
         }
       }
     });
