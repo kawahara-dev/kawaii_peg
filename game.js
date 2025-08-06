@@ -381,7 +381,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (enemyHP > 0) {
         enemyAttack();
       }
-      ammo = Array(ownedBalls.length).fill("normal");
+      ammo = ownedBalls.slice();
       updateAmmo();
       reloadOverlay.style.display = "none";
       reloading = false;
