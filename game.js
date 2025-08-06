@@ -127,6 +127,9 @@ window.addEventListener('DOMContentLoaded', () => {
   const victoryOverlay = document.getElementById("victory-overlay");
   const victoryImg = document.getElementById("victory-img");
   const rewardOverlay = document.getElementById("reward-overlay");
+  const eventOverlay = document.getElementById("event-overlay");
+  const eventMessage = document.getElementById("event-message");
+  const eventContinueButton = document.getElementById("event-continue-button");
   const retryButton = document.getElementById("retry-button");
   const gameOverOverlay = document.getElementById("game-over-overlay");
   const gameOverRetryButton = document.getElementById("game-over-retry-button");
@@ -142,6 +145,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const upgradeHpButton = document.getElementById("upgrade-hp");
   const upgradeAtkButton = document.getElementById("upgrade-atk");
   const upgradeMenu = document.getElementById("upgrade-buttons");
+  const progressFill = document.getElementById("progress-fill");
   const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
   retryButton.style.display = "none";
   retryButton.addEventListener("click", () => location.reload());
@@ -213,9 +217,46 @@ window.addEventListener('DOMContentLoaded', () => {
         ownedBalls.push(type);
         ballLevels[type] = 1;
       }
-      startStage();
+      triggerRandomEvent();
     });
   });
+
+  function updateProgress() {
+    const percent = Math.max(0, Math.min(100, ((stage - 1) / 5) * 100));
+    progressFill.style.height = `${percent}%`;
+  }
+
+  function triggerRandomEvent() {
+    const events = ["power", "remove", "duplicate", "heal"];
+    const ev = events[Math.floor(Math.random() * events.length)];
+    if (ev === "power") {
+      const type = ownedBalls[Math.floor(Math.random() * ownedBalls.length)];
+      ballLevels[type] = (ballLevels[type] || 1) + 1;
+      eventMessage.textContent = `${type}ボールがパワーアップしたよ！`;
+    } else if (ev === "remove") {
+      if (ownedBalls.length > 1) {
+        const idx = Math.floor(Math.random() * ownedBalls.length);
+        const removed = ownedBalls.splice(idx, 1)[0];
+        eventMessage.textContent = `${removed}ボールが消えちゃった…`;
+      } else {
+        eventMessage.textContent = `何も起こらなかった…`;
+      }
+    } else if (ev === "duplicate") {
+      const type = ownedBalls[Math.floor(Math.random() * ownedBalls.length)];
+      ownedBalls.push(type);
+      eventMessage.textContent = `${type}ボールが増えたよ！`;
+    } else if (ev === "heal") {
+      const heal = 20;
+      playerHP = Math.min(playerMaxHP, playerHP + heal);
+      updatePlayerHP();
+      eventMessage.textContent = `HPが${heal}回復したよ！`;
+    }
+    eventOverlay.style.display = "flex";
+    eventContinueButton.onclick = () => {
+      eventOverlay.style.display = "none";
+      startStage();
+    };
+  }
 
   function startStage() {
     enemyGirl.src = "enemy_normal.png";
@@ -229,6 +270,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateHPBar();
     updateAmmo();
     stageValue.textContent = stage;
+    updateProgress();
   }
 
   function updateHPBar() {
@@ -248,6 +290,7 @@ window.addEventListener('DOMContentLoaded', () => {
             permXP += gained;
             localStorage.setItem("permXP", permXP);
             xpGained.textContent = gained;
+            progressFill.style.height = "100%";
             xpOverlay.style.display = "flex";
           } else {
             rewardOverlay.style.display = "flex";
@@ -420,7 +463,7 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener("mousemove", (e) => {
       if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
         getComputedStyle(menuOverlay).display !== "none" || getComputedStyle(victoryOverlay).display !== "none" ||
-        getComputedStyle(xpOverlay).display !== "none") return;
+        getComputedStyle(xpOverlay).display !== "none" || getComputedStyle(eventOverlay).display !== "none") return;
       const rect = aimSvg.getBoundingClientRect();
       const dx = e.clientX - rect.left - firePoint.x;
       const dy = e.clientY - rect.top - firePoint.y;
@@ -433,7 +476,7 @@ window.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
           getComputedStyle(menuOverlay).display !== "none" || getComputedStyle(victoryOverlay).display !== "none" ||
-          getComputedStyle(xpOverlay).display !== "none") return;
+          getComputedStyle(xpOverlay).display !== "none" || getComputedStyle(eventOverlay).display !== "none") return;
         const touch = e.touches[0];
         const rect = aimSvg.getBoundingClientRect();
         const dx = touch.clientX - rect.left - firePoint.x;
@@ -486,7 +529,7 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener("click", (e) => {
       if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
         getComputedStyle(menuOverlay).display !== "none" || getComputedStyle(victoryOverlay).display !== "none" ||
-        getComputedStyle(xpOverlay).display !== "none") return;
+        getComputedStyle(xpOverlay).display !== "none" || getComputedStyle(eventOverlay).display !== "none") return;
       if (ammo.length <= 0) {
         reload();
         return;
@@ -505,7 +548,7 @@ window.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
         getComputedStyle(menuOverlay).display !== "none" || getComputedStyle(victoryOverlay).display !== "none" ||
-        getComputedStyle(xpOverlay).display !== "none") return;
+        getComputedStyle(xpOverlay).display !== "none" || getComputedStyle(eventOverlay).display !== "none") return;
       if (ammo.length <= 0) {
         reload();
         return;
