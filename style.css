@@ -343,6 +343,46 @@ canvas {
   font-weight: bold;
   z-index: 40;
 }
+#event-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  text-align: center;
+}
+#event-overlay button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #ff69b4;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#progress-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  background: #ddd;
+  z-index: 2;
+}
+#progress-fill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  background: #ff69b4;
+}
 #retry-button {
   margin-top: 20px;
   padding: 10px 20px;
