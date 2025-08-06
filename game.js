@@ -157,6 +157,18 @@ window.addEventListener('DOMContentLoaded', () => {
   const upgradeAtkButton = document.getElementById("upgrade-atk");
   const upgradeMenu = document.getElementById("upgrade-buttons");
   const progressIndicator = document.getElementById("progress-indicator");
+  const progressSteps = [
+    "ステージ1",
+    "ランダムイベント",
+    "ステージ2",
+    "ランダムイベント",
+    "ステージ3",
+    "ランダムイベント",
+    "ステージ4",
+    "ランダムイベント",
+    "ステージ5"
+  ];
+  let progressIndex = 0;
   const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
   retryButton.style.display = "none";
   retryButton.addEventListener("click", () => location.reload());
@@ -232,24 +244,36 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  function updateProgress() {
-    const steps = 3;
-    const filled = Math.min(stage, steps);
-    const dots = [];
-    for (let i = 1; i <= steps; i++) {
-      dots.push(i <= filled ? "●" : "○");
+    function updateProgress() {
+      progressIndicator.innerHTML = "";
+      progressSteps.forEach((step, idx) => {
+        const span = document.createElement("span");
+        span.textContent = step;
+        span.classList.add("progress-step");
+        if (idx < progressIndex) {
+          span.classList.add("done");
+        } else if (idx === progressIndex) {
+          span.classList.add("current");
+        }
+        progressIndicator.appendChild(span);
+        if (idx < progressSteps.length - 1) {
+          const arrow = document.createElement("span");
+          arrow.textContent = "→";
+          progressIndicator.appendChild(arrow);
+        }
+      });
     }
-    progressIndicator.textContent = dots.join("→");
-  }
 
-  function triggerRandomEvent() {
-    const events = ["power", "remove", "duplicate", "heal"];
-    const bgColors = [
-      "rgba(255, 255, 255, 0.9)",
-      "rgba(255, 228, 225, 0.9)",
-      "rgba(240, 255, 255, 0.9)",
-      "rgba(255, 240, 245, 0.9)"
-    ];
+    function triggerRandomEvent() {
+      progressIndex = (stage - 1) * 2 - 1;
+      updateProgress();
+      const events = ["power", "remove", "duplicate", "heal"];
+      const bgColors = [
+        "rgba(255, 255, 255, 0.9)",
+        "rgba(255, 228, 225, 0.9)",
+        "rgba(240, 255, 255, 0.9)",
+        "rgba(255, 240, 245, 0.9)"
+      ];
     eventOverlay.style.background = bgColors[Math.floor(Math.random() * bgColors.length)];
     eventTitle.textContent = "ランダムイベント発生☆";
     const ev = events[Math.floor(Math.random() * events.length)];
@@ -283,20 +307,21 @@ window.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  function startStage() {
-    enemyGirl.src = "enemy_normal.png";
-    generatePegs(50 + (stage - 1) * 10);
-    maxEnemyHP = 100 + (stage - 1) * 100;
-    enemyHP = maxEnemyHP;
-    pendingDamage = 0;
-    currentBalls = [];
-    currentShotType = null;
-    ammo = ownedBalls.slice();
-    updateHPBar();
-    updateAmmo();
-    stageValue.textContent = stage;
-    updateProgress();
-  }
+    function startStage() {
+      enemyGirl.src = "enemy_normal.png";
+      generatePegs(50 + (stage - 1) * 10);
+      maxEnemyHP = 100 + (stage - 1) * 100;
+      enemyHP = maxEnemyHP;
+      pendingDamage = 0;
+      currentBalls = [];
+      currentShotType = null;
+      ammo = ownedBalls.slice();
+      updateHPBar();
+      updateAmmo();
+      stageValue.textContent = stage;
+      progressIndex = (stage - 1) * 2;
+      updateProgress();
+    }
 
   function updateHPBar() {
     const percent = Math.max(0, (enemyHP / maxEnemyHP) * 100);
