@@ -75,6 +75,9 @@ html, body {
   color: #ff1493;
   margin-top: 4px;
 }
+.ammo-value {
+  display: inline-block;
+}
 #stage-text {
   font-size: 20px;
   font-weight: bold;
@@ -89,6 +92,19 @@ html, body {
   background: #00bfff;
   border: 1px solid #ff69b4;
   margin-right: 4px;
+  position: relative;
+}
+
+.level-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff1493;
+  color: #fff;
+  font-size: 10px;
+  border-radius: 50%;
+  padding: 0 3px;
+  line-height: 1;
 }
 .hp-container {
   display: flex;

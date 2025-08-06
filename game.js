@@ -109,12 +109,19 @@ window.addEventListener('DOMContentLoaded', () => {
   const maxAmmo = 3;
   let ammo = [];
   let ownedBalls = JSON.parse(localStorage.getItem("ownedBalls") || "[]");
+  ownedBalls = Array.from(new Set(ownedBalls));
   let deck = JSON.parse(localStorage.getItem("deck") || "[]");
+  let ballLevels = JSON.parse(localStorage.getItem("ballLevels") || "{}");
   if (deck.length === 0) deck = Array(maxAmmo).fill("normal");
   while (deck.length < maxAmmo) deck.push("normal");
+  if (!ballLevels["normal"]) ballLevels["normal"] = 1;
+  ownedBalls.forEach(type => {
+    if (!ballLevels[type]) ballLevels[type] = 1;
+  });
   function saveDeckData() {
     localStorage.setItem("ownedBalls", JSON.stringify(ownedBalls));
     localStorage.setItem("deck", JSON.stringify(deck));
+    localStorage.setItem("ballLevels", JSON.stringify(ballLevels));
   }
   saveDeckData();
   let reloading = false;
@@ -269,7 +276,12 @@ window.addEventListener('DOMContentLoaded', () => {
       rewardOverlay.style.display = "none";
       stage++;
       if (stage > 5) stage = 5;
-      ownedBalls.push(type);
+      if (ownedBalls.includes(type)) {
+        ballLevels[type] = (ballLevels[type] || 1) + 1;
+      } else {
+        ownedBalls.push(type);
+        ballLevels[type] = 1;
+      }
       saveDeckData();
       startStage();
     });
@@ -344,6 +356,10 @@ window.addEventListener('DOMContentLoaded', () => {
       if (type === "split") icon.style.background = "#dda0dd";
       else if (type === "heal") icon.style.background = "#90ee90";
       else if (type === "big") icon.style.background = "#ffa500";
+      const badge = document.createElement("span");
+      badge.className = "level-badge";
+      badge.textContent = ballLevels[type] || 1;
+      icon.appendChild(badge);
       ammoValue.appendChild(icon);
     });
   }
@@ -491,30 +507,35 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function shootBall(angle, type) {
       const power = 10;
+      const lvl = ballLevels[type] || 1;
+      const dmgMul = 1 + (lvl - 1) * 0.2;
+      const sizeMul = 1 + (lvl - 1) * 0.1;
       if (type === "split") {
         const offset = 0.2;
+        const radius = 15 * sizeMul;
         for (let i = -1; i <= 1; i += 2) {
           const a = angle + i * offset;
-          const ball = Bodies.circle(firePoint.x, firePoint.y, 15, {
+          const ball = Bodies.circle(firePoint.x, firePoint.y, radius, {
             restitution: 0.9,
             render: { fillStyle: "#dda0dd" },
             label: "ball"
           });
-          ball.damageMultiplier = 0.5;
+          ball.damageMultiplier = 0.5 * dmgMul;
           ball.ballType = "split";
           Body.setVelocity(ball, { x: Math.cos(a) * power, y: Math.sin(a) * power });
           World.add(world, ball);
           currentBalls.push(ball);
         }
       } else {
-        const radius = type === "big" ? 30 : 15;
+        const base = type === "big" ? 30 : 15;
+        const radius = base * sizeMul;
         const color = type === "big" ? "#ffa500" : (type === "heal" ? "#90ee90" : "#00bfff");
         const ball = Bodies.circle(firePoint.x, firePoint.y, radius, {
           restitution: 0.9,
           render: { fillStyle: color },
           label: "ball"
         });
-        ball.damageMultiplier = 1;
+        ball.damageMultiplier = dmgMul;
         ball.ballType = type;
         Body.setVelocity(ball, { x: Math.cos(angle) * power, y: Math.sin(angle) * power });
         World.add(world, ball);
