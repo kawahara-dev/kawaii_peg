@@ -418,6 +418,9 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
     window.addEventListener("mousemove", (e) => {
+      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
+        getComputedStyle(menuOverlay).display !== "none" || getComputedStyle(victoryOverlay).display !== "none" ||
+        getComputedStyle(xpOverlay).display !== "none") return;
       const rect = aimSvg.getBoundingClientRect();
       const dx = e.clientX - rect.left - firePoint.x;
       const dy = e.clientY - rect.top - firePoint.y;
@@ -428,6 +431,9 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener("touchmove", (e) => {
       if (e.touches.length === 1) {
         e.preventDefault();
+        if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
+          getComputedStyle(menuOverlay).display !== "none" || getComputedStyle(victoryOverlay).display !== "none" ||
+          getComputedStyle(xpOverlay).display !== "none") return;
         const touch = e.touches[0];
         const rect = aimSvg.getBoundingClientRect();
         const dx = touch.clientX - rect.left - firePoint.x;
@@ -478,7 +484,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener("click", (e) => {
-      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" || getComputedStyle(menuOverlay).display !== "none") return;
+      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
+        getComputedStyle(menuOverlay).display !== "none" || getComputedStyle(victoryOverlay).display !== "none" ||
+        getComputedStyle(xpOverlay).display !== "none") return;
       if (ammo.length <= 0) {
         reload();
         return;
@@ -495,7 +503,9 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener("touchstart", (e) => {
       if (e.touches.length !== 1) return;
       e.preventDefault();
-      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" || getComputedStyle(menuOverlay).display !== "none") return;
+      if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
+        getComputedStyle(menuOverlay).display !== "none" || getComputedStyle(victoryOverlay).display !== "none" ||
+        getComputedStyle(xpOverlay).display !== "none") return;
       if (ammo.length <= 0) {
         reload();
         return;
