@@ -497,7 +497,7 @@ window.addEventListener('DOMContentLoaded', () => {
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + atkLevel * 0.1;
         pendingDamage += damage;
-        showDamageText(peg.position.x, peg.position.y, "+" + pendingDamage);
+        showDamageText(peg.position.x, peg.position.y, "+" + damage);
         showHitSpark(peg.position.x, peg.position.y);
       }
       if (labels.includes("ball") && labels.includes("bottom-sensor")) {
