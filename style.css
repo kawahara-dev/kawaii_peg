@@ -354,6 +354,14 @@ canvas {
   z-index: 50;
 }
 
+#game-title {
+  font-family: "Pacifico", cursive;
+  font-size: 64px;
+  color: #ff1493;
+  text-shadow: 3px 3px 0 #fff, 6px 6px 0 #ff69b4;
+  margin: 0 0 20px;
+}
+
 #main-menu {
   display: flex;
   flex-direction: column;
