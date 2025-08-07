@@ -383,7 +383,7 @@ canvas {
 #progress-indicator {
   position: absolute;
   left: 10px;
-  top: 10px;
+  top: 90px;
   z-index: 2;
   list-style: none;
   display: flex;
