@@ -384,28 +384,55 @@ canvas {
   position: absolute;
   left: 10px;
   top: 10px;
-  font-size: 18px;
-  color: #ff69b4;
   z-index: 2;
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+#progress-indicator li {
   display: flex;
   align-items: center;
-  gap: 4px;
- }
+}
 
- .progress-step {
-  padding: 2px 6px;
-  border-radius: 4px;
- }
+#progress-indicator li:not(:last-child) {
+  width: 100%;
+}
 
- .progress-step.done {
-  opacity: 0.3;
- }
+#progress-indicator li:not(:last-child)::after {
+  content: '';
+  flex-grow: 1;
+  height: 2px;
+  background: #ccc;
+  margin-left: 4px;
+}
 
- .progress-step.current {
+#progress-indicator li.done:not(:last-child)::after {
   background: #ff69b4;
-  color: #fff;
+}
+
+.step-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #fff;
+  border: 2px solid #ccc;
+  color: #ccc;
   font-weight: bold;
- }
+  font-size: 12px;
+}
+
+#progress-indicator li.done .step-circle,
+#progress-indicator li.current .step-circle {
+  background: #ff69b4;
+  border-color: #ff69b4;
+  color: #fff;
+}
 #retry-button {
   margin-top: 20px;
   padding: 10px 20px;
