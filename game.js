@@ -247,20 +247,21 @@ window.addEventListener('DOMContentLoaded', () => {
     function updateProgress() {
       progressIndicator.innerHTML = "";
       progressSteps.forEach((step, idx) => {
-        const span = document.createElement("span");
-        span.textContent = step;
-        span.classList.add("progress-step");
+        const li = document.createElement("li");
         if (idx < progressIndex) {
-          span.classList.add("done");
+          li.classList.add("done");
         } else if (idx === progressIndex) {
-          span.classList.add("current");
+          li.classList.add("current");
         }
-        progressIndicator.appendChild(span);
-        if (idx < progressSteps.length - 1) {
-          const arrow = document.createElement("span");
-          arrow.textContent = "→";
-          progressIndicator.appendChild(arrow);
+        const circle = document.createElement("span");
+        circle.classList.add("step-circle");
+        if (idx < progressIndex) {
+          circle.innerHTML = "&#10003;";
+        } else {
+          circle.textContent = idx + 1;
         }
+        li.appendChild(circle);
+        progressIndicator.appendChild(li);
       });
     }
 
