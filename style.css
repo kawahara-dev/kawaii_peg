@@ -382,56 +382,64 @@ canvas {
 }
 #progress-indicator {
   position: absolute;
-  left: 10px;
-  top: 90px;
-  z-index: 2;
+  right: 16px;
+  top: 16px;
+  left: auto;
+  z-index: 10;
   list-style: none;
   display: flex;
-  padding: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
   margin: 0;
+  background: rgba(255, 255, 255, 0.8);
+  border: 2px solid #ff69b4;
+  border-radius: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
 }
 
 #progress-indicator li {
   display: flex;
   align-items: center;
-}
-
-#progress-indicator li:not(:last-child) {
-  width: 100%;
+  position: relative;
 }
 
 #progress-indicator li:not(:last-child)::after {
   content: '';
-  flex-grow: 1;
+  width: 24px;
   height: 2px;
   background: #ccc;
-  margin-left: 4px;
+  margin-left: 8px;
+  border-radius: 1px;
 }
 
 #progress-indicator li.done:not(:last-child)::after {
-  background: #ff69b4;
+  background: linear-gradient(90deg, #ff69b4, #ff1493);
 }
 
 .step-circle {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   background: #fff;
-  border: 2px solid #ccc;
-  color: #ccc;
+  border: 2px solid #ddd;
+  color: #999;
   font-weight: bold;
   font-size: 12px;
+  transition: all 0.3s;
 }
 
 #progress-indicator li.done .step-circle,
 #progress-indicator li.current .step-circle {
-  background: #ff69b4;
-  border-color: #ff69b4;
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  border-color: transparent;
   color: #fff;
+  box-shadow: 0 0 6px rgba(255, 105, 180, 0.6);
 }
 #retry-button {
   margin-top: 20px;
