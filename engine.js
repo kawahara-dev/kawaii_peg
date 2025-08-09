@@ -262,7 +262,8 @@ export function setupCollisionHandler() {
         const coin = pair.bodyA.label === 'coin' ? pair.bodyA : pair.bodyB;
         World.remove(world, coin);
         pegs = pegs.filter(p => p !== coin);
-        playerState.coins += 1;
+        const gain = enemyState.stage;
+        playerState.coins += gain;
         localStorage.setItem('coins', playerState.coins);
         updateCoins();
       } else if (labels.includes('ball') && (labels.includes('peg') || labels.includes('peg-yellow'))) {
