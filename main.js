@@ -327,8 +327,8 @@ window.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const type = btn.dataset.type;
-      if (!playerState.ownedBalls.includes(type)) {
-        playerState.ownedBalls.push(type);
+      playerState.ownedBalls.push(type);
+      if (!playerState.ballLevels[type]) {
         playerState.ballLevels[type] = 1;
       }
       rewardOverlay.style.display = 'none';
