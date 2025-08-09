@@ -452,6 +452,10 @@ canvas {
   color: #fff;
   box-shadow: 0 0 6px rgba(255, 105, 180, 0.6);
 }
+
+#progress-indicator li.current .step-circle {
+  animation: pulse 1s infinite;
+}
 #retry-button {
   margin-top: 20px;
   padding: 10px 20px;
@@ -574,5 +578,17 @@ canvas {
   color: #ff1493;
   cursor: pointer;
   border-radius: 8px;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
