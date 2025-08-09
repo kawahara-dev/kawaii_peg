@@ -30,6 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const eventContinue = document.getElementById('event-continue-button');
   const gameOverOverlay = document.getElementById('game-over-overlay');
   const gameOverRetry = document.getElementById('game-over-retry-button');
+  const reloadOverlay = document.getElementById('reload-overlay');
 
   const showOverlay = (overlay) => {
     overlay.style.display = 'flex';
@@ -46,6 +47,18 @@ window.addEventListener('DOMContentLoaded', () => {
   showOverlay(menuOverlay);
 
   let aimTimer;
+
+  const startReload = () => {
+    reloadOverlay.style.display = 'flex';
+    playerState.reloading = true;
+    setTimeout(() => {
+      playerState.ammo = playerState.ownedBalls.slice();
+      reloadOverlay.style.display = 'none';
+      updateAmmo();
+      enemyState.selectNextBall();
+      playerState.reloading = false;
+    }, 1000);
+  };
 
   startButton.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -151,8 +164,9 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('click', (e) => {
-    if (playerState.currentBalls.length > 0 || enemyState.gameOver) return;
+    if (playerState.currentBalls.length > 0 || enemyState.gameOver || playerState.reloading) return;
     if (playerState.ammo.length <= 0) {
+      startReload();
       return;
     }
     const rect = document.getElementById('aim-svg').getBoundingClientRect();
