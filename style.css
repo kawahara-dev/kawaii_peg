@@ -461,8 +461,7 @@ canvas {
   transition: all 0.3s;
 }
 
-#progress-indicator li.done .step-circle,
-#progress-indicator li.current .step-circle {
+#progress-indicator li.done .step-circle {
   background: linear-gradient(135deg, #ff69b4, #ff1493);
   border-color: transparent;
   color: #fff;
@@ -470,6 +469,10 @@ canvas {
 }
 
 #progress-indicator li.current .step-circle {
+  background: linear-gradient(135deg, #ffd700, #ffa500);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
   animation: pulse 1s infinite;
 }
 #retry-button {
