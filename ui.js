@@ -24,12 +24,13 @@ export function updateHPBar(enemyState) {
   hpText.textContent = `${enemyState.enemyHP}`;
   hpDisplay.textContent = `${enemyState.enemyHP} / ${enemyState.maxEnemyHP}`;
   if (enemyState.enemyHP <= 0 && !enemyState.gameOver) {
+    enemyState.gameOver = true;
     setTimeout(() => {
       victoryImg.src = enemyState.defeatImages[Math.floor(Math.random() * enemyState.defeatImages.length)];
       victoryOverlay.style.display = 'flex';
       const proceed = () => {
         victoryOverlay.style.display = 'none';
-        victoryOverlay.removeEventListener('click', proceed);
+        enemyState.gameOver = false;
         if (enemyState.stage >= 5) {
           const gained = 10;
           playerState.permXP += gained;
@@ -41,7 +42,7 @@ export function updateHPBar(enemyState) {
           rewardOverlay.style.display = 'flex';
         }
       };
-      victoryOverlay.addEventListener('click', proceed, { once: true });
+      victoryOverlay.addEventListener('click', (e) => { e.stopPropagation(); proceed(); }, { once: true });
     }, 200);
   }
 }
