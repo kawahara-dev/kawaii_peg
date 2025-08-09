@@ -119,6 +119,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let ammo = [];
   let ownedBalls = [];
   let ballLevels = { normal: 1 };
+  let nextBall = null;
   let reloading = false;
 
   let permXP = parseInt(localStorage.getItem("permXP") || "0");
@@ -132,6 +133,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const playerHpMaxText = document.getElementById("player-hp-max");
   const playerHpFill = document.getElementById("player-hp-fill");
   const ammoValue = document.getElementById("ammo-value");
+  const currentBallEl = document.getElementById("current-ball");
   const stageValue = document.getElementById("stage-value");
   const enemyGirl = document.getElementById("enemy-girl");
   const victoryOverlay = document.getElementById("victory-overlay");
@@ -325,6 +327,7 @@ window.addEventListener('DOMContentLoaded', () => {
       ammo = ownedBalls.slice();
       updateHPBar();
       updateAmmo();
+      selectNextBall();
       stageValue.textContent = stage;
       progressIndex = (stage - 1) * 2;
       updateProgress();
@@ -386,12 +389,54 @@ window.addEventListener('DOMContentLoaded', () => {
       if (type === "split") icon.style.background = "#dda0dd";
       else if (type === "heal") icon.style.background = "#90ee90";
       else if (type === "big") icon.style.background = "#ffa500";
-      const badge = document.createElement("span");
-      badge.className = "level-badge";
-      badge.textContent = ballLevels[type] || 1;
-      icon.appendChild(badge);
+      const lvl = ballLevels[type] || 1;
+      if (lvl > 1) {
+        const badge = document.createElement("span");
+        badge.className = "level-badge";
+        badge.textContent = `+${lvl - 1}`;
+        icon.appendChild(badge);
+      }
       ammoValue.appendChild(icon);
     });
+  }
+
+  function updateCurrentBall() {
+    if (!nextBall) {
+      currentBallEl.style.display = "none";
+      currentBallEl.innerHTML = "";
+      return;
+    }
+    const lvl = ballLevels[nextBall] || 1;
+    const sizeMul = 1 + (lvl - 1) * 0.1;
+    const base = nextBall === "big" ? 30 : 15;
+    const radius = base * sizeMul;
+    let color = "#00bfff";
+    if (nextBall === "split") color = "#dda0dd";
+    else if (nextBall === "heal") color = "#90ee90";
+    else if (nextBall === "big") color = "#ffa500";
+    currentBallEl.style.width = `${radius * 2}px`;
+    currentBallEl.style.height = `${radius * 2}px`;
+    currentBallEl.style.left = `${firePoint.x}px`;
+    currentBallEl.style.top = `${firePoint.y}px`;
+    currentBallEl.style.background = color;
+    currentBallEl.style.display = "block";
+    currentBallEl.innerHTML = "";
+    if (lvl > 1) {
+      const badge = document.createElement("span");
+      badge.className = "level-badge";
+      badge.textContent = `+${lvl - 1}`;
+      currentBallEl.appendChild(badge);
+    }
+  }
+
+  function selectNextBall() {
+    if (ammo.length > 0) {
+      const idx = Math.floor(Math.random() * ammo.length);
+      nextBall = ammo[idx];
+    } else {
+      nextBall = null;
+    }
+    updateCurrentBall();
   }
 
   function flashEnemyDamage() {
@@ -483,6 +528,7 @@ window.addEventListener('DOMContentLoaded', () => {
       }
       ammo = ownedBalls.slice();
       updateAmmo();
+      selectNextBall();
       reloadOverlay.style.display = "none";
       reloading = false;
     }, 2000);
@@ -577,11 +623,12 @@ window.addEventListener('DOMContentLoaded', () => {
         ball.ballType = type;
         Body.setVelocity(ball, { x: Math.cos(angle) * power, y: Math.sin(angle) * power });
         World.add(world, ball);
-        currentBalls.push(ball);
-      }
-      currentShotType = type;
-      updateAmmo();
+      currentBalls.push(ball);
     }
+    currentShotType = type;
+    updateAmmo();
+    selectNextBall();
+  }
 
     window.addEventListener("click", (e) => {
       if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
@@ -595,8 +642,9 @@ window.addEventListener('DOMContentLoaded', () => {
       const dx = e.clientX - rect.left - firePoint.x;
       const dy = e.clientY - rect.top - firePoint.y;
       const angle = Math.atan2(dy, dx);
-      const idx = Math.floor(Math.random() * ammo.length);
-      const type = ammo.splice(idx, 1)[0];
+      const type = nextBall;
+      const idx = ammo.indexOf(type);
+      if (idx !== -1) ammo.splice(idx, 1);
       shootBall(angle, type);
     });
 
@@ -615,8 +663,9 @@ window.addEventListener('DOMContentLoaded', () => {
       const dx = touch.clientX - rect.left - firePoint.x;
       const dy = touch.clientY - rect.top - firePoint.y;
       const angle = Math.atan2(dy, dx);
-      const idx = Math.floor(Math.random() * ammo.length);
-      const type = ammo.splice(idx, 1)[0];
+      const type = nextBall;
+      const idx = ammo.indexOf(type);
+      if (idx !== -1) ammo.splice(idx, 1);
       shootBall(angle, type);
     });
 
