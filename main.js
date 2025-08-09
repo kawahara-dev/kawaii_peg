@@ -23,6 +23,23 @@ const randomEvents = [
     ]
   },
   {
+    text: '怪しいパワーストーン✨どのボールを強化する？',
+    // choices can be dynamic based on owned ball types
+    choices() {
+      const types = [...new Set(playerState.ownedBalls)];
+      const opts = types.map(type => ({
+        label: `${type}ボール強化する〜`,
+        apply() {
+          playerState.ballLevels[type] = (playerState.ballLevels[type] || 1) + 1;
+          updateAmmo();
+          updateCurrentBall(firePoint);
+        }
+      }));
+      opts.push({ label: 'やっぱパス', apply() {} });
+      return opts;
+    }
+  },
+  {
     text: 'トゲトゲの罠があるっぽい…',
     choices: [
       {
@@ -129,7 +146,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
     eventMessage.textContent = ev.text;
     eventOptions.innerHTML = '';
-    ev.choices.forEach(choice => {
+    const choices = typeof ev.choices === 'function' ? ev.choices() : ev.choices;
+    choices.forEach(choice => {
       const btn = document.createElement('button');
       btn.textContent = choice.label;
       btn.addEventListener('click', e => {
