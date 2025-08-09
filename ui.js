@@ -33,8 +33,10 @@ export function updateHPBar(enemyState) {
   hpDisplay.textContent = `${hp} / ${enemyState.maxEnemyHP}`;
   if (enemyState.enemyHP <= 0 && !enemyState.gameOver) {
     enemyState.gameOver = true;
-    playerState.coins += enemyState.stage * 3;
+    const coinsEarned = enemyState.stage * 3;
+    playerState.coins += coinsEarned;
     updateCoins();
+    document.getElementById('reward-coin-value').textContent = coinsEarned;
     localStorage.setItem('coins', playerState.coins);
     setTimeout(() => {
       victoryImg.src = enemyState.defeatImages[Math.floor(Math.random() * enemyState.defeatImages.length)];
