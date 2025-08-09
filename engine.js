@@ -225,7 +225,7 @@ export function setupCollisionHandler() {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         if (!peg.bombHits) {
           peg.bombHits = 1;
-          peg.render.fillStyle = '#ff4500';
+          peg.render.sprite.texture = './image/bomb_2.png';
         } else {
           explodeBomb(peg, ball);
         }
