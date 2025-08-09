@@ -87,9 +87,9 @@ export function generatePegs(count) {
         isStatic: true,
         render: {
           sprite: {
-            texture: './image/bomb.svg',
-            xScale: 0.3,
-            yScale: 0.3
+            texture: './image/bomb.png',
+            xScale: 0.06,
+            yScale: 0.06
           }
         },
         label: 'peg-bomb'
