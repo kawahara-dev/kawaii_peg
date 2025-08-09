@@ -177,15 +177,21 @@ export function updateCurrentBall(firePoint) {
   const sizeMul = 1 + (lvl - 1) * 0.1;
   const base = playerState.nextBall === 'big' ? 30 : 15;
   const radius = base * sizeMul;
-  let color = '#00bfff';
-  if (playerState.nextBall === 'split') color = '#dda0dd';
-  else if (playerState.nextBall === 'heal') color = '#90ee90';
-  else if (playerState.nextBall === 'big') color = '#ffa500';
   currentBallEl.style.width = `${radius * 2}px`;
   currentBallEl.style.height = `${radius * 2}px`;
   currentBallEl.style.left = `${firePoint.x}px`;
   currentBallEl.style.top = `${firePoint.y}px`;
-  currentBallEl.style.background = color;
+  if (playerState.nextBall === 'heal') {
+    currentBallEl.style.backgroundImage = 'url("./image/recovery_ball.png")';
+    currentBallEl.style.backgroundSize = 'cover';
+    currentBallEl.style.backgroundColor = 'transparent';
+  } else {
+    let color = '#00bfff';
+    if (playerState.nextBall === 'split') color = '#dda0dd';
+    else if (playerState.nextBall === 'big') color = '#ffa500';
+    currentBallEl.style.backgroundImage = '';
+    currentBallEl.style.background = color;
+  }
   currentBallEl.style.display = 'block';
   currentBallEl.innerHTML = '';
   if (lvl > 1) {
