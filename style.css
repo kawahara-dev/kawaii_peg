@@ -608,16 +608,6 @@ canvas {
   box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
   animation: pulse 1s infinite;
 }
-#retry-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 20px;
-  border: 2px solid #ff69b4;
-  background: #fff;
-  color: #ff1493;
-  cursor: pointer;
-  display: block;
-}
 #version-history {
   width: 100%;
   max-width: 1280px;
