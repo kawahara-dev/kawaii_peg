@@ -623,12 +623,13 @@ window.addEventListener('DOMContentLoaded', () => {
         ball.ballType = type;
         Body.setVelocity(ball, { x: Math.cos(angle) * power, y: Math.sin(angle) * power });
         World.add(world, ball);
-      currentBalls.push(ball);
+        currentBalls.push(ball);
+      }
+      currentShotType = type;
+      updateAmmo();
+      nextBall = null;
+      updateCurrentBall();
     }
-    currentShotType = type;
-    updateAmmo();
-    selectNextBall();
-  }
 
     window.addEventListener("click", (e) => {
       if (currentBalls.length > 0 || gameOver || getComputedStyle(rewardOverlay).display !== "none" ||
@@ -745,6 +746,7 @@ window.addEventListener('DOMContentLoaded', () => {
           }
           pendingDamage = 0;
           currentShotType = null;
+          selectNextBall();
         }
       }
     });
