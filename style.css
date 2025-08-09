@@ -614,15 +614,27 @@ canvas {
   margin-top: 20px;
 }
 
-#upgrade-buttons button {
-  margin: 5px 0;
-  padding: 10px 20px;
-  border: 2px solid #ff69b4;
-  background: #fff;
-  color: #ff1493;
-  cursor: pointer;
-  border-radius: 8px;
-}
+  #upgrade-buttons button {
+    margin: 5px 0;
+    padding: 10px 20px;
+    border: 2px solid #ff69b4;
+    background: #fff;
+    color: #ff1493;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  #credit-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border: 2px solid #ff69b4;
+    background: #fff;
+    color: #ff1493;
+    cursor: pointer;
+    border-radius: 8px;
+  }
 
 #xp-overlay {
   position: absolute;
@@ -638,15 +650,46 @@ canvas {
   z-index: 30;
 }
 
-#xp-overlay button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  border: 2px solid #ff69b4;
-  background: #fff;
-  color: #ff1493;
-  cursor: pointer;
-  border-radius: 8px;
-}
+  #xp-overlay button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: 2px solid #ff69b4;
+    background: #fff;
+    color: #ff1493;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  #credit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+
+  #credit-overlay.show {
+    display: flex;
+    opacity: 1;
+  }
+
+  #credit-overlay button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: 2px solid #ff69b4;
+    background: #fff;
+    color: #ff1493;
+    cursor: pointer;
+    border-radius: 8px;
+  }
 
 @keyframes pulse {
   from {
