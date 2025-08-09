@@ -322,22 +322,31 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 #reward-coins img {
   width: 24px;
   height: 24px;
   margin-right: 8px;
 }
+#reward-message {
+  margin: 0 0 15px;
+}
+#reward-buttons {
+  display: flex;
+  gap: 20px;
+}
 .reward-button {
-  margin: 10px;
-  padding: 10px 20px;
+  width: 60px;
+  height: 60px;
   background: #ff69b4;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 32px;
+  line-height: 60px;
+  text-align: center;
 }
 #game-over-overlay {
   position: absolute;
