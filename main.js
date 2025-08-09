@@ -75,6 +75,9 @@ const randomEvents = [
         label: '拾っちゃお🎀',
         apply() {
           playerState.ownedBalls.push('normal');
+          playerState.ammo = playerState.ownedBalls.slice();
+          updateAmmo();
+          updateCurrentBall(firePoint);
         },
         result: 'ノーマルボールゲットだよ☆'
       },
@@ -331,6 +334,9 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!playerState.ballLevels[type]) {
         playerState.ballLevels[type] = 1;
       }
+      playerState.ammo = playerState.ownedBalls.slice();
+      updateAmmo();
+      updateCurrentBall(firePoint);
       rewardOverlay.style.display = 'none';
       triggerRandomEvent();
     });

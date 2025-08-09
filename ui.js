@@ -1,6 +1,7 @@
 import { playerState } from './player.js';
 import { handleShoot } from './main.js';
 import { healBallPath } from './constants.js';
+import { firePoint } from './engine.js';
 
 const hpFill = document.getElementById('hp-fill');
 const hpText = document.getElementById('hp-text');
@@ -182,10 +183,12 @@ export function showShopOverlay(onDone) {
     } else {
       return;
     }
+    playerState.ammo = playerState.ownedBalls.slice();
     localStorage.setItem('coins', playerState.coins);
     shopOptions.removeEventListener('click', handleClick);
     shopOverlay.style.display = 'none';
     updateAmmo();
+    updateCurrentBall(firePoint);
     updateCoins();
     onDone && onDone();
   };
