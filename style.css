@@ -437,6 +437,11 @@ canvas {
   align-items: center;
   justify-content: center;
 }
+.shop-item img {
+  width: 32px;
+  height: 32px;
+  margin-right: 5px;
+}
 #shop-overlay button {
   margin-top: 10px;
   padding: 10px 20px;

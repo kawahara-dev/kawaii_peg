@@ -112,12 +112,22 @@ const shopData = {
   big: { label: 'ビッグ', buy: 10, sell: 10, upgrade: 15 }
 };
 
+const shopImageMap = {
+  normal: './image/normal_ball.png',
+  split: './image/split_ball.png',
+  heal: healBallPath,
+  big: './image/big_ball.png'
+};
+
 export function showShopOverlay(onDone) {
   shopOverlay.style.display = 'flex';
   shopOptions.innerHTML = '';
   Object.entries(shopData).forEach(([type, data]) => {
     const div = document.createElement('div');
     div.className = 'shop-item';
+    const img = document.createElement('img');
+    img.src = shopImageMap[type];
+    img.alt = `${data.label}ボール`;
     const label = document.createElement('span');
     label.textContent = `${data.label}ボール`;
     const buyBtn = document.createElement('button');
@@ -132,6 +142,7 @@ export function showShopOverlay(onDone) {
     upBtn.className = 'shop-upgrade';
     upBtn.dataset.type = type;
     upBtn.textContent = `強化(${data.upgrade})`;
+    div.appendChild(img);
     div.appendChild(label);
     div.appendChild(buyBtn);
     div.appendChild(sellBtn);
