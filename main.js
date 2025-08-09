@@ -1,7 +1,7 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins } from './ui.js';
 
 const randomEvents = [
   {
@@ -284,6 +284,9 @@ window.addEventListener('DOMContentLoaded', () => {
     updateCurrentBall(firePoint);
     updateProgress(enemyState);
     document.getElementById('stage-value').textContent = enemyState.stage;
+    playerState.coins = 0;
+    localStorage.setItem('coins', playerState.coins);
+    updateCoins();
   });
 
   rewardButtons.forEach(btn => {
