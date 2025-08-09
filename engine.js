@@ -85,7 +85,13 @@ export function generatePegs(count) {
     } else if (r < 0.15) {
       peg = Bodies.circle(x, y, 10, {
         isStatic: true,
-        render: { fillStyle: '#808080' },
+        render: {
+          sprite: {
+            texture: './image/bomb.svg',
+            xScale: 0.3,
+            yScale: 0.3
+          }
+        },
         label: 'peg-bomb'
       });
       peg.bombHits = 0;

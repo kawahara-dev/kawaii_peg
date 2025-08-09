@@ -105,16 +105,19 @@ window.addEventListener('DOMContentLoaded', () => {
   const xpDisplay = document.getElementById('xp-value');
   const xpOverlay = document.getElementById('xp-overlay');
   const xpContinue = document.getElementById('xp-continue-button');
-  const rewardOverlay = document.getElementById('reward-overlay');
-  const rewardButtons = document.querySelectorAll('.reward-button');
-  const eventOverlay = document.getElementById('event-overlay');
-  const eventMessage = document.getElementById('event-message');
-  const eventOptions = document.getElementById('event-options');
-  const gameOverOverlay = document.getElementById('game-over-overlay');
-  const gameOverRetry = document.getElementById('game-over-retry-button');
-  const reloadOverlay = document.getElementById('reload-overlay');
-  const victoryOverlay = document.getElementById('victory-overlay');
-  const shopOverlay = document.getElementById('shop-overlay');
+    const rewardOverlay = document.getElementById('reward-overlay');
+    const rewardButtons = document.querySelectorAll('.reward-button');
+    const eventOverlay = document.getElementById('event-overlay');
+    const eventMessage = document.getElementById('event-message');
+    const eventOptions = document.getElementById('event-options');
+    const gameOverOverlay = document.getElementById('game-over-overlay');
+    const gameOverRetry = document.getElementById('game-over-retry-button');
+    const reloadOverlay = document.getElementById('reload-overlay');
+    const victoryOverlay = document.getElementById('victory-overlay');
+    const shopOverlay = document.getElementById('shop-overlay');
+    const creditBtn = document.getElementById('credit-button');
+    const creditOverlay = document.getElementById('credit-overlay');
+    const creditClose = document.getElementById('credit-close');
 
   const overlays = [
     menuOverlay,
@@ -123,9 +126,10 @@ window.addEventListener('DOMContentLoaded', () => {
     eventOverlay,
     gameOverOverlay,
     reloadOverlay,
-    victoryOverlay,
-    shopOverlay
-  ];
+      victoryOverlay,
+      shopOverlay,
+      creditOverlay
+    ];
 
   const isAnyOverlayVisible = () =>
     overlays.some(o => window.getComputedStyle(o).display !== 'none');
@@ -267,11 +271,11 @@ window.addEventListener('DOMContentLoaded', () => {
     mainMenu.style.display = 'flex';
   });
 
-  xpContinue.addEventListener('click', (e) => {
-    e.stopPropagation();
-    xpOverlay.style.display = 'none';
-    showOverlay(menuOverlay);
-    enemyState.stage = 1;
+    xpContinue.addEventListener('click', (e) => {
+      e.stopPropagation();
+      xpOverlay.style.display = 'none';
+      showOverlay(menuOverlay);
+      enemyState.stage = 1;
     enemyState.progressIndex = 0;
     playerState.ownedBalls = ['normal', 'normal', 'normal'];
     playerState.ballLevels = { normal: 1 };
@@ -289,8 +293,18 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('stage-value').textContent = enemyState.stage;
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
-    updateCoins();
-  });
+      updateCoins();
+    });
+
+    creditBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showOverlay(creditOverlay);
+    });
+
+    creditClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hideOverlay(creditOverlay);
+    });
 
   rewardButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
