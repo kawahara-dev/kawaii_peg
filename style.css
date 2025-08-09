@@ -337,16 +337,22 @@ canvas {
   gap: 20px;
 }
 .reward-button {
-  width: 60px;
-  height: 60px;
   background: #ff69b4;
   color: #fff;
   border: none;
-  border-radius: 50%;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 32px;
-  line-height: 60px;
-  text-align: center;
+  font-size: 16px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.reward-button img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  display: inline-block;
 }
 #game-over-overlay {
   position: absolute;
