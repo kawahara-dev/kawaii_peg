@@ -217,6 +217,9 @@ window.addEventListener('DOMContentLoaded', () => {
     hideOverlay(menuOverlay);
     enemyState.stage = 1;
     enemyState.gameOver = false;
+    playerState.coins = 0;
+    localStorage.setItem('coins', playerState.coins);
+    updateCoins();
     startStage();
   });
 
@@ -321,6 +324,9 @@ window.addEventListener('DOMContentLoaded', () => {
     updateAmmo();
     updateCurrentBall(firePoint);
     updateProgress(enemyState);
+    playerState.coins = 0;
+    localStorage.setItem('coins', playerState.coins);
+    updateCoins();
     startStage();
   });
 
