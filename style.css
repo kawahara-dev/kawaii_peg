@@ -91,6 +91,18 @@ html, body {
   height: 24px;
   margin-right: 4px;
 }
+#shop-coin-counter {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #ff1493;
+}
+#shop-coin-counter img {
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
 #current-ball {
   position: absolute;
   left: 0;
