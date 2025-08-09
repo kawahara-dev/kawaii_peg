@@ -17,6 +17,9 @@ const rewardOverlay = document.getElementById('reward-overlay');
 const xpOverlay = document.getElementById('xp-overlay');
 const xpGained = document.getElementById('xp-gained');
 const progressIndicator = document.getElementById('progress-indicator');
+const shopOverlay = document.getElementById('shop-overlay');
+const shopOptions = document.getElementById('shop-options');
+const shopClose = document.getElementById('shop-close');
 
 export { enemyGirl };
 
@@ -82,6 +85,79 @@ export function updateAmmo() {
 
 export function updateCoins() {
   coinValue.textContent = playerState.coins;
+}
+
+const shopData = {
+  normal: { label: 'ノーマル', buy: 10, sell: 5, upgrade: 15 },
+  split: { label: '分裂', buy: 20, sell: 10, upgrade: 30 },
+  heal: { label: '回復', buy: 20, sell: 10, upgrade: 30 },
+  big: { label: 'デカ', buy: 20, sell: 10, upgrade: 30 }
+};
+
+export function showShopOverlay(onDone) {
+  shopOverlay.style.display = 'flex';
+  shopOptions.innerHTML = '';
+  Object.entries(shopData).forEach(([type, data]) => {
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    const label = document.createElement('span');
+    label.textContent = `${data.label}ボール`;
+    const buyBtn = document.createElement('button');
+    buyBtn.className = 'shop-buy';
+    buyBtn.dataset.type = type;
+    buyBtn.textContent = `購入(${data.buy})`;
+    const sellBtn = document.createElement('button');
+    sellBtn.className = 'shop-sell';
+    sellBtn.dataset.type = type;
+    sellBtn.textContent = `削除(${data.sell})`;
+    const upBtn = document.createElement('button');
+    upBtn.className = 'shop-upgrade';
+    upBtn.dataset.type = type;
+    upBtn.textContent = `強化(${data.upgrade})`;
+    div.appendChild(label);
+    div.appendChild(buyBtn);
+    div.appendChild(sellBtn);
+    div.appendChild(upBtn);
+    shopOptions.appendChild(div);
+  });
+
+  const handleClick = (e) => {
+    const type = e.target.dataset.type;
+    if (!type) return;
+    if (e.target.classList.contains('shop-buy')) {
+      if (playerState.coins >= shopData[type].buy) {
+        playerState.coins -= shopData[type].buy;
+        playerState.ownedBalls.push(type);
+      }
+    } else if (e.target.classList.contains('shop-sell')) {
+      const idx = playerState.ownedBalls.indexOf(type);
+      if (idx !== -1) {
+        playerState.ownedBalls.splice(idx, 1);
+        playerState.coins += shopData[type].sell;
+      }
+    } else if (e.target.classList.contains('shop-upgrade')) {
+      if (playerState.coins >= shopData[type].upgrade) {
+        playerState.coins -= shopData[type].upgrade;
+        playerState.ballLevels[type] = (playerState.ballLevels[type] || 1) + 1;
+      }
+    } else {
+      return;
+    }
+    localStorage.setItem('coins', playerState.coins);
+    shopOptions.removeEventListener('click', handleClick);
+    shopOverlay.style.display = 'none';
+    updateAmmo();
+    updateCoins();
+    onDone && onDone();
+  };
+
+  shopOptions.addEventListener('click', handleClick);
+
+  shopClose.onclick = () => {
+    shopOptions.removeEventListener('click', handleClick);
+    shopOverlay.style.display = 'none';
+    onDone && onDone();
+  };
 }
 
 export function updateCurrentBall(firePoint) {

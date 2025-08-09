@@ -1,7 +1,7 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay } from './ui.js';
 
 const randomEvents = [
   {
@@ -68,6 +68,9 @@ const randomEvents = [
         apply() {}
       }
     ]
+  },
+  {
+    type: 'shop'
   }
 ];
 
@@ -104,6 +107,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const gameOverRetry = document.getElementById('game-over-retry-button');
   const reloadOverlay = document.getElementById('reload-overlay');
   const victoryOverlay = document.getElementById('victory-overlay');
+  const shopOverlay = document.getElementById('shop-overlay');
 
   const overlays = [
     menuOverlay,
@@ -112,7 +116,8 @@ window.addEventListener('DOMContentLoaded', () => {
     eventOverlay,
     gameOverOverlay,
     reloadOverlay,
-    victoryOverlay
+    victoryOverlay,
+    shopOverlay
   ];
 
   const isAnyOverlayVisible = () =>
@@ -144,6 +149,13 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
     const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+    if (ev.type === 'shop') {
+      showShopOverlay(() => {
+        enemyState.stage += 1;
+        startStage();
+      });
+      return;
+    }
     eventMessage.textContent = ev.text;
     eventOptions.innerHTML = '';
     const choices = typeof ev.choices === 'function' ? ev.choices() : ev.choices;
