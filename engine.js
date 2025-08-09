@@ -2,11 +2,11 @@ import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchH
 import { updateCurrentBall } from './ui.js';
 import { playerState } from './player.js';
 import { enemyState } from './enemy.js';
+import { healBallPath } from './constants.js';
 
 const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = Matter;
 const width = 880;
 const height = 700;
-const healBallPath = './image/recovery_ball.png';
 
 let engine;
 let world;

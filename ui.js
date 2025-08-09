@@ -1,5 +1,6 @@
 import { playerState } from './player.js';
 import { handleShoot } from './main.js';
+import { healBallPath } from './constants.js';
 
 const hpFill = document.getElementById('hp-fill');
 const hpText = document.getElementById('hp-text');
@@ -74,7 +75,7 @@ export function updateAmmo() {
     icon.className = 'ammo-ball';
     if (type === 'split') icon.style.background = '#dda0dd';
     else if (type === 'heal') {
-      icon.style.backgroundImage = 'url("./image/recovery_ball.png")';
+      icon.style.backgroundImage = `url("${healBallPath}")`;
       icon.style.backgroundSize = 'cover';
       icon.style.backgroundRepeat = 'no-repeat';
     }
