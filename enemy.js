@@ -51,8 +51,9 @@ export function enemyAttack() {
   if (playerState.playerHP <= 0 && !enemyState.gameOver) {
     enemyState.gameOver = true;
     document.getElementById('game-over-overlay').style.display = 'flex';
+  } else {
+    enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
+    updateAttackCountdown(enemyState);
   }
-  enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
-  updateAttackCountdown(enemyState);
 }
 
