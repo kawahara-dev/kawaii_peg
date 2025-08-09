@@ -318,6 +318,17 @@ canvas {
   justify-content: center;
   z-index: 30;
 }
+#reward-coins {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+#reward-coins img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
 .reward-button {
   margin: 10px;
   padding: 10px 20px;
