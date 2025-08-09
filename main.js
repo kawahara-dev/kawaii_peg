@@ -1,7 +1,7 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, selectNextBall, updatePlayerHP } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall } from './ui.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   initEngine();
@@ -181,6 +181,6 @@ window.addEventListener('DOMContentLoaded', () => {
     clearSimulatedPath();
     updateAmmo();
     playerState.nextBall = null;
-    selectNextBall(firePoint);
+    updateCurrentBall(firePoint);
   });
 });
