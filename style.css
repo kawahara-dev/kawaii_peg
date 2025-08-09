@@ -389,12 +389,12 @@ canvas {
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 6px;
+  padding: 4px 8px;
   margin: 0;
   background: rgba(255, 255, 255, 0.8);
   border: 2px solid #ff69b4;
-  border-radius: 24px;
+  border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(4px);
 }
@@ -407,10 +407,10 @@ canvas {
 
 #progress-indicator li:not(:last-child)::after {
   content: '';
-  width: 24px;
+  width: 16px;
   height: 2px;
   background: #ccc;
-  margin-left: 8px;
+  margin-left: 6px;
   border-radius: 1px;
 }
 
@@ -419,8 +419,8 @@ canvas {
 }
 
 .step-circle {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -430,7 +430,7 @@ canvas {
   border: 2px solid #ddd;
   color: #999;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 10px;
   transition: all 0.3s;
 }
 
