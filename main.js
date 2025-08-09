@@ -31,11 +31,25 @@ window.addEventListener('DOMContentLoaded', () => {
   const gameOverOverlay = document.getElementById('game-over-overlay');
   const gameOverRetry = document.getElementById('game-over-retry-button');
 
+  const showOverlay = (overlay) => {
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => overlay.classList.add('show'));
+  };
+
+  const hideOverlay = (overlay) => {
+    overlay.classList.remove('show');
+    overlay.addEventListener('transitionend', () => {
+      overlay.style.display = 'none';
+    }, { once: true });
+  };
+
+  showOverlay(menuOverlay);
+
   let aimTimer;
 
   startButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    menuOverlay.style.display = 'none';
+    hideOverlay(menuOverlay);
     enemyState.stage = 1;
     enemyState.gameOver = false;
     startStage();
@@ -82,7 +96,7 @@ window.addEventListener('DOMContentLoaded', () => {
   xpContinue.addEventListener('click', (e) => {
     e.stopPropagation();
     xpOverlay.style.display = 'none';
-    menuOverlay.style.display = 'flex';
+    showOverlay(menuOverlay);
     enemyState.stage = 1;
   });
 
