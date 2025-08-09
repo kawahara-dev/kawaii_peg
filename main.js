@@ -307,9 +307,20 @@ window.addEventListener('DOMContentLoaded', () => {
     gameOverOverlay.style.display = 'none';
     enemyState.stage = 1;
     enemyState.gameOver = false;
+    enemyState.progressIndex = 0;
+    playerState.ownedBalls = ['normal', 'normal', 'normal'];
+    playerState.ballLevels = { normal: 1 };
     playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
     playerState.playerHP = playerState.playerMaxHP;
+    playerState.ammo = playerState.ownedBalls.slice();
+    playerState.currentBalls = [];
+    playerState.currentShotType = null;
+    playerState.nextBall = null;
+    playerState.reloading = false;
     updatePlayerHP();
+    updateAmmo();
+    updateCurrentBall(firePoint);
+    updateProgress(enemyState);
     startStage();
   });
 
