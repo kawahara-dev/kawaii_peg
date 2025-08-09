@@ -1,7 +1,29 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, updatePlayerHP, updateCurrentBall } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress } from './ui.js';
+
+let currentEventEffect = null;
+const randomEvents = [
+  {
+    message: 'HPが20回復したよ💖',
+    apply() {
+      playerState.playerHP = Math.min(playerState.playerMaxHP, playerState.playerHP + 20);
+    }
+  },
+  {
+    message: 'HPが20減っちゃった…😭',
+    apply() {
+      playerState.playerHP = Math.max(0, playerState.playerHP - 20);
+    }
+  },
+  {
+    message: 'ノーマルボールが1つ増えたよ✨',
+    apply() {
+      playerState.ownedBalls.push('normal');
+    }
+  }
+];
 
 export let handleShoot;
 
@@ -30,6 +52,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const rewardOverlay = document.getElementById('reward-overlay');
   const rewardButtons = document.querySelectorAll('.reward-button');
   const eventOverlay = document.getElementById('event-overlay');
+  const eventMessage = document.getElementById('event-message');
   const eventContinue = document.getElementById('event-continue-button');
   const gameOverOverlay = document.getElementById('game-over-overlay');
   const gameOverRetry = document.getElementById('game-over-retry-button');
@@ -64,6 +87,21 @@ window.addEventListener('DOMContentLoaded', () => {
   showOverlay(menuOverlay);
 
   let aimTimer;
+
+  function triggerRandomEvent() {
+    enemyState.progressIndex++;
+    updateProgress(enemyState);
+    const skipChance = 0.2;
+    if (Math.random() < skipChance) {
+      enemyState.stage += 1;
+      startStage();
+      return;
+    }
+    const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
+    eventMessage.textContent = ev.message;
+    currentEventEffect = ev.apply.bind(ev);
+    eventOverlay.style.display = 'flex';
+  }
 
   const startReload = () => {
     reloadOverlay.style.display = 'flex';
@@ -145,16 +183,20 @@ window.addEventListener('DOMContentLoaded', () => {
         playerState.ballLevels[type] = 1;
       }
       rewardOverlay.style.display = 'none';
-      enemyState.stage += 1;
-      startStage();
+      triggerRandomEvent();
     });
   });
 
   eventContinue.addEventListener('click', (e) => {
     e.stopPropagation();
-    eventOverlay.style.display = 'none';
+    if (typeof currentEventEffect === 'function') {
+      currentEventEffect();
+      updatePlayerHP();
+      updateAmmo();
+    }
     enemyState.stage += 1;
     startStage();
+    eventOverlay.style.display = 'none';
   });
 
   gameOverRetry.addEventListener('click', (e) => {
