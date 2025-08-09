@@ -269,6 +269,21 @@ window.addEventListener('DOMContentLoaded', () => {
     xpOverlay.style.display = 'none';
     showOverlay(menuOverlay);
     enemyState.stage = 1;
+    enemyState.progressIndex = 0;
+    playerState.ownedBalls = ['normal', 'normal', 'normal'];
+    playerState.ballLevels = { normal: 1 };
+    playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
+    playerState.playerHP = playerState.playerMaxHP;
+    playerState.ammo = playerState.ownedBalls.slice();
+    playerState.currentBalls = [];
+    playerState.currentShotType = null;
+    playerState.nextBall = null;
+    playerState.reloading = false;
+    updatePlayerHP();
+    updateAmmo();
+    updateCurrentBall(firePoint);
+    updateProgress(enemyState);
+    document.getElementById('stage-value').textContent = enemyState.stage;
   });
 
   rewardButtons.forEach(btn => {
