@@ -227,6 +227,7 @@ export function setupCollisionHandler() {
         const peg = pair.bodyA.label === 'peg-blue' ? pair.bodyA : pair.bodyB;
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         World.remove(world, peg);
+        pegs = pegs.filter(p => p !== peg);
         let damage = 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
@@ -249,6 +250,7 @@ export function setupCollisionHandler() {
         const peg = pair.bodyA.label === 'ball' ? pair.bodyB : pair.bodyA;
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         World.remove(world, peg);
+        pegs = pegs.filter(p => p !== peg);
         let damage = peg.label === 'peg-yellow' ? 20 : 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
@@ -311,6 +313,7 @@ export function explodeBomb(peg, ball) {
       const dy = body.position.y - y;
       if (Math.sqrt(dx * dx + dy * dy) <= 80) {
         World.remove(world, body);
+        pegs = pegs.filter(p => p !== body);
         let dmg = body.label === 'peg-yellow' ? 20 : 10;
         dmg *= ball.damageMultiplier || 1;
         dmg *= 1 + playerState.atkLevel * 0.1;
