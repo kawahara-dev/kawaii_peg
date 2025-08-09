@@ -6,6 +6,7 @@ import { enemyState } from './enemy.js';
 const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = Matter;
 const width = 880;
 const height = 700;
+const healBallUri = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBmaWxsPSIjZmY2OWI0IiBkPSJNNTAgOTFsLTctNkMyMCA2MyA0IDQ2IDQgMjggNCAxNCAxNiAyIDMwIDJjOCAwIDE2IDQgMjAgMTBDNTQgNiA2MiAyIDcwIDJjMTQgMCAyNiAxMiAyNiAyNiAwIDE4LTE2IDM1LTM5IDU3bC03IDZ6Ii8+Cjwvc3ZnPgo=';
 
 let engine;
 let world;
@@ -199,12 +200,24 @@ export function shootBall(angle, type) {
   } else {
     const base = type === 'big' ? 30 : 15;
     const radius = base * sizeMul;
-    const color = type === 'big' ? '#ffa500' : (type === 'heal' ? '#90ee90' : '#00bfff');
-    const ball = Bodies.circle(firePoint.x, firePoint.y, radius, {
+    const options = {
       restitution: 0.9,
-      render: { fillStyle: color },
       label: 'ball'
-    });
+    };
+    if (type === 'heal') {
+      const scale = (radius * 2) / 100;
+      options.render = {
+        sprite: {
+          texture: healBallUri,
+          xScale: scale,
+          yScale: scale
+        }
+      };
+    } else {
+      const color = type === 'big' ? '#ffa500' : '#00bfff';
+      options.render = { fillStyle: color };
+    }
+    const ball = Bodies.circle(firePoint.x, firePoint.y, radius, options);
     ball.damageMultiplier = dmgMul;
     ball.ballType = type;
     Body.setVelocity(ball, { x: Math.cos(angle) * power, y: Math.sin(angle) * power });
