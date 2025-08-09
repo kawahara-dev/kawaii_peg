@@ -96,10 +96,10 @@ export function updateCoins() {
 }
 
 const shopData = {
-  normal: { label: 'ノーマル', buy: 10, sell: 5, upgrade: 15 },
-  split: { label: '分裂', buy: 20, sell: 10, upgrade: 30 },
-  heal: { label: '回復', buy: 20, sell: 10, upgrade: 30 },
-  big: { label: 'デカ', buy: 20, sell: 10, upgrade: 30 }
+  normal: { label: 'ノーマル', buy: 5, sell: 5, upgrade: 8 },
+  split: { label: '分裂', buy: 10, sell: 10, upgrade: 15 },
+  heal: { label: '回復', buy: 10, sell: 10, upgrade: 15 },
+  big: { label: 'デカ', buy: 10, sell: 10, upgrade: 15 }
 };
 
 export function showShopOverlay(onDone) {
