@@ -184,11 +184,18 @@ export function shootBall(angle, type) {
   if (type === 'split') {
     const offset = 0.2;
     const radius = 15 * sizeMul;
+    const scale = (radius * 2) / healBallWidth;
     for (let i = -1; i <= 1; i += 2) {
       const a = angle + i * offset;
       const ball = Bodies.circle(firePoint.x, firePoint.y, radius, {
         restitution: 0.9,
-        render: { fillStyle: '#dda0dd' },
+        render: {
+          sprite: {
+            texture: './image/split_ball.png',
+            xScale: scale,
+            yScale: scale
+          }
+        },
         label: 'ball'
       });
       ball.damageMultiplier = 0.5 * dmgMul;
@@ -200,23 +207,23 @@ export function shootBall(angle, type) {
   } else {
     const base = type === 'big' ? 30 : 15;
     const radius = base * sizeMul;
+    const scale = (radius * 2) / healBallWidth;
     const options = {
       restitution: 0.9,
-      label: 'ball'
-    };
-    if (type === 'heal') {
-      const scale = (radius * 2) / healBallWidth;
-      options.render = {
+      label: 'ball',
+      render: {
         sprite: {
-          texture: healBallPath,
+          texture:
+            type === 'heal'
+              ? healBallPath
+              : type === 'big'
+              ? './image/big_ball.png'
+              : './image/normal_ball.png',
           xScale: scale,
           yScale: scale
         }
-      };
-    } else {
-      const color = type === 'big' ? '#ffa500' : '#00bfff';
-      options.render = { fillStyle: color };
-    }
+      }
+    };
     const ball = Bodies.circle(firePoint.x, firePoint.y, radius, options);
     ball.damageMultiplier = dmgMul;
     ball.ballType = type;
