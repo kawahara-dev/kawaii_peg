@@ -180,7 +180,5 @@ window.addEventListener('DOMContentLoaded', () => {
     clearTimeout(aimTimer);
     clearSimulatedPath();
     updateAmmo();
-    playerState.nextBall = null;
-    updateCurrentBall(firePoint);
   });
 });
