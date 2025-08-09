@@ -76,13 +76,18 @@ export function updateAmmo() {
   playerState.ammo.forEach(type => {
     const icon = document.createElement('span');
     icon.className = 'ammo-ball';
-    if (type === 'split') icon.style.background = '#dda0dd';
-    else if (type === 'heal') {
+    if (type === 'normal') {
+      icon.style.backgroundImage = 'url("./image/normal_ball.png")';
+    } else if (type === 'split') {
+      icon.style.backgroundImage = 'url("./image/split_ball.png")';
+    } else if (type === 'heal') {
       icon.style.backgroundImage = `url("${healBallPath}")`;
-      icon.style.backgroundSize = 'cover';
-      icon.style.backgroundRepeat = 'no-repeat';
+    } else if (type === 'big') {
+      icon.style.backgroundImage = 'url("./image/big_ball.png")';
     }
-    else if (type === 'big') icon.style.background = '#ffa500';
+    icon.style.backgroundSize = 'cover';
+    icon.style.backgroundColor = 'transparent';
+    icon.style.backgroundRepeat = 'no-repeat';
     const lvl = playerState.ballLevels[type] || 1;
     if (lvl > 1) {
       const badge = document.createElement('span');
