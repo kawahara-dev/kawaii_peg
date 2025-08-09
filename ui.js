@@ -254,10 +254,18 @@ export function showBombExplosion(x, y) {
 }
 
 export function showDamageOverlay() {
-  const overlay = document.createElement('div');
-  overlay.id = 'damage-overlay';
-  document.getElementById('container').appendChild(overlay);
-  setTimeout(() => overlay.remove(), 300);
+  let overlay = document.getElementById('damage-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'damage-overlay';
+    document.getElementById('container').appendChild(overlay);
+  } else if (overlay._timer) {
+    clearTimeout(overlay._timer);
+  }
+  overlay._timer = setTimeout(() => {
+    overlay.remove();
+    overlay._timer = null;
+  }, 300);
 }
 
 export function shakeContainer() {
