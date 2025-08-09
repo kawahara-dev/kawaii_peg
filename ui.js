@@ -1,4 +1,5 @@
 import { playerState } from './player.js';
+import { handleShoot } from './main.js';
 
 const hpFill = document.getElementById('hp-fill');
 const hpText = document.getElementById('hp-text');
@@ -28,9 +29,11 @@ export function updateHPBar(enemyState) {
     setTimeout(() => {
       victoryImg.src = enemyState.defeatImages[Math.floor(Math.random() * enemyState.defeatImages.length)];
       victoryOverlay.style.display = 'flex';
+      document.getElementById('aim-svg').removeEventListener('click', handleShoot);
       const proceed = () => {
         victoryOverlay.style.display = 'none';
         enemyState.gameOver = false;
+        document.getElementById('aim-svg').addEventListener('click', handleShoot);
         if (enemyState.stage >= 5) {
           const gained = 10;
           playerState.permXP += gained;
