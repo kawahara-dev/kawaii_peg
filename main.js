@@ -3,6 +3,8 @@ import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, updatePlayerHP, updateCurrentBall } from './ui.js';
 
+export let handleShoot;
+
 window.addEventListener('DOMContentLoaded', () => {
   initEngine();
   setupCollisionHandler();
@@ -145,9 +147,11 @@ window.addEventListener('DOMContentLoaded', () => {
     startStage();
   });
 
+  const aimSvg = document.getElementById('aim-svg');
+
   window.addEventListener('mousemove', (e) => {
     if (playerState.currentBalls.length > 0 || enemyState.gameOver) return;
-    const rect = document.getElementById('aim-svg').getBoundingClientRect();
+    const rect = aimSvg.getBoundingClientRect();
     const dx = e.clientX - rect.left - firePoint.x;
     const dy = e.clientY - rect.top - firePoint.y;
     const angle = Math.atan2(dy, dx);
@@ -163,13 +167,13 @@ window.addEventListener('DOMContentLoaded', () => {
     clearSimulatedPath();
   });
 
-  window.addEventListener('click', (e) => {
+  handleShoot = function handleShoot(e) {
     if (playerState.currentBalls.length > 0 || enemyState.gameOver || playerState.reloading) return;
     if (playerState.ammo.length <= 0) {
       startReload();
       return;
     }
-    const rect = document.getElementById('aim-svg').getBoundingClientRect();
+    const rect = aimSvg.getBoundingClientRect();
     const dx = e.clientX - rect.left - firePoint.x;
     const dy = e.clientY - rect.top - firePoint.y;
     const angle = Math.atan2(dy, dx);
@@ -180,5 +184,7 @@ window.addEventListener('DOMContentLoaded', () => {
     clearTimeout(aimTimer);
     clearSimulatedPath();
     updateAmmo();
-  });
+  };
+
+  aimSvg.addEventListener('click', handleShoot);
 });
