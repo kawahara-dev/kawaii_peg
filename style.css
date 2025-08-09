@@ -101,6 +101,8 @@ html, body {
   z-index: 6;
   pointer-events: none;
   display: block;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 #stage-text {
   font-size: 20px;
