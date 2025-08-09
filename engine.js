@@ -2,7 +2,7 @@ import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchH
 import { updateCurrentBall } from './ui.js';
 import { playerState } from './player.js';
 import { enemyState } from './enemy.js';
-import { healBallPath } from './constants.js';
+import { healBallPath, healBallWidth } from './constants.js';
 
 const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = Matter;
 const width = 880;
@@ -198,14 +198,14 @@ export function shootBall(angle, type) {
       playerState.currentBalls.push(ball);
     }
   } else {
-    const base = type === 'big' ? 30 : (type === 'heal' ? 10 : 15);
+    const base = type === 'big' ? 30 : 15;
     const radius = base * sizeMul;
     const options = {
       restitution: 0.9,
       label: 'ball'
     };
     if (type === 'heal') {
-      const scale = (radius * 2) / 100;
+      const scale = (radius * 2) / healBallWidth;
       options.render = {
         sprite: {
           texture: healBallPath,
