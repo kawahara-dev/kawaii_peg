@@ -169,7 +169,7 @@ window.addEventListener('DOMContentLoaded', () => {
     "ステージ5"
   ];
   let progressIndex = 0;
-  const defeatImages = ["enemy_defete.png", "enemy_defete2.png"];
+  const defeatImages = ["image/enemy_defete.png", "image/enemy_defete2.png"];
   retryButton.style.display = "none";
   retryButton.addEventListener("click", () => location.reload());
   gameOverRetryButton.addEventListener("click", () => location.reload());
@@ -309,7 +309,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
     function startStage() {
-      enemyGirl.src = "enemy_normal.png";
+      enemyGirl.src = "image/enemy_normal.png";
       generatePegs(50 + (stage - 1) * 10);
       maxEnemyHP = 100 + (stage - 1) * 100;
       enemyHP = maxEnemyHP;
@@ -389,10 +389,10 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   function flashEnemyDamage() {
-    enemyGirl.src = "enemy_damage.png";
+    enemyGirl.src = "image/enemy_damage.png";
     setTimeout(() => {
       if (enemyHP > 0) {
-        enemyGirl.src = "enemy_normal.png";
+        enemyGirl.src = "image/enemy_normal.png";
       }
     }, 500);
   }
