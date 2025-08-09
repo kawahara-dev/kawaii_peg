@@ -246,6 +246,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function updateProgress() {
       progressIndicator.innerHTML = "";
+      let enemyCount = 1;
       progressSteps.forEach((step, idx) => {
         const li = document.createElement("li");
         if (idx < progressIndex) {
@@ -258,7 +259,12 @@ window.addEventListener('DOMContentLoaded', () => {
         if (idx < progressIndex) {
           circle.innerHTML = "&#10003;";
         } else {
-          circle.textContent = idx + 1;
+          if (step === "ランダムイベント") {
+            circle.textContent = "?";
+          } else {
+            circle.textContent = enemyCount;
+            enemyCount++;
+          }
         }
         li.appendChild(circle);
         progressIndicator.appendChild(li);
