@@ -38,6 +38,9 @@ export function startStage() {
 }
 
 export function enemyAttack() {
+  if (enemyState.gameOver) {
+    return;
+  }
   playerState.playerHP -= 10;
   updatePlayerHP();
   showDamageOverlay();
