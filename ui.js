@@ -103,6 +103,10 @@ export function updateAmmo() {
 
 export function updateCoins() {
   coinValue.textContent = playerState.coins;
+  const shopCoinValue = document.getElementById('shop-coin-value');
+  if (shopCoinValue) {
+    shopCoinValue.textContent = playerState.coins;
+  }
 }
 
 const shopData = {
@@ -121,6 +125,7 @@ const shopImageMap = {
 
 export function showShopOverlay(onDone) {
   shopOverlay.style.display = 'flex';
+  updateCoins();
   shopOptions.innerHTML = '';
   Object.entries(shopData).forEach(([type, data]) => {
     const div = document.createElement('div');
