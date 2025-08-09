@@ -198,7 +198,7 @@ export function shootBall(angle, type) {
       playerState.currentBalls.push(ball);
     }
   } else {
-    const base = type === 'big' ? 30 : 15;
+    const base = type === 'big' ? 30 : (type === 'heal' ? 10 : 15);
     const radius = base * sizeMul;
     const options = {
       restitution: 0.9,
