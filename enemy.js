@@ -42,5 +42,9 @@ export function enemyAttack() {
   updatePlayerHP();
   showDamageOverlay();
   shakeContainer();
+  if (playerState.playerHP <= 0 && !enemyState.gameOver) {
+    enemyState.gameOver = true;
+    document.getElementById('game-over-overlay').style.display = 'flex';
+  }
 }
 
