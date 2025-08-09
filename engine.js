@@ -73,7 +73,13 @@ export function generatePegs(count) {
       peg = Bodies.circle(x, y, 10, {
         isStatic: true,
         isSensor: true,
-        render: { fillStyle: '#ffd700' },
+        render: {
+          sprite: {
+            texture: 'image/coin.png',
+            xScale: 0.25,
+            yScale: 0.25
+          }
+        },
         label: 'coin'
       });
     } else if (r < 0.15) {
