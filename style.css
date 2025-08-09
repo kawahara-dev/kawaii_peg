@@ -114,6 +114,8 @@ html, body {
   height: 16px;
   border-radius: 50%;
   background: #00bfff;
+  background-size: cover;
+  background-repeat: no-repeat;
   border: 1px solid #ff69b4;
   margin-right: 4px;
   position: relative;

@@ -73,7 +73,11 @@ export function updateAmmo() {
     const icon = document.createElement('span');
     icon.className = 'ammo-ball';
     if (type === 'split') icon.style.background = '#dda0dd';
-    else if (type === 'heal') icon.style.background = '#90ee90';
+    else if (type === 'heal') {
+      icon.style.backgroundImage = 'url("./image/recovery_ball.png")';
+      icon.style.backgroundSize = 'cover';
+      icon.style.backgroundRepeat = 'no-repeat';
+    }
     else if (type === 'big') icon.style.background = '#ffa500';
     const lvl = playerState.ballLevels[type] || 1;
     if (lvl > 1) {
