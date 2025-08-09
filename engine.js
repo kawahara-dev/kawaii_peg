@@ -6,7 +6,7 @@ import { enemyState } from './enemy.js';
 const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = Matter;
 const width = 880;
 const height = 700;
-const healBallUri = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cGF0aCBmaWxsPSIjZmY2OWI0IiBkPSJNNTAgOTFsLTctNkMyMCA2MyA0IDQ2IDQgMjggNCAxNCAxNiAyIDMwIDJjOCAwIDE2IDQgMjAgMTBDNTQgNiA2MiAyIDcwIDJjMTQgMCAyNiAxMiAyNiAyNiAwIDE4LTE2IDM1LTM5IDU3bC03IDZ6Ii8+Cjwvc3ZnPgo=';
+const healBallPath = './image/heart.svg';
 
 let engine;
 let world;
@@ -208,7 +208,7 @@ export function shootBall(angle, type) {
       const scale = (radius * 2) / 100;
       options.render = {
         sprite: {
-          texture: healBallUri,
+          texture: healBallPath,
           xScale: scale,
           yScale: scale
         }
