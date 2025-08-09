@@ -31,25 +31,29 @@ window.addEventListener('DOMContentLoaded', () => {
   const gameOverOverlay = document.getElementById('game-over-overlay');
   const gameOverRetry = document.getElementById('game-over-retry-button');
 
-  startButton.addEventListener('click', () => {
+  startButton.addEventListener('click', (e) => {
+    e.stopPropagation();
     menuOverlay.style.display = 'none';
     enemyState.stage = 1;
     enemyState.gameOver = false;
     startStage();
   });
 
-  upgradeMenuButton.addEventListener('click', () => {
+  upgradeMenuButton.addEventListener('click', (e) => {
+    e.stopPropagation();
     mainMenu.style.display = 'none';
     upgradeButtons.style.display = 'flex';
     xpDisplay.textContent = playerState.permXP;
   });
 
-  resetButton.addEventListener('click', () => {
+  resetButton.addEventListener('click', (e) => {
+    e.stopPropagation();
     localStorage.clear();
     location.reload();
   });
 
-  upgradeHP.addEventListener('click', () => {
+  upgradeHP.addEventListener('click', (e) => {
+    e.stopPropagation();
     if (playerState.permXP >= 10) {
       playerState.permXP -= 10;
       playerState.hpLevel += 1;
@@ -62,7 +66,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  upgradeATK.addEventListener('click', () => {
+  upgradeATK.addEventListener('click', (e) => {
+    e.stopPropagation();
     if (playerState.permXP >= 10) {
       playerState.permXP -= 10;
       playerState.atkLevel += 1;
@@ -72,14 +77,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  xpContinue.addEventListener('click', () => {
+  xpContinue.addEventListener('click', (e) => {
+    e.stopPropagation();
     xpOverlay.style.display = 'none';
     menuOverlay.style.display = 'flex';
     enemyState.stage = 1;
   });
 
   rewardButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const type = btn.dataset.type;
       if (!playerState.ownedBalls.includes(type)) {
         playerState.ownedBalls.push(type);
@@ -91,13 +98,15 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  eventContinue.addEventListener('click', () => {
+  eventContinue.addEventListener('click', (e) => {
+    e.stopPropagation();
     eventOverlay.style.display = 'none';
     enemyState.stage += 1;
     startStage();
   });
 
-  gameOverRetry.addEventListener('click', () => {
+  gameOverRetry.addEventListener('click', (e) => {
+    e.stopPropagation();
     gameOverOverlay.style.display = 'none';
     enemyState.stage = 1;
     enemyState.gameOver = false;
