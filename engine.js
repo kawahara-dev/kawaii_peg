@@ -1,5 +1,6 @@
 import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchHeartAttack, updateCoins } from './ui.js';
 import { updateCurrentBall } from './ui.js';
+import { updateAttackCountdown } from './ui.js';
 import { playerState } from './player.js';
 import { enemyState } from './enemy.js';
 import { healBallPath, healBallWidth } from './constants.js';
@@ -300,10 +301,6 @@ export function setupCollisionHandler() {
             totalDamage = Math.min(totalDamage, Math.max(enemyState.enemyHP, 0));
           }
           if (playerState.currentShotType === 'heal') {
-            if (enemyState.enemyHP > 0) {
-              enemyState.enemyAttack();
-              launchHeartAttack();
-            }
             playerState.playerHP = Math.min(playerState.playerMaxHP, playerState.playerHP + totalDamage);
             enemyState.updatePlayerHP();
             showDamageText(x, y, '+' + totalDamage, true);
@@ -316,13 +313,16 @@ export function setupCollisionHandler() {
               showDamageText(x, y, '-' + totalDamage);
               showHitSpark(x, y);
             }
-            if (enemyState.enemyHP > 0) {
-              enemyState.enemyAttack();
-              launchHeartAttack();
-            }
           }
           enemyState.pendingDamage = 0;
           playerState.currentShotType = null;
+          enemyState.attackCountdown--;
+          if (enemyState.attackCountdown <= 0 && enemyState.enemyHP > 0) {
+            enemyState.enemyAttack();
+            launchHeartAttack();
+          } else {
+            updateAttackCountdown(enemyState);
+          }
           enemyState.selectNextBall();
         }
       }

@@ -184,6 +184,20 @@ html, body {
 #enemy-girl {
   width: 400px;
 }
+#enemy-image-wrapper {
+  position: relative;
+}
+#enemy-attack-timer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  color: #ff1493;
+  font-weight: bold;
+  padding: 4px 8px;
+  border: 2px solid #ff69b4;
+  border-radius: 4px;
+}
 canvas {
   display: block;
 }

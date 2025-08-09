@@ -25,6 +25,13 @@ const shopClose = document.getElementById('shop-close');
 
 export { enemyGirl };
 
+export function updateAttackCountdown(enemyState) {
+  const timer = document.getElementById('enemy-attack-timer');
+  if (timer) {
+    timer.textContent = enemyState.attackCountdown;
+  }
+}
+
 export function updateHPBar(enemyState) {
   const percent = Math.max(0, (enemyState.enemyHP / enemyState.maxEnemyHP) * 100);
   hpFill.style.width = `${percent}%`;
