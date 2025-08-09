@@ -1,4 +1,4 @@
-import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchHeartAttack } from './ui.js';
+import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchHeartAttack, updateCoins } from './ui.js';
 import { updateCurrentBall } from './ui.js';
 import { playerState } from './player.js';
 import { enemyState } from './enemy.js';
@@ -69,14 +69,21 @@ export function generatePegs(count) {
     const y = 150 + Math.random() * (height - 250);
     const r = Math.random();
     let peg;
-    if (r < 0.1) {
+    if (r < 0.05) {
+      peg = Bodies.circle(x, y, 10, {
+        isStatic: true,
+        isSensor: true,
+        render: { fillStyle: '#ffd700' },
+        label: 'coin'
+      });
+    } else if (r < 0.15) {
       peg = Bodies.circle(x, y, 10, {
         isStatic: true,
         render: { fillStyle: '#808080' },
         label: 'peg-bomb'
       });
       peg.bombHits = 0;
-    } else if (r < 0.3) {
+    } else if (r < 0.35) {
       peg = Bodies.circle(x, y, 10, {
         isStatic: true,
         render: { fillStyle: '#ffd700' },
@@ -205,6 +212,13 @@ export function setupCollisionHandler() {
           showHitSpark(peg.position.x, peg.position.y);
         }
         generatePegs(initialPegCount);
+      } else if (labels.includes('ball') && labels.includes('coin')) {
+        const coin = pair.bodyA.label === 'coin' ? pair.bodyA : pair.bodyB;
+        World.remove(world, coin);
+        pegs = pegs.filter(p => p !== coin);
+        playerState.coins += 1;
+        localStorage.setItem('coins', playerState.coins);
+        updateCoins();
       } else if (labels.includes('ball') && (labels.includes('peg') || labels.includes('peg-yellow'))) {
         const peg = pair.bodyA.label === 'ball' ? pair.bodyB : pair.bodyA;
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
