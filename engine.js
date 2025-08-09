@@ -76,8 +76,8 @@ export function generatePegs(count) {
         render: {
           sprite: {
             texture: './image/coin.png',
-            xScale: 0.25,
-            yScale: 0.25
+            xScale: 0.04,
+            yScale: 0.04
           }
         },
         label: 'coin'
@@ -124,8 +124,8 @@ export function generatePegs(count) {
       render: {
         sprite: {
           texture: './image/coin.png',
-          xScale: 0.25,
-          yScale: 0.25
+          xScale: 0.04,
+          yScale: 0.04
         }
       },
       label: 'coin'
