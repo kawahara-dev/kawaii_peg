@@ -13,7 +13,7 @@ export const enemyState = {
     'ステージ1', 'ランダムイベント', 'ステージ2', 'ランダムイベント', 'ステージ3', 'ランダムイベント', 'ステージ4', 'ランダムイベント', 'ステージ5'
   ],
   progressIndex: 0,
-  defeatImages: ['image/enemy_defete.png', 'image/enemy_defete2.png'],
+  defeatImages: ['image/enemy_defeat.png', 'image/enemy_defeat2.png'],
   selectNextBall: () => uiSelectNextBall(firePoint),
   updateHPBar: () => updateHPBar(enemyState),
   updatePlayerHP,
