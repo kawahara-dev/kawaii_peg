@@ -26,8 +26,9 @@ export { enemyGirl };
 export function updateHPBar(enemyState) {
   const percent = Math.max(0, (enemyState.enemyHP / enemyState.maxEnemyHP) * 100);
   hpFill.style.width = `${percent}%`;
-  hpText.textContent = `${enemyState.enemyHP}`;
-  hpDisplay.textContent = `${enemyState.enemyHP} / ${enemyState.maxEnemyHP}`;
+  const hp = Math.max(0, enemyState.enemyHP);
+  hpText.textContent = `${hp}`;
+  hpDisplay.textContent = `${hp} / ${enemyState.maxEnemyHP}`;
   if (enemyState.enemyHP <= 0 && !enemyState.gameOver) {
     enemyState.gameOver = true;
     setTimeout(() => {
