@@ -108,7 +108,7 @@ export function updateCoins() {
 const shopData = {
   normal: { label: 'ノーマル', buy: 5, sell: 5, upgrade: 8 },
   split: { label: 'スプリット', buy: 10, sell: 10, upgrade: 15 },
-  heal: { label: '回復', buy: 10, sell: 10, upgrade: 15 },
+  heal: { label: 'ヒール', buy: 10, sell: 10, upgrade: 15 },
   big: { label: 'ビッグ', buy: 10, sell: 10, upgrade: 15 }
 };
 
