@@ -23,6 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const mainMenu = document.getElementById('main-menu');
   const upgradeHP = document.getElementById('upgrade-hp');
   const upgradeATK = document.getElementById('upgrade-atk');
+  const upgradeBack = document.getElementById('upgrade-back');
   const xpDisplay = document.getElementById('xp-value');
   const xpOverlay = document.getElementById('xp-overlay');
   const xpContinue = document.getElementById('xp-continue-button');
@@ -33,6 +34,20 @@ window.addEventListener('DOMContentLoaded', () => {
   const gameOverOverlay = document.getElementById('game-over-overlay');
   const gameOverRetry = document.getElementById('game-over-retry-button');
   const reloadOverlay = document.getElementById('reload-overlay');
+  const victoryOverlay = document.getElementById('victory-overlay');
+
+  const overlays = [
+    menuOverlay,
+    xpOverlay,
+    rewardOverlay,
+    eventOverlay,
+    gameOverOverlay,
+    reloadOverlay,
+    victoryOverlay
+  ];
+
+  const isAnyOverlayVisible = () =>
+    overlays.some(o => window.getComputedStyle(o).display !== 'none');
 
   const showOverlay = (overlay) => {
     overlay.style.display = 'flex';
@@ -108,6 +123,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  upgradeBack.addEventListener('click', (e) => {
+    e.stopPropagation();
+    upgradeButtons.style.display = 'none';
+    mainMenu.style.display = 'flex';
+  });
+
   xpContinue.addEventListener('click', (e) => {
     e.stopPropagation();
     xpOverlay.style.display = 'none';
@@ -150,7 +171,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const aimSvg = document.getElementById('aim-svg');
 
   window.addEventListener('mousemove', (e) => {
-    if (playerState.currentBalls.length > 0 || enemyState.gameOver) return;
+    if (playerState.currentBalls.length > 0 || enemyState.gameOver || isAnyOverlayVisible()) return;
     const rect = aimSvg.getBoundingClientRect();
     const dx = e.clientX - rect.left - firePoint.x;
     const dy = e.clientY - rect.top - firePoint.y;
@@ -168,7 +189,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   handleShoot = function handleShoot(e) {
-    if (playerState.currentBalls.length > 0 || enemyState.gameOver || playerState.reloading) return;
+    if (playerState.currentBalls.length > 0 || enemyState.gameOver || playerState.reloading || isAnyOverlayVisible()) return;
     if (playerState.ammo.length <= 0) {
       startReload();
       return;
