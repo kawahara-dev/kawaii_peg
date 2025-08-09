@@ -1,4 +1,4 @@
-import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint } from './engine.js';
+import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, selectNextBall, updatePlayerHP } from './ui.js';
@@ -30,6 +30,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const eventContinue = document.getElementById('event-continue-button');
   const gameOverOverlay = document.getElementById('game-over-overlay');
   const gameOverRetry = document.getElementById('game-over-retry-button');
+
+  let aimTimer;
 
   startButton.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -123,6 +125,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const dy = e.clientY - rect.top - firePoint.y;
     const angle = Math.atan2(dy, dx);
     drawSimulatedPath(angle, 10);
+    clearTimeout(aimTimer);
+    aimTimer = setTimeout(() => {
+      clearSimulatedPath();
+    }, 100);
+  });
+
+  window.addEventListener('mouseout', () => {
+    clearTimeout(aimTimer);
+    clearSimulatedPath();
   });
 
   window.addEventListener('click', (e) => {
@@ -138,6 +149,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const idx = playerState.ammo.indexOf(type);
     if (idx !== -1) playerState.ammo.splice(idx, 1);
     shootBall(angle, type);
+    clearTimeout(aimTimer);
+    clearSimulatedPath();
     updateAmmo();
     playerState.nextBall = null;
     selectNextBall(firePoint);

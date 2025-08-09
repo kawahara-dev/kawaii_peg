@@ -14,6 +14,17 @@ export const firePoint = { x: width / 2, y: 50 };
 let aimSvg;
 let pegs = [];
 let initialPegCount = 0;
+let ghostEngine;
+let ghostBall;
+
+function createGhostEngine() {
+  ghostEngine = Engine.create({ gravity: engine.gravity });
+  ghostBall = Bodies.circle(firePoint.x, firePoint.y, 15, {
+    isSensor: true,
+    render: { visible: false }
+  });
+  World.add(ghostEngine.world, ghostBall);
+}
 
 export function initEngine() {
   engine = Engine.create();
@@ -45,6 +56,7 @@ export function initEngine() {
   World.add(world, bottomSensor);
 
   aimSvg = document.getElementById('aim-svg');
+  createGhostEngine();
 }
 
 export function generatePegs(count) {
@@ -91,16 +103,17 @@ export function generatePegs(count) {
 
 export function drawSimulatedPath(angle, speed) {
   while (aimSvg.firstChild) aimSvg.removeChild(aimSvg.firstChild);
-  const ghostEngine = Engine.create({ gravity: engine.gravity });
-  const ghostBall = Bodies.circle(firePoint.x, firePoint.y, 15, {
-    isSensor: true,
-    render: { visible: false }
-  });
+  if (!ghostEngine) {
+    createGhostEngine();
+  }
+  if (!ghostEngine.world.bodies.includes(ghostBall)) {
+    World.add(ghostEngine.world, ghostBall);
+  }
+  Body.setPosition(ghostBall, firePoint);
   Body.setVelocity(ghostBall, {
     x: Math.cos(angle) * speed,
     y: Math.sin(angle) * speed
   });
-  World.add(ghostEngine.world, ghostBall);
   for (let i = 0; i < 20; i++) {
     Engine.update(ghostEngine, 1000 / 60);
     const { x, y } = ghostBall.position;
@@ -111,6 +124,14 @@ export function drawSimulatedPath(angle, speed) {
     dot.setAttribute('r', 3);
     dot.setAttribute('class', 'aim-dot');
     aimSvg.appendChild(dot);
+  }
+}
+
+export function clearSimulatedPath() {
+  while (aimSvg.firstChild) aimSvg.removeChild(aimSvg.firstChild);
+  if (ghostEngine) {
+    World.clear(ghostEngine.world, false);
+    Engine.clear(ghostEngine);
   }
 }
 
