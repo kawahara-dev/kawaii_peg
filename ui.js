@@ -8,6 +8,7 @@ const playerHpValue = document.getElementById('player-hp-value');
 const playerHpMaxText = document.getElementById('player-hp-max');
 const playerHpFill = document.getElementById('player-hp-fill');
 const ammoValue = document.getElementById('ammo-value');
+const coinValue = document.getElementById('coin-value');
 const currentBallEl = document.getElementById('current-ball');
 const enemyGirl = document.getElementById('enemy-girl');
 const victoryOverlay = document.getElementById('victory-overlay');
@@ -77,6 +78,10 @@ export function updateAmmo() {
     }
     ammoValue.appendChild(icon);
   });
+}
+
+export function updateCoins() {
+  coinValue.textContent = playerState.coins;
 }
 
 export function updateCurrentBall(firePoint) {
@@ -214,3 +219,5 @@ export function updateProgress(enemyState) {
     progressIndicator.appendChild(li);
   });
 }
+
+updateCoins();
