@@ -200,18 +200,16 @@ export function updateProgress(enemyState) {
     } else if (idx === enemyState.progressIndex) {
       li.classList.add('current');
     }
+
     const circle = document.createElement('span');
     circle.classList.add('step-circle');
-    if (idx < enemyState.progressIndex) {
-      circle.innerHTML = '&#10003;';
+    if (step === 'ランダムイベント') {
+      circle.textContent = '?';
     } else {
-      if (step === 'ランダムイベント') {
-        circle.textContent = '?';
-      } else {
-        circle.textContent = enemyCount;
-        enemyCount++;
-      }
+      circle.textContent = enemyCount;
+      enemyCount++;
     }
+
     li.appendChild(circle);
     progressIndicator.appendChild(li);
   });
