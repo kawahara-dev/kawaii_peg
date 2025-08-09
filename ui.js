@@ -190,16 +190,20 @@ export function updateCurrentBall(firePoint) {
   currentBallEl.style.height = `${radius * 2}px`;
   currentBallEl.style.left = `${firePoint.x}px`;
   currentBallEl.style.top = `${firePoint.y}px`;
-  if (playerState.nextBall === 'heal') {
-    currentBallEl.style.backgroundImage = 'url("./image/recovery_ball.png")';
+  const imageMap = {
+    normal: 'normal_ball.png',
+    split: 'split_ball.png',
+    big: 'big_ball.png',
+    heal: 'recovery_ball.png'
+  };
+  const img = imageMap[playerState.nextBall];
+  if (img) {
+    currentBallEl.style.backgroundImage = `url("./image/${img}")`;
     currentBallEl.style.backgroundSize = 'cover';
     currentBallEl.style.backgroundColor = 'transparent';
   } else {
-    let color = '#00bfff';
-    if (playerState.nextBall === 'split') color = '#dda0dd';
-    else if (playerState.nextBall === 'big') color = '#ffa500';
     currentBallEl.style.backgroundImage = '';
-    currentBallEl.style.background = color;
+    currentBallEl.style.backgroundColor = '#00bfff';
   }
   currentBallEl.style.display = 'block';
   currentBallEl.innerHTML = '';
