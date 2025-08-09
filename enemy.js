@@ -1,12 +1,13 @@
 import { playerState } from './player.js';
 import { firePoint, generatePegs } from './engine.js';
-import { updateAmmo, updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, updateProgress, selectNextBall as uiSelectNextBall } from './ui.js';
+import { updateAmmo, updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, updateProgress, selectNextBall as uiSelectNextBall, updateAttackCountdown } from './ui.js';
 
 export const enemyState = {
   stage: 1,
   maxEnemyHP: 100,
   enemyHP: 100,
   pendingDamage: 0,
+  attackCountdown: 0,
   gameOver: false,
   progressSteps: [
     'ステージ1', 'ランダムイベント', 'ステージ2', 'ランダムイベント', 'ステージ3', 'ランダムイベント', 'ステージ4', 'ランダムイベント', 'ステージ5'
@@ -32,9 +33,11 @@ export function startStage() {
   enemyState.updateHPBar();
   updateAmmo();
   uiSelectNextBall(firePoint);
+  enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
   document.getElementById('stage-value').textContent = enemyState.stage;
   enemyState.progressIndex = (enemyState.stage - 1) * 2;
   updateProgress(enemyState);
+  updateAttackCountdown(enemyState);
 }
 
 export function enemyAttack() {
@@ -49,5 +52,7 @@ export function enemyAttack() {
     enemyState.gameOver = true;
     document.getElementById('game-over-overlay').style.display = 'flex';
   }
+  enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
+  updateAttackCountdown(enemyState);
 }
 
