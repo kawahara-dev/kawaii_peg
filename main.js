@@ -2,6 +2,14 @@ import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePo
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins } from './ui.js';
+import { healBallPath } from './constants.js';
+
+const ballImageMap = {
+  normal: './image/normal_ball.png',
+  split: './image/split_ball.png',
+  heal: healBallPath,
+  big: './image/big_ball.png'
+};
 
 const randomEvents = [
   {
@@ -30,6 +38,7 @@ const randomEvents = [
     choices() {
       const types = [...new Set(playerState.ownedBalls)];
       const opts = types.map(type => ({
+        type,
         label: `${type}ボール強化する〜`,
         apply() {
           playerState.ballLevels[type] = (playerState.ballLevels[type] || 1) + 1;
@@ -38,7 +47,7 @@ const randomEvents = [
         },
         result: `${type}ボールがパワーアップしたよ✨`
       }));
-      opts.push({ label: 'やっぱパス', apply() {}, result: '強化しなかったよ〜' });
+      opts.push({ type: null, label: 'やっぱパス', apply() {}, result: '強化しなかったよ〜' });
       return opts;
     }
   },
@@ -172,7 +181,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const choices = typeof ev.choices === 'function' ? ev.choices() : ev.choices;
     choices.forEach(choice => {
       const btn = document.createElement('button');
-      btn.textContent = choice.label;
+      if (choice.type && ballImageMap[choice.type]) {
+        const img = document.createElement('img');
+        img.src = ballImageMap[choice.type];
+        img.alt = `${choice.type}ボール`;
+        btn.appendChild(img);
+      }
+      const span = document.createElement('span');
+      span.textContent = choice.label;
+      btn.appendChild(span);
       btn.addEventListener('click', e => {
         e.stopPropagation();
         choice.apply();

@@ -475,6 +475,14 @@ canvas {
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+#event-options button img {
+  width: 24px;
+  height: 24px;
 }
 #event-overlay button {
   margin-top: 20px;
