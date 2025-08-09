@@ -75,7 +75,7 @@ export function generatePegs(count) {
         isSensor: true,
         render: {
           sprite: {
-            texture: 'image/coin.png',
+            texture: './image/coin.png',
             xScale: 0.25,
             yScale: 0.25
           }
@@ -113,6 +113,26 @@ export function generatePegs(count) {
   });
   pegs.push(bluePeg);
   World.add(world, pegs);
+
+  const hasCoin = pegs.some(p => p.label === 'coin');
+  if (!hasCoin) {
+    const cx = 50 + Math.random() * (width - 100);
+    const cy = 150 + Math.random() * (height - 250);
+    const coin = Bodies.circle(cx, cy, 10, {
+      isStatic: true,
+      isSensor: true,
+      render: {
+        sprite: {
+          texture: './image/coin.png',
+          xScale: 0.25,
+          yScale: 0.25
+        }
+      },
+      label: 'coin'
+    });
+    pegs.push(coin);
+    World.add(world, coin);
+  }
 }
 
 export function drawSimulatedPath(angle, speed) {
