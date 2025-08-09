@@ -33,6 +33,9 @@ export function updateHPBar(enemyState) {
   hpDisplay.textContent = `${hp} / ${enemyState.maxEnemyHP}`;
   if (enemyState.enemyHP <= 0 && !enemyState.gameOver) {
     enemyState.gameOver = true;
+    playerState.coins += enemyState.stage * 3;
+    updateCoins();
+    localStorage.setItem('coins', playerState.coins);
     setTimeout(() => {
       victoryImg.src = enemyState.defeatImages[Math.floor(Math.random() * enemyState.defeatImages.length)];
       victoryOverlay.style.display = 'flex';
