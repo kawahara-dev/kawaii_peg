@@ -100,7 +100,7 @@ html, body {
   border-radius: 50%;
   z-index: 6;
   pointer-events: none;
-  display: none;
+  display: block;
 }
 #stage-text {
   font-size: 20px;
@@ -532,7 +532,7 @@ canvas {
   background: #fff;
   color: #ff1493;
   cursor: pointer;
-  display: none;
+  display: block;
 }
 #version-history {
   width: 100%;

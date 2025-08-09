@@ -13,6 +13,7 @@ const currentBallEl = document.getElementById('current-ball');
 const enemyGirl = document.getElementById('enemy-girl');
 const victoryOverlay = document.getElementById('victory-overlay');
 const victoryImg = document.getElementById('victory-img');
+const retryButton = document.getElementById('retry-button');
 const rewardOverlay = document.getElementById('reward-overlay');
 const xpOverlay = document.getElementById('xp-overlay');
 const xpGained = document.getElementById('xp-gained');
@@ -51,6 +52,7 @@ export function updateHPBar(enemyState) {
         }
       };
       victoryOverlay.addEventListener('click', (e) => { e.stopPropagation(); proceed(); }, { once: true });
+      retryButton.addEventListener('click', (e) => { e.stopPropagation(); proceed(); }, { once: true });
     }, 200);
   }
 }
