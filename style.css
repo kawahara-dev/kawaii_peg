@@ -376,6 +376,22 @@ canvas {
 #event-message {
   color: #000;
 }
+#event-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+#event-options button {
+  margin-top: 0;
+  padding: 10px 20px;
+  background: #ff69b4;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
 #event-overlay button {
   margin-top: 20px;
   padding: 10px 20px;

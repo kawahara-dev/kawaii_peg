@@ -3,25 +3,54 @@ import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress } from './ui.js';
 
-let currentEventEffect = null;
 const randomEvents = [
   {
-    message: 'HPが20回復したよ💖',
-    apply() {
-      playerState.playerHP = Math.min(playerState.playerMaxHP, playerState.playerHP + 20);
-    }
+    text: 'キラキラの泉を発見したよ☆',
+    choices: [
+      {
+        label: 'ゴクゴク飲む💖',
+        apply() {
+          playerState.playerHP = Math.min(
+            playerState.playerMaxHP,
+            playerState.playerHP + 20
+          );
+        }
+      },
+      {
+        label: 'やめとく〜',
+        apply() {}
+      }
+    ]
   },
   {
-    message: 'HPが20減っちゃった…😭',
-    apply() {
-      playerState.playerHP = Math.max(0, playerState.playerHP - 20);
-    }
+    text: 'トゲトゲの罠があるっぽい…',
+    choices: [
+      {
+        label: 'そっと避ける✨',
+        apply() {}
+      },
+      {
+        label: '踏んでみる⁉️',
+        apply() {
+          playerState.playerHP = Math.max(0, playerState.playerHP - 20);
+        }
+      }
+    ]
   },
   {
-    message: 'ノーマルボールが1つ増えたよ✨',
-    apply() {
-      playerState.ownedBalls.push('normal');
-    }
+    text: '道端にノーマルボールが落ちてた！',
+    choices: [
+      {
+        label: '拾っちゃお🎀',
+        apply() {
+          playerState.ownedBalls.push('normal');
+        }
+      },
+      {
+        label: '今はいらないかも',
+        apply() {}
+      }
+    ]
   }
 ];
 
@@ -53,7 +82,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const rewardButtons = document.querySelectorAll('.reward-button');
   const eventOverlay = document.getElementById('event-overlay');
   const eventMessage = document.getElementById('event-message');
-  const eventContinue = document.getElementById('event-continue-button');
+  const eventOptions = document.getElementById('event-options');
   const gameOverOverlay = document.getElementById('game-over-overlay');
   const gameOverRetry = document.getElementById('game-over-retry-button');
   const reloadOverlay = document.getElementById('reload-overlay');
@@ -98,8 +127,22 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
     const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
-    eventMessage.textContent = ev.message;
-    currentEventEffect = ev.apply.bind(ev);
+    eventMessage.textContent = ev.text;
+    eventOptions.innerHTML = '';
+    ev.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      btn.textContent = choice.label;
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        choice.apply();
+        updatePlayerHP();
+        updateAmmo();
+        eventOverlay.style.display = 'none';
+        enemyState.stage += 1;
+        startStage();
+      });
+      eventOptions.appendChild(btn);
+    });
     eventOverlay.style.display = 'flex';
   }
 
@@ -185,18 +228,6 @@ window.addEventListener('DOMContentLoaded', () => {
       rewardOverlay.style.display = 'none';
       triggerRandomEvent();
     });
-  });
-
-  eventContinue.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (typeof currentEventEffect === 'function') {
-      currentEventEffect();
-      updatePlayerHP();
-      updateAmmo();
-    }
-    enemyState.stage += 1;
-    startStage();
-    eventOverlay.style.display = 'none';
   });
 
   gameOverRetry.addEventListener('click', (e) => {
