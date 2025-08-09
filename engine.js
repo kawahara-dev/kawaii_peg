@@ -1,4 +1,5 @@
 import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchHeartAttack } from './ui.js';
+import { updateCurrentBall } from './ui.js';
 import { playerState } from './player.js';
 import { enemyState } from './enemy.js';
 
@@ -172,6 +173,8 @@ export function shootBall(angle, type) {
     playerState.currentBalls.push(ball);
   }
   playerState.currentShotType = type;
+  playerState.nextBall = null;
+  updateCurrentBall(firePoint);
 }
 
 export function setupCollisionHandler() {
