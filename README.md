@@ -1,11 +1,11 @@
 # kawaii_peg
 ペグリンっぽいかわいいゲーム
 
-`index.html` にアクセスするとゲームが表示されます。
+ブラウザで `index.html` を開くだけでゲームが起動するよ。
 
 ## ビルド手順
 
-特別なビルド工程はないよ。`index.html`, `style.css`, `game.js` を同じフォルダに置いてブラウザで開くだけで遊べるよ。
+特別なビルド工程はないよ。`index.html`, `style.css`, `main.js` と関連スクリプト（`engine.js`, `player.js`, `enemy.js`, `ui.js`）を同じフォルダに置いて、ブラウザで `index.html` を開くだけで遊べるよ。
 
 ## 追加要素
 
