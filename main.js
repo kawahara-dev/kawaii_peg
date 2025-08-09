@@ -14,11 +14,13 @@ const randomEvents = [
             playerState.playerMaxHP,
             playerState.playerHP + 20
           );
-        }
+        },
+        result: 'HPが20回復したよ💕'
       },
       {
         label: 'やめとく〜',
-        apply() {}
+        apply() {},
+        result: '何も変わらなかったよ〜'
       }
     ]
   },
@@ -33,9 +35,10 @@ const randomEvents = [
           playerState.ballLevels[type] = (playerState.ballLevels[type] || 1) + 1;
           updateAmmo();
           updateCurrentBall(firePoint);
-        }
+        },
+        result: `${type}ボールがパワーアップしたよ✨`
       }));
-      opts.push({ label: 'やっぱパス', apply() {} });
+      opts.push({ label: 'やっぱパス', apply() {}, result: '強化しなかったよ〜' });
       return opts;
     }
   },
@@ -44,13 +47,15 @@ const randomEvents = [
     choices: [
       {
         label: 'そっと避ける✨',
-        apply() {}
+        apply() {},
+        result: '上手く避けたよ♪'
       },
       {
         label: '踏んでみる⁉️',
         apply() {
           playerState.playerHP = Math.max(0, playerState.playerHP - 20);
-        }
+        },
+        result: 'イタタ…HPが20減っちゃった💦'
       }
     ]
   },
@@ -61,11 +66,13 @@ const randomEvents = [
         label: '拾っちゃお🎀',
         apply() {
           playerState.ownedBalls.push('normal');
-        }
+        },
+        result: 'ノーマルボールゲットだよ☆'
       },
       {
         label: '今はいらないかも',
-        apply() {}
+        apply() {},
+        result: 'スルーしたよ〜'
       }
     ]
   },
@@ -167,9 +174,26 @@ window.addEventListener('DOMContentLoaded', () => {
         choice.apply();
         updatePlayerHP();
         updateAmmo();
-        eventOverlay.style.display = 'none';
-        enemyState.stage += 1;
-        startStage();
+        eventMessage.textContent = choice.result;
+        eventOptions.innerHTML = '';
+        let proceeded = false;
+        const proceed = () => {
+          if (proceeded) return;
+          proceeded = true;
+          eventOverlay.style.display = 'none';
+          enemyState.stage += 1;
+          startStage();
+        };
+        let timer;
+        const okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.addEventListener('click', e2 => {
+          e2.stopPropagation();
+          clearTimeout(timer);
+          proceed();
+        });
+        eventOptions.appendChild(okBtn);
+        timer = setTimeout(proceed, 2000);
       });
       eventOptions.appendChild(btn);
     });
