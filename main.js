@@ -3,6 +3,7 @@ import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins } from './ui.js';
 import { healBallPath } from './constants.js';
+import { shuffle } from './utils.js';
 
 const ballImageMap = {
   normal: './image/normal_ball.png',
@@ -75,10 +76,10 @@ const randomEvents = [
       {
         label: '拾っちゃお🎀',
         apply() {
-          playerState.ownedBalls.push('normal');
-          playerState.ammo = playerState.ownedBalls.slice();
-          playerState.shotQueue = playerState.ammo.slice();
-          enemyState.selectNextBall();
+            playerState.ownedBalls.push('normal');
+            playerState.ammo = playerState.ownedBalls.slice();
+            playerState.shotQueue = shuffle(playerState.ammo.slice());
+            enemyState.selectNextBall();
         },
         result: 'ノーマルボールゲットだよ☆'
       },
@@ -230,7 +231,7 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.reloading = true;
     setTimeout(() => {
       playerState.ammo = playerState.ownedBalls.slice();
-      playerState.shotQueue = playerState.ammo.slice();
+      playerState.shotQueue = shuffle(playerState.ammo.slice());
       reloadOverlay.style.display = 'none';
       enemyState.selectNextBall();
       playerState.reloading = false;
@@ -303,7 +304,7 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
     playerState.playerHP = playerState.playerMaxHP;
     playerState.ammo = playerState.ownedBalls.slice();
-    playerState.shotQueue = playerState.ammo.slice();
+    playerState.shotQueue = shuffle(playerState.ammo.slice());
     playerState.currentBalls = [];
     playerState.currentShotType = null;
     playerState.nextBall = null;
@@ -336,7 +337,7 @@ window.addEventListener('DOMContentLoaded', () => {
         playerState.ballLevels[type] = 1;
       }
       playerState.ammo = playerState.ownedBalls.slice();
-      playerState.shotQueue = playerState.ammo.slice();
+      playerState.shotQueue = shuffle(playerState.ammo.slice());
       enemyState.selectNextBall();
       rewardOverlay.style.display = 'none';
       triggerRandomEvent();
@@ -354,7 +355,7 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
     playerState.playerHP = playerState.playerMaxHP;
     playerState.ammo = playerState.ownedBalls.slice();
-    playerState.shotQueue = playerState.ammo.slice();
+    playerState.shotQueue = shuffle(playerState.ammo.slice());
     playerState.currentBalls = [];
     playerState.currentShotType = null;
     playerState.nextBall = null;
