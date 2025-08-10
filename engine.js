@@ -293,7 +293,7 @@ export function setupCollisionHandler() {
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
         enemyState.pendingDamage += damage;
-        showDamageText(peg.position.x, peg.position.y, '+' + enemyState.pendingDamage, ball.ballType === 'heal');
+        showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
         if (ball.ballType === 'heal') {
           showHealSpark(peg.position.x, peg.position.y);
         } else {
@@ -320,7 +320,7 @@ export function setupCollisionHandler() {
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
         enemyState.pendingDamage += damage;
-        showDamageText(peg.position.x, peg.position.y, '+' + enemyState.pendingDamage, ball.ballType === 'heal');
+        showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
         if (ball.ballType === 'heal') {
           showHealSpark(peg.position.x, peg.position.y);
         } else {
@@ -343,14 +343,14 @@ export function setupCollisionHandler() {
           if (playerState.currentShotType === 'heal') {
             playerState.playerHP = Math.min(playerState.playerMaxHP, playerState.playerHP + totalDamage);
             enemyState.updatePlayerHP();
-            showDamageText(x, y, '+' + totalDamage, true);
+            showDamageText(Math.round(x), Math.round(y), '+' + Math.round(totalDamage), true);
             showHealSpark(x, y);
           } else {
             if (totalDamage > 0) {
               enemyState.enemyHP -= totalDamage;
               enemyState.updateHPBar();
               enemyState.flashEnemyDamage();
-              showDamageText(x, y, '-' + totalDamage);
+              showDamageText(Math.round(x), Math.round(y), '-' + Math.round(totalDamage));
               showHitSpark(x, y);
             }
           }
@@ -384,7 +384,7 @@ export function explodeBomb(peg, ball) {
         dmg *= ball.damageMultiplier || 1;
         dmg *= 1 + playerState.atkLevel * 0.1;
         enemyState.pendingDamage += dmg;
-        showDamageText(body.position.x, body.position.y, '+' + enemyState.pendingDamage, ball.ballType === 'heal');
+        showDamageText(Math.round(body.position.x), Math.round(body.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
         if (ball.ballType === 'heal') {
           showHealSpark(body.position.x, body.position.y);
         } else {
