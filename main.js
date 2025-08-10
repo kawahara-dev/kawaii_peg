@@ -76,8 +76,8 @@ const randomEvents = [
         apply() {
           playerState.ownedBalls.push('normal');
           playerState.ammo = playerState.ownedBalls.slice();
-          updateAmmo();
-          updateCurrentBall(firePoint);
+          playerState.shotQueue = playerState.ammo.slice();
+          enemyState.selectNextBall();
         },
         result: 'ノーマルボールゲットだよ☆'
       },
@@ -229,8 +229,8 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.reloading = true;
     setTimeout(() => {
       playerState.ammo = playerState.ownedBalls.slice();
+      playerState.shotQueue = playerState.ammo.slice();
       reloadOverlay.style.display = 'none';
-      updateAmmo();
       enemyState.selectNextBall();
       playerState.reloading = false;
     }, 1000);
@@ -302,13 +302,13 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
     playerState.playerHP = playerState.playerMaxHP;
     playerState.ammo = playerState.ownedBalls.slice();
+    playerState.shotQueue = playerState.ammo.slice();
     playerState.currentBalls = [];
     playerState.currentShotType = null;
     playerState.nextBall = null;
     playerState.reloading = false;
     updatePlayerHP();
-    updateAmmo();
-    updateCurrentBall(firePoint);
+    enemyState.selectNextBall();
     updateProgress(enemyState);
     document.getElementById('stage-value').textContent = enemyState.stage;
     playerState.coins = 0;
@@ -335,8 +335,8 @@ window.addEventListener('DOMContentLoaded', () => {
         playerState.ballLevels[type] = 1;
       }
       playerState.ammo = playerState.ownedBalls.slice();
-      updateAmmo();
-      updateCurrentBall(firePoint);
+      playerState.shotQueue = playerState.ammo.slice();
+      enemyState.selectNextBall();
       rewardOverlay.style.display = 'none';
       triggerRandomEvent();
     });
@@ -353,13 +353,13 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
     playerState.playerHP = playerState.playerMaxHP;
     playerState.ammo = playerState.ownedBalls.slice();
+    playerState.shotQueue = playerState.ammo.slice();
     playerState.currentBalls = [];
     playerState.currentShotType = null;
     playerState.nextBall = null;
     playerState.reloading = false;
     updatePlayerHP();
-    updateAmmo();
-    updateCurrentBall(firePoint);
+    enemyState.selectNextBall();
     updateProgress(enemyState);
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
@@ -403,7 +403,7 @@ window.addEventListener('DOMContentLoaded', () => {
     shootBall(angle, type);
     clearTimeout(aimTimer);
     clearSimulatedPath();
-    updateAmmo();
+    enemyState.selectNextBall();
   };
 
   aimSvg.addEventListener('click', handleShoot);

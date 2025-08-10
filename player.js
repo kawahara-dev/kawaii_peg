@@ -4,6 +4,7 @@ export const playerState = {
   playerHP: 100,
   playerMaxHP: 100,
   ammo: [],
+  shotQueue: [],
   ownedBalls: [],
   ballLevels: { normal: 1 },
   nextBall: null,
