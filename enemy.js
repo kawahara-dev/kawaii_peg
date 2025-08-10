@@ -1,6 +1,7 @@
 import { playerState } from './player.js';
 import { firePoint, generatePegs } from './engine.js';
 import { updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, updateProgress, selectNextBall as uiSelectNextBall, updateAttackCountdown } from './ui.js';
+import { shuffle } from './utils.js';
 
 export const enemyState = {
   stage: 1,
@@ -29,8 +30,8 @@ export function startStage() {
   enemyState.pendingDamage = 0;
   playerState.currentBalls = [];
   playerState.currentShotType = null;
-  playerState.ammo = playerState.ownedBalls.slice();
-  playerState.shotQueue = playerState.ammo.slice();
+    playerState.ammo = playerState.ownedBalls.slice();
+    playerState.shotQueue = shuffle(playerState.ammo.slice());
   enemyState.updateHPBar();
   uiSelectNextBall(firePoint);
   enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
