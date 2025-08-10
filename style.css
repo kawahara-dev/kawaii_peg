@@ -131,7 +131,7 @@ html, body {
   background: #00bfff;
   background-size: cover;
   background-repeat: no-repeat;
-  border: 1px solid #ff69b4;
+  border: none;
   margin-right: 4px;
   position: relative;
 }
