@@ -213,7 +213,7 @@ export function shootBall(angle, type) {
       playerState.currentBalls.push(ball);
     }
   } else if (type === 'penetration') {
-    const base = 15;
+    const base = 20;
     const radius = base * sizeMul;
     const scale = (radius * 2) / healBallWidth;
     const options = {
