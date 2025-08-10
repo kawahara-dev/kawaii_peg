@@ -41,6 +41,12 @@ export function initEngine() {
   runner = Runner.create();
   Runner.run(runner, engine);
 
+  Events.on(engine, 'beforeUpdate', () => {
+    playerState.currentBalls.forEach(ball => {
+      ball.prevVelocity = { x: ball.velocity.x, y: ball.velocity.y };
+    });
+  });
+
   const wallOptions = { isStatic: true, render: { fillStyle: '#ff69b4' } };
   const walls = [
     Bodies.rectangle(width / 2, height + 25, width, 50, wallOptions),
@@ -202,9 +208,33 @@ export function shootBall(angle, type) {
       ball.damageMultiplier = 0.5 * dmgMul;
       ball.ballType = 'split';
       Body.setVelocity(ball, { x: Math.cos(a) * power, y: Math.sin(a) * power });
+      ball.prevVelocity = { x: Math.cos(a) * power, y: Math.sin(a) * power };
       World.add(world, ball);
       playerState.currentBalls.push(ball);
     }
+  } else if (type === 'penetration') {
+    const base = 15;
+    const radius = base * sizeMul;
+    const scale = (radius * 2) / healBallWidth;
+    const options = {
+      restitution: 0,
+      friction: 0,
+      label: 'ball',
+      render: {
+        sprite: {
+          texture: './image/penetration_ball.png',
+          xScale: scale,
+          yScale: scale
+        }
+      }
+    };
+    const ball = Bodies.circle(firePoint.x, firePoint.y, radius, options);
+    ball.damageMultiplier = dmgMul;
+    ball.ballType = 'penetration';
+    Body.setVelocity(ball, { x: Math.cos(angle) * power, y: Math.sin(angle) * power });
+    ball.prevVelocity = { x: Math.cos(angle) * power, y: Math.sin(angle) * power };
+    World.add(world, ball);
+    playerState.currentBalls.push(ball);
   } else {
     const base = type === 'big' ? 30 : 15;
     const radius = base * sizeMul;
@@ -219,8 +249,6 @@ export function shootBall(angle, type) {
               ? healBallPath
               : type === 'big'
               ? './image/big_ball.png'
-              : type === 'penetration'
-              ? './image/penetration_ball.png'
               : './image/normal_ball.png',
           xScale: scale,
           yScale: scale
@@ -231,6 +259,7 @@ export function shootBall(angle, type) {
     ball.damageMultiplier = dmgMul;
     ball.ballType = type;
     Body.setVelocity(ball, { x: Math.cos(angle) * power, y: Math.sin(angle) * power });
+    ball.prevVelocity = { x: Math.cos(angle) * power, y: Math.sin(angle) * power };
     World.add(world, ball);
     playerState.currentBalls.push(ball);
   }
@@ -252,6 +281,9 @@ export function setupCollisionHandler() {
         } else {
           explodeBomb(peg, ball);
         }
+        if (ball.ballType === 'penetration') {
+          Body.setVelocity(ball, ball.prevVelocity);
+        }
       } else if (labels.includes('ball') && labels.includes('peg-blue')) {
         const peg = pair.bodyA.label === 'peg-blue' ? pair.bodyA : pair.bodyB;
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
@@ -268,6 +300,9 @@ export function setupCollisionHandler() {
           showHitSpark(peg.position.x, peg.position.y);
         }
         generatePegs(initialPegCount);
+        if (ball.ballType === 'penetration') {
+          Body.setVelocity(ball, ball.prevVelocity);
+        }
       } else if (labels.includes('ball') && labels.includes('coin')) {
         const coin = pair.bodyA.label === 'coin' ? pair.bodyA : pair.bodyB;
         World.remove(world, coin);
@@ -290,6 +325,9 @@ export function setupCollisionHandler() {
           showHealSpark(peg.position.x, peg.position.y);
         } else {
           showHitSpark(peg.position.x, peg.position.y);
+        }
+        if (ball.ballType === 'penetration') {
+          Body.setVelocity(ball, ball.prevVelocity);
         }
       }
       if (labels.includes('ball') && labels.includes('bottom-sensor')) {
