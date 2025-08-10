@@ -323,7 +323,6 @@ export function setupCollisionHandler() {
           } else {
             updateAttackCountdown(enemyState);
           }
-          enemyState.selectNextBall();
         }
       }
     });

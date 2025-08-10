@@ -81,7 +81,7 @@ export function updatePlayerHP() {
 
 export function updateAmmo() {
   ammoValue.innerHTML = '';
-  playerState.ammo.forEach(type => {
+  playerState.shotQueue.forEach((type, index) => {
     const icon = document.createElement('span');
     icon.className = 'ammo-ball';
     if (type === 'normal') {
@@ -102,6 +102,13 @@ export function updateAmmo() {
       badge.className = 'level-badge';
       badge.textContent = `+${lvl - 1}`;
       icon.appendChild(badge);
+    }
+    const num = document.createElement('span');
+    num.className = 'queue-number';
+    num.textContent = index + 1;
+    icon.appendChild(num);
+    if (index === 0) {
+      icon.style.outline = '2px solid yellow';
     }
     ammoValue.appendChild(icon);
   });
@@ -184,11 +191,11 @@ export function showShopOverlay(onDone) {
       return;
     }
     playerState.ammo = playerState.ownedBalls.slice();
+    playerState.shotQueue = playerState.ammo.slice();
     localStorage.setItem('coins', playerState.coins);
     shopOptions.removeEventListener('click', handleClick);
     shopOverlay.style.display = 'none';
-    updateAmmo();
-    updateCurrentBall(firePoint);
+    selectNextBall(firePoint);
     updateCoins();
     onDone && onDone();
   };
@@ -242,13 +249,13 @@ export function updateCurrentBall(firePoint) {
 }
 
 export function selectNextBall(firePoint) {
-  if (playerState.ammo.length > 0) {
-    const idx = Math.floor(Math.random() * playerState.ammo.length);
-    playerState.nextBall = playerState.ammo[idx];
+  if (playerState.shotQueue.length > 0) {
+    playerState.nextBall = playerState.shotQueue.shift();
   } else {
     playerState.nextBall = null;
   }
   updateCurrentBall(firePoint);
+  updateAmmo();
 }
 
 export function flashEnemyDamage(enemyState) {
