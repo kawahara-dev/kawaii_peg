@@ -92,6 +92,8 @@ export function updateAmmo() {
       icon.style.backgroundImage = `url("${healBallPath}")`;
     } else if (type === 'big') {
       icon.style.backgroundImage = 'url("./image/big_ball.png")';
+    } else if (type === 'penetration') {
+      icon.style.backgroundImage = 'url("./image/penetration_ball.png")';
     }
     icon.style.backgroundSize = 'cover';
     icon.style.backgroundColor = 'transparent';
@@ -126,14 +128,16 @@ const shopData = {
   normal: { label: 'ノーマル', buy: 5, sell: 5, upgrade: 8 },
   split: { label: 'スプリット', buy: 10, sell: 10, upgrade: 15 },
   heal: { label: 'ヒール', buy: 10, sell: 10, upgrade: 15 },
-  big: { label: 'ビッグ', buy: 10, sell: 10, upgrade: 15 }
+  big: { label: 'ビッグ', buy: 10, sell: 10, upgrade: 15 },
+  penetration: { label: 'ペネトレーション', buy: 10, sell: 10, upgrade: 15 }
 };
 
 const shopImageMap = {
   normal: './image/normal_ball.png',
   split: './image/split_ball.png',
   heal: healBallPath,
-  big: './image/big_ball.png'
+  big: './image/big_ball.png',
+  penetration: './image/penetration_ball.png'
 };
 
 export function showShopOverlay(onDone) {
@@ -227,7 +231,8 @@ export function updateCurrentBall(firePoint) {
     normal: 'normal_ball.png',
     split: 'split_ball.png',
     big: 'big_ball.png',
-    heal: 'recovery_ball.png'
+    heal: 'recovery_ball.png',
+    penetration: 'penetration_ball.png'
   };
   const img = imageMap[playerState.nextBall];
   if (img) {

@@ -8,7 +8,8 @@ const ballImageMap = {
   normal: './image/normal_ball.png',
   split: './image/split_ball.png',
   heal: healBallPath,
-  big: './image/big_ball.png'
+  big: './image/big_ball.png',
+  penetration: './image/penetration_ball.png'
 };
 
 const randomEvents = [
