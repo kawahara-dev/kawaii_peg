@@ -219,6 +219,8 @@ export function shootBall(angle, type) {
               ? healBallPath
               : type === 'big'
               ? './image/big_ball.png'
+              : type === 'penetration'
+              ? './image/penetration_ball.png'
               : './image/normal_ball.png',
           xScale: scale,
           yScale: scale
