@@ -240,6 +240,11 @@ export function updateCurrentBall(firePoint) {
     currentBallEl.style.backgroundImage = `url("./image/${img}")`;
     currentBallEl.style.backgroundSize = 'cover';
     currentBallEl.style.backgroundColor = 'transparent';
+    if (playerState.nextBall === 'penetration') {
+      currentBallEl.style.border = 'none';
+    } else {
+      currentBallEl.style.border = '2px solid #ff69b4';
+    }
   } else {
     currentBallEl.style.backgroundImage = '';
     currentBallEl.style.backgroundColor = '#00bfff';
