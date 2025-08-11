@@ -44,7 +44,7 @@ export function initEngine() {
   Events.on(engine, 'beforeUpdate', () => {
     playerState.currentBalls.forEach(ball => {
       ball.prevVelocity = { x: ball.velocity.x, y: ball.velocity.y };
-      if (ball.ballType === 'penetration') {
+      if (ball.ballType === 'penetration' && (ball.velocity.x || ball.velocity.y)) {
         const angle = Math.atan2(ball.velocity.y, ball.velocity.x) + Math.PI / 2;
         Body.setAngle(ball, angle);
       }
@@ -235,10 +235,10 @@ export function shootBall(angle, type) {
       }
     };
     const ball = Bodies.circle(firePoint.x, firePoint.y, radius, options);
-    Body.setAngle(ball, Math.PI / 2);
     ball.damageMultiplier = dmgMul;
     ball.ballType = 'penetration';
     Body.setVelocity(ball, { x: Math.cos(angle) * power, y: Math.sin(angle) * power });
+    Body.setAngle(ball, Math.PI / 2);
     ball.prevVelocity = { x: Math.cos(angle) * power, y: Math.sin(angle) * power };
     World.add(world, ball);
     playerState.currentBalls.push(ball);
