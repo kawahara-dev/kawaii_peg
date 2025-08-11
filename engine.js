@@ -44,6 +44,10 @@ export function initEngine() {
   Events.on(engine, 'beforeUpdate', () => {
     playerState.currentBalls.forEach(ball => {
       ball.prevVelocity = { x: ball.velocity.x, y: ball.velocity.y };
+      if (ball.ballType === 'penetration') {
+        const angle = Math.atan2(ball.velocity.y, ball.velocity.x) + Math.PI / 2;
+        Body.setAngle(ball, angle);
+      }
     });
   });
 
@@ -224,11 +228,14 @@ export function shootBall(angle, type) {
         sprite: {
           texture: './image/penetration_ball.png',
           xScale: scale,
-          yScale: scale
+          yScale: scale,
+          xOffset: 0.5,
+          yOffset: 1
         }
       }
     };
     const ball = Bodies.circle(firePoint.x, firePoint.y, radius, options);
+    Body.setAngle(ball, Math.PI / 2);
     ball.damageMultiplier = dmgMul;
     ball.ballType = 'penetration';
     Body.setVelocity(ball, { x: Math.cos(angle) * power, y: Math.sin(angle) * power });
