@@ -218,6 +218,7 @@ export function updateCurrentBall(firePoint) {
   if (!playerState.nextBall) {
     currentBallEl.style.display = 'none';
     currentBallEl.innerHTML = '';
+    currentBallEl.style.border = 'none';
     return;
   }
   const lvl = playerState.ballLevels[playerState.nextBall] || 1;
@@ -240,15 +241,12 @@ export function updateCurrentBall(firePoint) {
     currentBallEl.style.backgroundImage = `url("./image/${img}")`;
     currentBallEl.style.backgroundSize = 'cover';
     currentBallEl.style.backgroundColor = 'transparent';
-    if (playerState.nextBall === 'penetration') {
-      currentBallEl.style.border = 'none';
-    } else {
-      currentBallEl.style.border = '2px solid #ff69b4';
-    }
   } else {
     currentBallEl.style.backgroundImage = '';
     currentBallEl.style.backgroundColor = '#00bfff';
   }
+  currentBallEl.style.border =
+    playerState.nextBall === 'penetration' ? 'none' : '2px solid #ff69b4';
   currentBallEl.style.display = 'block';
   currentBallEl.innerHTML = '';
   if (lvl > 1) {
