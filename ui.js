@@ -245,6 +245,8 @@ export function updateCurrentBall(firePoint) {
     currentBallEl.style.backgroundImage = '';
     currentBallEl.style.backgroundColor = '#00bfff';
   }
+  currentBallEl.style.transform =
+    playerState.nextBall === 'penetration' ? 'rotate(180deg)' : 'none';
   currentBallEl.style.border =
     playerState.nextBall === 'penetration' ? 'none' : '2px solid #ff69b4';
   currentBallEl.style.display = 'block';
