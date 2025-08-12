@@ -3,6 +3,19 @@ import { firePoint, generatePegs } from './engine.js';
 import { updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, updateProgress, selectNextBall as uiSelectNextBall, updateAttackCountdown } from './ui.js';
 import { shuffle } from './utils.js';
 
+export const enemyVariants = [
+  {
+    normalImage: 'image/enemy_normal.png',
+    damageImage: 'image/enemy_damage.png',
+    defeatImages: ['image/enemy_defeat.png', 'image/enemy_defeat2.png']
+  },
+  {
+    normalImage: 'image/enemy2_normal.png',
+    damageImage: 'image/enemy2_damage.png',
+    defeatImages: ['image/enemy2_defeat.png', 'image/enemy2_defeat2.png', 'image/enemy2_defeat3.png']
+  }
+];
+
 export function enemyAttack() {
   if (enemyState.gameOver) {
     return;
@@ -20,6 +33,8 @@ export function enemyAttack() {
   }
 }
 
+const defaultEnemy = enemyVariants[0];
+
 export const enemyState = {
   stage: 1,
   maxEnemyHP: 100,
@@ -31,7 +46,9 @@ export const enemyState = {
     'ステージ1', 'ランダムイベント', 'ステージ2', 'ランダムイベント', 'ステージ3', 'ランダムイベント', 'ステージ4', 'ランダムイベント', 'ステージ5'
   ],
   progressIndex: 0,
-  defeatImages: ['image/enemy_defeat.png', 'image/enemy_defeat2.png'],
+  normalImage: defaultEnemy.normalImage,
+  damageImage: defaultEnemy.damageImage,
+  defeatImages: defaultEnemy.defeatImages.slice(),
   selectNextBall: () => uiSelectNextBall(firePoint),
   updateHPBar: () => updateHPBar(enemyState),
   updatePlayerHP,
@@ -40,7 +57,11 @@ export const enemyState = {
 };
 
 export function startStage() {
-  document.getElementById('enemy-girl').src = 'image/enemy_normal.png';
+  const variant = enemyVariants[Math.floor(Math.random() * enemyVariants.length)];
+  enemyState.normalImage = variant.normalImage;
+  enemyState.damageImage = variant.damageImage;
+  enemyState.defeatImages = variant.defeatImages.slice();
+  document.getElementById('enemy-girl').src = enemyState.normalImage;
   generatePegs(50 + (enemyState.stage - 1) * 10);
   enemyState.maxEnemyHP = 100 + (enemyState.stage - 1) * 100;
   enemyState.enemyHP = enemyState.maxEnemyHP;
