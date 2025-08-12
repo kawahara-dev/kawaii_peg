@@ -5,14 +5,14 @@ import { shuffle } from './utils.js';
 
 export const enemyVariants = [
   {
-    normalImage: 'image/enemy_normal.png',
-    damageImage: 'image/enemy_damage.png',
-    defeatImages: ['image/enemy_defeat.png', 'image/enemy_defeat2.png']
+      normalImage: 'image/enemies/enemy_normal.png',
+      damageImage: 'image/enemies/enemy_damage.png',
+      defeatImages: ['image/enemies/enemy_defeat.png', 'image/enemies/enemy_defeat2.png']
   },
   {
-    normalImage: 'image/enemy2_normal.png',
-    damageImage: 'image/enemy2_damage.png',
-    defeatImages: ['image/enemy2_defeat.png', 'image/enemy2_defeat2.png', 'image/enemy2_defeat3.png']
+      normalImage: 'image/enemies/enemy2_normal.png',
+      damageImage: 'image/enemies/enemy2_damage.png',
+      defeatImages: ['image/enemies/enemy2_defeat.png', 'image/enemies/enemy2_defeat2.png', 'image/enemies/enemy2_defeat3.png']
   }
 ];
 

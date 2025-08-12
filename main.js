@@ -6,11 +6,11 @@ import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
 
 const ballImageMap = {
-  normal: './image/normal_ball.png',
-  split: './image/split_ball.png',
+  normal: './image/balls/normal_ball.png',
+  split: './image/balls/split_ball.png',
   heal: healBallPath,
-  big: './image/big_ball.png',
-  penetration: './image/penetration_ball.png'
+  big: './image/balls/big_ball.png',
+  penetration: './image/balls/penetration_ball.png'
 };
 
 const randomEvents = [
