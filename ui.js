@@ -227,8 +227,8 @@ export function updateCurrentBall(firePoint) {
   const radius = base * sizeMul;
   currentBallEl.style.width = `${radius * 2}px`;
   currentBallEl.style.height = `${radius * 2}px`;
-  currentBallEl.style.left = `${firePoint.x}px`;
-  currentBallEl.style.top = `${firePoint.y}px`;
+  currentBallEl.style.left = `${firePoint.x - radius}px`;
+  currentBallEl.style.top = `${firePoint.y - radius}px`;
   const imageMap = {
     normal: 'normal_ball.png',
     split: 'split_ball.png',
