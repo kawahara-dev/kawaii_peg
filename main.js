@@ -240,13 +240,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   startButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    hideOverlay(menuOverlay);
     enemyState.stage = 1;
     enemyState.gameOver = false;
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
     startStage();
+    hideOverlay(menuOverlay);
   });
 
   upgradeMenuButton.addEventListener('click', (e) => {
