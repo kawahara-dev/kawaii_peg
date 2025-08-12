@@ -223,7 +223,7 @@ export function updateCurrentBall(firePoint) {
   }
   const lvl = playerState.ballLevels[playerState.nextBall] || 1;
   const sizeMul = 1 + (lvl - 1) * 0.1;
-  const base = playerState.nextBall === 'big' ? 30 : 15;
+  const base = playerState.nextBall === 'big' ? 30 : playerState.nextBall === 'penetration' ? 20 : 15;
   const radius = base * sizeMul;
   currentBallEl.style.width = `${radius * 2}px`;
   currentBallEl.style.height = `${radius * 2}px`;
