@@ -87,7 +87,7 @@ export function generatePegs(count) {
         isSensor: true,
         render: {
           sprite: {
-            texture: './image/coin.png',
+            texture: './image/items/coin.png',
             xScale: 0.04,
             yScale: 0.04
           }
@@ -99,7 +99,7 @@ export function generatePegs(count) {
         isStatic: true,
         render: {
           sprite: {
-            texture: './image/bomb.png',
+            texture: './image/items/bomb.png',
             xScale: 0.06,
             yScale: 0.06
           }
@@ -141,7 +141,7 @@ export function generatePegs(count) {
       isSensor: true,
       render: {
         sprite: {
-          texture: './image/coin.png',
+          texture: './image/items/coin.png',
           xScale: 0.04,
           yScale: 0.04
         }
@@ -204,7 +204,7 @@ export function shootBall(angle, type) {
         restitution: 0.9,
         render: {
           sprite: {
-            texture: './image/split_ball.png',
+            texture: './image/balls/split_ball.png',
             xScale: scale,
             yScale: scale
           }
@@ -228,7 +228,7 @@ export function shootBall(angle, type) {
       label: 'ball',
       render: {
         sprite: {
-          texture: './image/penetration_ball.png',
+          texture: './image/balls/penetration_ball.png',
           xScale: scale,
           yScale: scale,
           xOffset: 0.5,
@@ -257,8 +257,8 @@ export function shootBall(angle, type) {
             type === 'heal'
               ? healBallPath
               : type === 'big'
-              ? './image/big_ball.png'
-              : './image/normal_ball.png',
+              ? './image/balls/big_ball.png'
+              : './image/balls/normal_ball.png',
           xScale: scale,
           yScale: scale
         }
@@ -286,7 +286,7 @@ export function setupCollisionHandler() {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         if (!peg.bombHits) {
           peg.bombHits = 1;
-          peg.render.sprite.texture = './image/bomb_2.png';
+          peg.render.sprite.texture = './image/items/bomb_2.png';
         } else {
           explodeBomb(peg, ball);
         }

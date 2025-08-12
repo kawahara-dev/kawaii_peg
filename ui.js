@@ -86,15 +86,15 @@ export function updateAmmo() {
     const icon = document.createElement('span');
     icon.className = 'ammo-ball';
     if (type === 'normal') {
-      icon.style.backgroundImage = 'url("./image/normal_ball.png")';
+      icon.style.backgroundImage = 'url("./image/balls/normal_ball.png")';
     } else if (type === 'split') {
-      icon.style.backgroundImage = 'url("./image/split_ball.png")';
+      icon.style.backgroundImage = 'url("./image/balls/split_ball.png")';
     } else if (type === 'heal') {
       icon.style.backgroundImage = `url("${healBallPath}")`;
     } else if (type === 'big') {
-      icon.style.backgroundImage = 'url("./image/big_ball.png")';
+      icon.style.backgroundImage = 'url("./image/balls/big_ball.png")';
     } else if (type === 'penetration') {
-      icon.style.backgroundImage = 'url("./image/penetration_ball.png")';
+      icon.style.backgroundImage = 'url("./image/balls/penetration_ball.png")';
     }
     icon.style.backgroundSize = 'cover';
     icon.style.backgroundColor = 'transparent';
@@ -134,11 +134,11 @@ const shopData = {
 };
 
 const shopImageMap = {
-  normal: './image/normal_ball.png',
-  split: './image/split_ball.png',
+  normal: './image/balls/normal_ball.png',
+  split: './image/balls/split_ball.png',
   heal: healBallPath,
-  big: './image/big_ball.png',
-  penetration: './image/penetration_ball.png'
+  big: './image/balls/big_ball.png',
+  penetration: './image/balls/penetration_ball.png'
 };
 
 export function showShopOverlay(onDone) {
@@ -238,7 +238,7 @@ export function updateCurrentBall(firePoint) {
   };
   const img = imageMap[playerState.nextBall];
   if (img) {
-    currentBallEl.style.backgroundImage = `url("./image/${img}")`;
+      currentBallEl.style.backgroundImage = `url("./image/balls/${img}")`;
     currentBallEl.style.backgroundSize = 'cover';
     currentBallEl.style.backgroundColor = 'transparent';
   } else {
