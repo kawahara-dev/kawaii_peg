@@ -390,6 +390,10 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   handleShoot = function handleShoot(e) {
+    if (!playerState.nextBall) {
+      enemyState.selectNextBall();
+      if (!playerState.nextBall) return;
+    }
     if (playerState.currentBalls.length > 0 || enemyState.gameOver || playerState.reloading || isAnyOverlayVisible()) return;
     if (playerState.ammo.length <= 0) {
       startReload();
