@@ -270,10 +270,11 @@ export function selectNextBall(firePoint) {
 }
 
 export function flashEnemyDamage(enemyState) {
-  enemyGirl.src = enemyState.damageImage;
+  const { damageImage, normalImage, enemyHP } = enemyState;
+  enemyGirl.src = damageImage;
   setTimeout(() => {
-    if (enemyState.enemyHP > 0) {
-      enemyGirl.src = enemyState.normalImage;
+    if (enemyHP > 0) {
+      enemyGirl.src = normalImage;
     }
   }, 500);
 }
