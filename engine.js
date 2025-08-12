@@ -166,6 +166,12 @@ export function drawSimulatedPath(angle, speed) {
     x: Math.cos(angle) * speed,
     y: Math.sin(angle) * speed
   });
+  const startDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  startDot.setAttribute('cx', firePoint.x);
+  startDot.setAttribute('cy', firePoint.y);
+  startDot.setAttribute('r', 3);
+  startDot.setAttribute('class', 'aim-dot');
+  aimSvg.appendChild(startDot);
   for (let i = 0; i < 20; i++) {
     Engine.update(ghostEngine, 1000 / 60);
     const { x, y } = ghostBall.position;
