@@ -155,7 +155,7 @@ export function generatePegs(count) {
 
 export function drawSimulatedPath(angle, speed) {
   while (aimSvg.firstChild) aimSvg.removeChild(aimSvg.firstChild);
-  if (!ghostEngine) {
+  if (!ghostEngine || !ghostBall) {
     createGhostEngine();
   }
   if (!ghostEngine.world.bodies.includes(ghostBall)) {
@@ -185,6 +185,8 @@ export function clearSimulatedPath() {
     World.clear(ghostEngine.world, false);
     Engine.clear(ghostEngine);
   }
+  ghostEngine = null;
+  ghostBall = null;
 }
 
 export function shootBall(angle, type) {
