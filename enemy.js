@@ -3,6 +3,23 @@ import { firePoint, generatePegs } from './engine.js';
 import { updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, updateProgress, selectNextBall as uiSelectNextBall, updateAttackCountdown } from './ui.js';
 import { shuffle } from './utils.js';
 
+export function enemyAttack() {
+  if (enemyState.gameOver) {
+    return;
+  }
+  playerState.playerHP -= 10;
+  updatePlayerHP();
+  showDamageOverlay();
+  shakeContainer();
+  if (playerState.playerHP <= 0 && !enemyState.gameOver) {
+    enemyState.gameOver = true;
+    document.getElementById('game-over-overlay').style.display = 'flex';
+  } else {
+    enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
+    updateAttackCountdown(enemyState);
+  }
+}
+
 export const enemyState = {
   stage: 1,
   maxEnemyHP: 100,
@@ -19,7 +36,7 @@ export const enemyState = {
   updateHPBar: () => updateHPBar(enemyState),
   updatePlayerHP,
   flashEnemyDamage: () => flashEnemyDamage(enemyState),
-  enemyAttack
+  enemyAttack: enemyAttack
 };
 
 export function startStage() {
@@ -39,22 +56,5 @@ export function startStage() {
   enemyState.progressIndex = (enemyState.stage - 1) * 2;
   updateProgress(enemyState);
   updateAttackCountdown(enemyState);
-}
-
-export function enemyAttack() {
-  if (enemyState.gameOver) {
-    return;
-  }
-  playerState.playerHP -= 10;
-  updatePlayerHP();
-  showDamageOverlay();
-  shakeContainer();
-  if (playerState.playerHP <= 0 && !enemyState.gameOver) {
-    enemyState.gameOver = true;
-    document.getElementById('game-over-overlay').style.display = 'flex';
-  } else {
-    enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
-    updateAttackCountdown(enemyState);
-  }
 }
 
