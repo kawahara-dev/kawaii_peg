@@ -298,6 +298,62 @@ export function shootBall(angle, type) {
   updateCurrentBall(firePoint);
 }
 
+function handlePenetrationHits() {
+  const penetrationBalls = playerState.currentBalls.filter(b => b.ballType === 'penetration');
+  if (penetrationBalls.length === 0) return;
+  penetrationBalls.forEach(ball => {
+    pegs.slice().forEach(peg => {
+      const dx = ball.position.x - peg.position.x;
+      const dy = ball.position.y - peg.position.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const radius = (ball.circleRadius || 0) + (peg.circleRadius || 0);
+      if (dist > radius) return;
+      if (peg.label === 'peg-bomb') {
+        if (!peg.bombHits) {
+          peg.bombHits = 1;
+          peg.render.sprite.texture = './image/items/bomb_2.png';
+        } else {
+          explodeBomb(peg, ball);
+        }
+      } else if (peg.label === 'peg-blue') {
+        World.remove(world, peg);
+        pegs = pegs.filter(p => p !== peg);
+        let damage = 10;
+        damage *= ball.damageMultiplier || 1;
+        damage *= 1 + playerState.atkLevel * 0.1;
+        enemyState.pendingDamage += damage;
+        showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
+        if (ball.ballType === 'heal') {
+          showHealSpark(peg.position.x, peg.position.y);
+        } else {
+          showHitSpark(peg.position.x, peg.position.y);
+        }
+        generatePegs(initialPegCount);
+      } else if (peg.label === 'coin') {
+        World.remove(world, peg);
+        pegs = pegs.filter(p => p !== peg);
+        const gain = enemyState.stage;
+        playerState.coins += gain;
+        localStorage.setItem('coins', playerState.coins);
+        updateCoins();
+      } else if (peg.label === 'peg' || peg.label === 'peg-yellow') {
+        World.remove(world, peg);
+        pegs = pegs.filter(p => p !== peg);
+        let damage = peg.label === 'peg-yellow' ? 20 : 10;
+        damage *= ball.damageMultiplier || 1;
+        damage *= 1 + playerState.atkLevel * 0.1;
+        enemyState.pendingDamage += damage;
+        showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
+        if (ball.ballType === 'heal') {
+          showHealSpark(peg.position.x, peg.position.y);
+        } else {
+          showHitSpark(peg.position.x, peg.position.y);
+        }
+      }
+    });
+  });
+}
+
 export function setupCollisionHandler() {
   Events.on(engine, 'collisionStart', (event) => {
     event.pairs.forEach(pair => {
@@ -389,6 +445,7 @@ export function setupCollisionHandler() {
       }
     });
   });
+  Events.on(engine, 'afterUpdate', handlePenetrationHits);
 }
 
 export function explodeBomb(peg, ball) {
