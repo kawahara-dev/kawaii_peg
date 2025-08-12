@@ -238,6 +238,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 1000);
   };
 
+  document.addEventListener('ballsCleared', () => {
+    if (playerState.ammo.length === 0 && !playerState.reloading) {
+      startReload();
+    }
+  });
+
   startButton.addEventListener('click', (e) => {
     e.stopPropagation();
     enemyState.stage = 1;

@@ -372,6 +372,7 @@ export function setupCollisionHandler() {
           } else {
             updateAttackCountdown(enemyState);
           }
+          document.dispatchEvent(new Event('ballsCleared'));
         }
       }
     });
