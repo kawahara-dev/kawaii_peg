@@ -8,6 +8,9 @@ import { healBallPath, healBallWidth } from './constants.js';
 const { Engine, Render, Runner, World, Bodies, Body, Events, Composite } = Matter;
 const width = 880;
 const height = 700;
+const pegCategory = 0x0002;
+const wallCategory = 0x0004;
+const sensorCategory = 0x0008;
 
 let engine;
 let world;
@@ -51,7 +54,11 @@ export function initEngine() {
     });
   });
 
-  const wallOptions = { isStatic: true, render: { fillStyle: '#ff69b4' } };
+  const wallOptions = {
+    isStatic: true,
+    render: { fillStyle: '#ff69b4' },
+    collisionFilter: { category: wallCategory }
+  };
   const walls = [
     Bodies.rectangle(width / 2, height + 25, width, 50, wallOptions),
     Bodies.rectangle(width / 2, -25, width, 50, wallOptions),
@@ -64,7 +71,8 @@ export function initEngine() {
     isStatic: true,
     isSensor: true,
     label: 'bottom-sensor',
-    render: { visible: false }
+    render: { visible: false },
+    collisionFilter: { category: sensorCategory }
   });
   World.add(world, bottomSensor);
 
@@ -92,7 +100,8 @@ export function generatePegs(count) {
             yScale: 0.04
           }
         },
-        label: 'coin'
+        label: 'coin',
+        collisionFilter: { category: pegCategory }
       });
     } else if (r < 0.15) {
       peg = Bodies.circle(x, y, 10, {
@@ -104,20 +113,23 @@ export function generatePegs(count) {
             yScale: 0.06
           }
         },
-        label: 'peg-bomb'
+        label: 'peg-bomb',
+        collisionFilter: { category: pegCategory }
       });
       peg.bombHits = 0;
     } else if (r < 0.35) {
       peg = Bodies.circle(x, y, 10, {
         isStatic: true,
         render: { fillStyle: '#ffd700' },
-        label: 'peg-yellow'
+        label: 'peg-yellow',
+        collisionFilter: { category: pegCategory }
       });
     } else {
       peg = Bodies.circle(x, y, 10, {
         isStatic: true,
         render: { fillStyle: '#ff69b4' },
-        label: 'peg'
+        label: 'peg',
+        collisionFilter: { category: pegCategory }
       });
     }
     pegs.push(peg);
@@ -127,7 +139,8 @@ export function generatePegs(count) {
   const bluePeg = Bodies.circle(bx, by, 10, {
     isStatic: true,
     render: { fillStyle: '#1e90ff' },
-    label: 'peg-blue'
+    label: 'peg-blue',
+    collisionFilter: { category: pegCategory }
   });
   pegs.push(bluePeg);
   World.add(world, pegs);
@@ -146,7 +159,8 @@ export function generatePegs(count) {
           yScale: 0.04
         }
       },
-      label: 'coin'
+      label: 'coin',
+      collisionFilter: { category: pegCategory }
     });
     pegs.push(coin);
     World.add(world, coin);
@@ -232,6 +246,7 @@ export function shootBall(angle, type) {
       restitution: 0,
       friction: 0,
       label: 'ball',
+      collisionFilter: { mask: wallCategory | sensorCategory },
       render: {
         sprite: {
           texture: './image/balls/penetration_ball.png',
@@ -296,9 +311,6 @@ export function setupCollisionHandler() {
         } else {
           explodeBomb(peg, ball);
         }
-        if (ball.ballType === 'penetration') {
-          Body.setVelocity(ball, ball.prevVelocity);
-        }
       } else if (labels.includes('ball') && labels.includes('peg-blue')) {
         const peg = pair.bodyA.label === 'peg-blue' ? pair.bodyA : pair.bodyB;
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
@@ -315,9 +327,6 @@ export function setupCollisionHandler() {
           showHitSpark(peg.position.x, peg.position.y);
         }
         generatePegs(initialPegCount);
-        if (ball.ballType === 'penetration') {
-          Body.setVelocity(ball, ball.prevVelocity);
-        }
       } else if (labels.includes('ball') && labels.includes('coin')) {
         const coin = pair.bodyA.label === 'coin' ? pair.bodyA : pair.bodyB;
         World.remove(world, coin);
@@ -340,9 +349,6 @@ export function setupCollisionHandler() {
           showHealSpark(peg.position.x, peg.position.y);
         } else {
           showHitSpark(peg.position.x, peg.position.y);
-        }
-        if (ball.ballType === 'penetration') {
-          Body.setVelocity(ball, ball.prevVelocity);
         }
       }
       if (labels.includes('ball') && labels.includes('bottom-sensor')) {
