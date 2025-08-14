@@ -3,6 +3,7 @@ import { handleShoot } from './main.js';
 import { healBallPath } from './constants.js';
 import { firePoint } from './engine.js';
 import { shuffle } from './utils.js';
+import { t } from './i18n.js';
 
 const hpFill = document.getElementById('hp-fill');
 const hpText = document.getElementById('hp-text');
@@ -126,11 +127,11 @@ export function updateCoins() {
 }
 
 const shopData = {
-  normal: { label: 'ノーマル', buy: 5, sell: 5, upgrade: 8 },
-  split: { label: 'スプリット', buy: 10, sell: 10, upgrade: 15 },
-  heal: { label: 'ヒール', buy: 10, sell: 10, upgrade: 15 },
-  big: { label: 'ビッグ', buy: 10, sell: 10, upgrade: 15 },
-  penetration: { label: 'ペネトレーション', buy: 10, sell: 10, upgrade: 15 }
+  normal: { buy: 5, sell: 5, upgrade: 8 },
+  split: { buy: 10, sell: 10, upgrade: 15 },
+  heal: { buy: 10, sell: 10, upgrade: 15 },
+  big: { buy: 10, sell: 10, upgrade: 15 },
+  penetration: { buy: 10, sell: 10, upgrade: 15 }
 };
 
 const shopImageMap = {
@@ -150,21 +151,21 @@ export function showShopOverlay(onDone) {
     div.className = 'shop-item';
     const img = document.createElement('img');
     img.src = shopImageMap[type];
-    img.alt = `${data.label}ボール`;
+    img.alt = t(`balls.${type}.full`);
     const label = document.createElement('span');
-    label.textContent = `${data.label}ボール`;
+    label.textContent = t(`balls.${type}.full`);
     const buyBtn = document.createElement('button');
     buyBtn.className = 'shop-buy';
     buyBtn.dataset.type = type;
-    buyBtn.textContent = `購入(${data.buy})`;
+    buyBtn.textContent = `${t('shop.buy')}(${data.buy})`;
     const sellBtn = document.createElement('button');
     sellBtn.className = 'shop-sell';
     sellBtn.dataset.type = type;
-    sellBtn.textContent = `削除(${data.sell})`;
+    sellBtn.textContent = `${t('shop.sell')}(${data.sell})`;
     const upBtn = document.createElement('button');
     upBtn.className = 'shop-upgrade';
     upBtn.dataset.type = type;
-    upBtn.textContent = `強化(${data.upgrade})`;
+    upBtn.textContent = `${t('shop.upgrade')}(${data.upgrade})`;
     div.appendChild(img);
     div.appendChild(label);
     div.appendChild(buyBtn);
@@ -363,7 +364,7 @@ export function updateProgress(enemyState) {
 
     const circle = document.createElement('span');
     circle.classList.add('step-circle');
-    if (step === 'ランダムイベント') {
+    if (step === 'event') {
       circle.textContent = '?';
     } else {
       circle.textContent = enemyCount;

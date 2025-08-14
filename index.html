@@ -7,31 +7,31 @@
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 </head>
-  <body>
+<body>
   <div id="container">
     <div id="menu-overlay">
       <div id="main-menu">
-        <h1 id="game-title">Peggy Girls</h1>
-        <button id="start-button" class="menu-option">スタート</button>
-        <button id="upgrade-menu-button" class="menu-option">アップグレード</button>
-        <button id="reset-progress" class="menu-option">進捗リセット</button>
-        <button id="settings-button" class="menu-option">設定</button>
+        <h1 id="game-title" data-i18n="menu.title"></h1>
+        <button id="start-button" class="menu-option" data-i18n="menu.start"></button>
+        <button id="upgrade-menu-button" class="menu-option" data-i18n="menu.upgrade"></button>
+        <button id="reset-progress" class="menu-option" data-i18n="menu.reset"></button>
+        <button id="settings-button" class="menu-option" data-i18n="menu.settings"></button>
       </div>
       <div id="upgrade-buttons">
-        <div id="xp-display">経験値: <span id="xp-value">0</span></div>
-        <button id="upgrade-hp">HPアップ(+10) 10XP</button>
-        <button id="upgrade-atk">攻撃アップ(+10%) 10XP</button>
-        <button id="upgrade-back">戻る</button>
+        <div id="xp-display"><span data-i18n="upgrade.xp"></span><span id="xp-value">0</span></div>
+        <button id="upgrade-hp" data-i18n="upgrade.hp"></button>
+        <button id="upgrade-atk" data-i18n="upgrade.atk"></button>
+        <button id="upgrade-back" data-i18n="upgrade.back"></button>
       </div>
-      <button id="credit-button">クレジット</button>
+      <button id="credit-button" data-i18n="menu.credit"></button>
     </div>
     <div id="player-hp-container">
-      <div id="player-hp-text">HP: <span id="player-hp-value">100</span> / <span id="player-hp-max">100</span></div>
+      <div id="player-hp-text"><span data-i18n="hud.hp"></span><span id="player-hp-value">100</span> / <span id="player-hp-max">100</span></div>
       <div id="player-hp-bar">
         <div id="player-hp-fill"></div>
       </div>
-      <div id="ammo-text">弾: <span id="ammo-value" class="ammo-value"></span></div>
-        <div id="coin-counter"><img id="coin-icon" src="image/items/coin.png" alt="coin"><span id="coin-value">0</span></div>
+      <div id="ammo-text"><span data-i18n="hud.ammo"></span><span id="ammo-value" class="ammo-value"></span></div>
+      <div id="coin-counter"><img id="coin-icon" src="image/items/coin.png" alt="coin"><span id="coin-value">0</span></div>
     </div>
     <div id="game-wrapper">
       <ol id="progress-indicator"></ol>
@@ -39,7 +39,7 @@
       <div id="current-ball"></div>
     </div>
     <div id="side-panel">
-      <div id="stage-text">ステージ: <span id="stage-value">1</span></div>
+      <div id="stage-text"><span data-i18n="hud.stage"></span><span id="stage-value">1</span></div>
       <div class="hp-container">
         <div class="hp-value" id="hp-display">200 / 200</div>
         <div id="hp-bar">
@@ -48,71 +48,68 @@
         </div>
       </div>
       <div id="enemy-image-wrapper">
-        <img id="enemy-girl" src="" alt="敵の女の子">
+        <img id="enemy-girl" src="" alt="enemy">
         <div id="enemy-attack-timer"></div>
       </div>
     </div>
     <div id="victory-overlay">
-        <img id="victory-img" src="image/enemies/enemy_defeat.png" alt="倒された女の子">
+      <img id="victory-img" src="image/enemies/enemy_defeat.png" alt="victory">
     </div>
     <div id="reward-overlay">
-      <h2 id="result-title">リザルト</h2>
-      <div id="reward-coins">
-          <img src="image/items/coin.png" alt="coin">
-        <span id="reward-coin-value">0</span>コインGET
-      </div>
-      <p id="reward-message">報酬ボールを選んでね</p>
+      <h2 id="result-title" data-i18n="reward.title"></h2>
+      <div id="reward-coins"><img src="image/items/coin.png" alt="coin"><span id="reward-coin-value">0</span><span data-i18n="reward.coinSuffix"></span></div>
+      <p id="reward-message" data-i18n="reward.message"></p>
       <div id="reward-buttons">
-          <button class="reward-button" data-type="split">
-            <img src="image/balls/split_ball.png" alt="スプリットボール">
-          <div class="reward-name">スプリットボール</div>
-          <div class="reward-desc">弾が2つに分裂するよ♪</div>
+        <button class="reward-button" data-type="split">
+          <img src="image/balls/split_ball.png" alt="split">
+          <div class="reward-name" data-i18n="balls.split.full"></div>
+          <div class="reward-desc" data-i18n="reward.options.split.desc"></div>
         </button>
-          <button class="reward-button" data-type="heal">
-            <img src="image/balls/recovery_ball.png" alt="ヒールボール">
-          <div class="reward-name">ヒールボール</div>
-          <div class="reward-desc">当たるとHP回復するよ☆</div>
+        <button class="reward-button" data-type="heal">
+          <img src="image/balls/recovery_ball.png" alt="heal">
+          <div class="reward-name" data-i18n="balls.heal.full"></div>
+          <div class="reward-desc" data-i18n="reward.options.heal.desc"></div>
         </button>
-          <button class="reward-button" data-type="big">
-            <img src="image/balls/big_ball.png" alt="ビッグボール">
-          <div class="reward-name">ビッグボール</div>
-          <div class="reward-desc">弾がでかくなるよ☆</div>
+        <button class="reward-button" data-type="big">
+          <img src="image/balls/big_ball.png" alt="big">
+          <div class="reward-name" data-i18n="balls.big.full"></div>
+          <div class="reward-desc" data-i18n="reward.options.big.desc"></div>
         </button>
-          <button class="reward-button" data-type="penetration">
-            <img src="image/balls/penetration_ball.png" alt="ペネトレーションボール">
-          <div class="reward-name">ペネトレーションボール</div>
-          <div class="reward-desc">敵を貫通するよ♡</div>
+        <button class="reward-button" data-type="penetration">
+          <img src="image/balls/penetration_ball.png" alt="penetration">
+          <div class="reward-name" data-i18n="balls.penetration.full"></div>
+          <div class="reward-desc" data-i18n="reward.options.penetration.desc"></div>
         </button>
       </div>
     </div>
     <div id="event-overlay">
-      <h2 id="event-title">ランダムイベント発生☆</h2>
+      <h2 id="event-title" data-i18n="event.title"></h2>
       <p id="event-message"></p>
       <div id="event-options"></div>
     </div>
     <div id="shop-overlay">
-      <h2>ショップだよ☆</h2>
-        <div id="shop-coin-counter"><img src="image/items/coin.png" alt="coin"><span id="shop-coin-value">0</span></div>
+      <h2 data-i18n="shop.title"></h2>
+      <div id="shop-coin-counter"><img src="image/items/coin.png" alt="coin"><span id="shop-coin-value">0</span></div>
       <div id="shop-options"></div>
-      <button id="shop-close">やめる</button>
+      <button id="shop-close" data-i18n="shop.close"></button>
     </div>
     <div id="xp-overlay">
-      <h2>経験値GET! +<span id="xp-gained">0</span></h2>
-      <button id="xp-continue-button">メニューへ</button>
+      <h2><span data-i18n="xp.title"></span><span id="xp-gained">0</span></h2>
+      <button id="xp-continue-button" data-i18n="xp.continue"></button>
     </div>
     <div id="game-over-overlay">
       <h2>gameover😭</h2>
-      <button id="game-over-retry-button">リトライ</button>
+      <button id="game-over-retry-button" data-i18n="gameOver.retry"></button>
     </div>
-    <div id="reload-overlay">リロード中…</div>
-  <div id="settings-overlay">
-      <h2 id="settings-title">設定</h2>
-      <label for="language-select" id="language-label">言語</label>
+    <div id="reload-overlay" data-i18n="reload.text"></div>
+    <div id="settings-overlay">
+      <h2 id="settings-title" data-i18n="settings.title"></h2>
+      <label for="language-select" id="language-label" data-i18n="settings.language"></label>
       <select id="language-select">
-        <option value="ja">日本語</option>
-        <option value="en">English</option>
+        <option value="ja" data-i18n="settings.options.ja"></option>
+        <option value="en" data-i18n="settings.options.en"></option>
       </select>
-      <button id="settings-close">閉じる</button>
+      <button id="settings-close" data-i18n="settings.close"></button>
     </div>
     <div id="credit-overlay">
       <p>Bomb icon by Freepik - Flaticon</p>
@@ -121,29 +118,29 @@
       <p><a href="https://www.flaticon.com/free-icons/bowling" title="bowling icons">Bowling icons created by smashingstocks - Flaticon</a></p>
       <p><a href="https://www.flaticon.com/free-icons/pet" title="pet icons">Pet icons created by Ylivdesign - Flaticon</a></p>
       <p><a href="https://www.flaticon.com/free-icons/bamboo" title="bamboo icons">Bamboo icons created by Victoruler - Flaticon</a></p>
-      <button id="credit-close">閉じる</button>
+      <button id="credit-close" data-i18n="credit.close"></button>
     </div>
   </div>
 
   <div id="version-history">
-    <h3>バージョン履歴</h3>
+    <h3 data-i18n="history.title"></h3>
     <ul>
-      <li>v1.4 (2025-08-10) 敵画像ファイル名の整理＆参照更新</li>
-      <li>v1.3 (2025-08-09) 爆弾衝突のバグ修正＆コインアイコンクレジット追加</li>
-      <li>v1.2 (2025-08-06) バージョン履歴を更新</li>
-      <li>v1.1 (2025-08-05) メニュー画面＆スタートボタン、弾数アイコンと特殊弾選択、ステージ進行と敵HPスケール、リロード演出、ステージ5で経験値＆スキル強化を追加</li>
-      <li>v1.0 (2025-08-05) ステージ5クリアで経験値獲得＆スキル強化追加</li>
-      <li>v0.9.2 (2025-08-05) プレイヤーHP0で敗北オーバーレイ表示</li>
-      <li>v0.9.1 (2025-08-05) 初期ボール数を3に設定</li>
-      <li>v0.9 (2025-08-05) 弾数制限とリロードを実装</li>
-      <li>v0.8 (2025-08-05) 爆弾ペグ追加</li>
-      <li>v0.7 (2025-08-04) 敗北オーバーレイとランダム画像</li>
-      <li>v0.6 (2025-08-04) ペグのランダム化と黄色ペグのダブルダメージ</li>
-      <li>v0.5 (2025-08-04) 勝利画像とリトライボタン</li>
-      <li>v0.4 (2025-08-04) 累積ダメージ表示、着地時にダメージ確定</li>
-      <li>v0.3 (2025-08-04) ボール落下ダメージとエフェクト</li>
-      <li>v0.2 (2025-08-04) 敵ダメージ時に画像を一瞬切り替え</li>
-      <li>v0.1 (2025-08-03) 初期リリース</li>
+      <li data-i18n="history.v1_4"></li>
+      <li data-i18n="history.v1_3"></li>
+      <li data-i18n="history.v1_2"></li>
+      <li data-i18n="history.v1_1"></li>
+      <li data-i18n="history.v1_0"></li>
+      <li data-i18n="history.v0_9_2"></li>
+      <li data-i18n="history.v0_9_1"></li>
+      <li data-i18n="history.v0_9"></li>
+      <li data-i18n="history.v0_8"></li>
+      <li data-i18n="history.v0_7"></li>
+      <li data-i18n="history.v0_6"></li>
+      <li data-i18n="history.v0_5"></li>
+      <li data-i18n="history.v0_4"></li>
+      <li data-i18n="history.v0_3"></li>
+      <li data-i18n="history.v0_2"></li>
+      <li data-i18n="history.v0_1"></li>
     </ul>
   </div>
 

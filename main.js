@@ -4,7 +4,7 @@ import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins } from './ui.js';
 import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
-import { translations } from './i18n.js';
+import { setLanguage, t } from './i18n.js';
 
 const ballImageMap = {
   normal: './image/balls/normal_ball.png',
@@ -16,119 +16,86 @@ const ballImageMap = {
 
 const randomEvents = [
   {
-    text: 'キラキラの泉を発見したよ☆',
+    textKey: 'events.spring.text',
     choices: [
       {
-        label: 'ゴクゴク飲む💖',
+        labelKey: 'events.spring.choices.drink',
         apply() {
           playerState.playerHP = Math.min(
             playerState.playerMaxHP,
             playerState.playerHP + 20
           );
         },
-        result: 'HPが20回復したよ💕'
+        resultKey: 'events.spring.results.drink'
       },
       {
-        label: 'やめとく〜',
+        labelKey: 'events.spring.choices.skip',
         apply() {},
-        result: '何も変わらなかったよ〜'
+        resultKey: 'events.spring.results.skip'
       }
     ]
   },
   {
-    text: '怪しいパワーストーン✨どのボールを強化する？',
-    // choices can be dynamic based on owned ball types
+    textKey: 'events.powerStone.text',
     choices() {
       const types = [...new Set(playerState.ownedBalls)];
       const opts = types.map(type => ({
         type,
-        label: `${type}ボール強化する〜`,
+        label: t('events.powerStone.choiceLabel').replace('{type}', t(`balls.${type}.full`)),
         apply() {
           playerState.ballLevels[type] = (playerState.ballLevels[type] || 1) + 1;
           updateAmmo();
           updateCurrentBall(firePoint);
         },
-        result: `${type}ボールがパワーアップしたよ✨`
+        result: t('events.powerStone.result').replace('{type}', t(`balls.${type}.full`))
       }));
-      opts.push({ type: null, label: 'やっぱパス', apply() {}, result: '強化しなかったよ〜' });
+      opts.push({ type: null, label: t('events.powerStone.passLabel'), apply() {}, result: t('events.powerStone.passResult') });
       return opts;
     }
   },
   {
-    text: 'トゲトゲの罠があるっぽい…',
+    textKey: 'events.trap.text',
     choices: [
       {
-        label: 'そっと避ける✨',
+        labelKey: 'events.trap.choices.avoid',
         apply() {},
-        result: '上手く避けたよ♪'
+        resultKey: 'events.trap.results.avoid'
       },
       {
-        label: '踏んでみる⁉️',
+        labelKey: 'events.trap.choices.step',
         apply() {
           playerState.playerHP = Math.max(0, playerState.playerHP - 20);
         },
-        result: 'イタタ…HPが20減っちゃった💦'
+        resultKey: 'events.trap.results.step'
       }
     ]
   },
   {
-    text: '道端にノーマルボールが落ちてた！',
+    textKey: 'events.foundBall.text',
     choices: [
       {
-        label: '拾っちゃお🎀',
+        labelKey: 'events.foundBall.choices.take',
         apply() {
-            playerState.ownedBalls.push('normal');
-            playerState.ammo = playerState.ownedBalls.slice();
-            playerState.shotQueue = shuffle(playerState.ammo.slice());
-            enemyState.selectNextBall();
+          playerState.ownedBalls.push('normal');
+          playerState.ammo = playerState.ownedBalls.slice();
+          playerState.shotQueue = shuffle(playerState.ammo.slice());
+          enemyState.selectNextBall();
         },
-        result: 'ノーマルボールゲットだよ☆'
+        resultKey: 'events.foundBall.results.take'
       },
       {
-        label: '今はいらないかも',
+        labelKey: 'events.foundBall.choices.skip',
         apply() {},
-        result: 'スルーしたよ〜'
+        resultKey: 'events.foundBall.results.skip'
       }
     ]
   },
-  {
-    type: 'shop'
-  }
+  { type: 'shop' }
 ];
 
 export let handleShoot;
 
-export function setLanguage(lang) {
-  const t = translations[lang];
-  if (!t) return;
-  document.documentElement.lang = lang;
-  const map = {
-    'start-button': 'startButton',
-    'upgrade-menu-button': 'upgradeMenuButton',
-    'reset-progress': 'resetButton',
-    'settings-button': 'settingsButton',
-    'upgrade-hp': 'upgradeHp',
-    'upgrade-atk': 'upgradeAtk',
-    'upgrade-back': 'upgradeBack',
-    'credit-button': 'creditButton',
-    'settings-title': 'settingsTitle',
-    'settings-close': 'settingsClose',
-    'language-label': 'languageLabel',
-    'xp-continue-button': 'xpContinueButton',
-    'game-over-retry-button': 'gameOverRetryButton'
-  };
-  Object.entries(map).forEach(([id, key]) => {
-    const el = document.getElementById(id);
-    if (el && t[key]) el.textContent = t[key];
-  });
-  const xpDisplay = document.getElementById('xp-display');
-  if (xpDisplay && t.xpDisplay) xpDisplay.childNodes[0].textContent = t.xpDisplay;
-  const ammoText = document.getElementById('ammo-text');
-  if (ammoText && t.ammoText) ammoText.childNodes[0].textContent = t.ammoText;
-  const stageText = document.getElementById('stage-text');
-  if (stageText && t.stageText) stageText.childNodes[0].textContent = t.stageText;
-  localStorage.setItem('language', lang);
-}
+
 
 window.addEventListener('DOMContentLoaded', () => {
   initEngine();
@@ -183,7 +150,7 @@ window.addEventListener('DOMContentLoaded', () => {
       settingsOverlay
     ];
 
-  const savedLang = localStorage.getItem('language') || document.documentElement.lang || 'ja';
+  const savedLang = localStorage.getItem('lang') || document.documentElement.lang || 'ja';
   setLanguage(savedLang);
   if (languageSelect) {
     languageSelect.value = savedLang;
@@ -226,7 +193,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
       return;
     }
-    eventMessage.textContent = ev.text;
+    eventMessage.textContent = t(ev.textKey);
     eventOptions.innerHTML = '';
     const choices = typeof ev.choices === 'function' ? ev.choices() : ev.choices;
     choices.forEach(choice => {
@@ -234,18 +201,18 @@ window.addEventListener('DOMContentLoaded', () => {
       if (choice.type && ballImageMap[choice.type]) {
         const img = document.createElement('img');
         img.src = ballImageMap[choice.type];
-        img.alt = `${choice.type}ボール`;
+        img.alt = t(`balls.${choice.type}.full`);
         btn.appendChild(img);
       }
       const span = document.createElement('span');
-      span.textContent = choice.label;
+      span.textContent = choice.labelKey ? t(choice.labelKey) : choice.label;
       btn.appendChild(span);
       btn.addEventListener('click', e => {
         e.stopPropagation();
         choice.apply();
         updatePlayerHP();
         updateAmmo();
-        eventMessage.textContent = choice.result;
+        eventMessage.textContent = choice.resultKey ? t(choice.resultKey) : choice.result;
         eventOptions.innerHTML = '';
         let proceeded = false;
         const proceed = () => {
@@ -257,7 +224,7 @@ window.addEventListener('DOMContentLoaded', () => {
         };
         let timer;
         const okBtn = document.createElement('button');
-        okBtn.textContent = 'OK';
+        okBtn.textContent = t('common.ok');
         okBtn.addEventListener('click', e2 => {
           e2.stopPropagation();
           clearTimeout(timer);

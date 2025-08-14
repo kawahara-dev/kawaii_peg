@@ -47,9 +47,7 @@ export const enemyState = {
   pendingDamage: 0,
   attackCountdown: 0,
   gameOver: false,
-  progressSteps: [
-    'ステージ1', 'ランダムイベント', 'ステージ2', 'ランダムイベント', 'ステージ3', 'ランダムイベント', 'ステージ4', 'ランダムイベント', 'ステージ5'
-  ],
+  progressSteps: [1, 'event', 2, 'event', 3, 'event', 4, 'event', 5],
   progressIndex: 0,
   lastVariantIndex: -1,
   normalImage: defaultEnemy.normalImage,
