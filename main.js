@@ -465,8 +465,9 @@ window.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('permXP', playerState.permXP);
       xpGained.textContent = gained;
       xpOverlay.style.display = 'flex';
+    } else {
+      proceedToNextLayer();
     }
-    proceedToNextLayer();
   });
 
   gameOverRetry.addEventListener('click', (e) => {
