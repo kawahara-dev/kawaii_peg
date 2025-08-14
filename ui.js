@@ -83,7 +83,8 @@ export function updatePlayerHP() {
 
 export function updateAmmo() {
   ammoValue.innerHTML = '';
-  playerState.shotQueue.forEach((type, index) => {
+  const queue = [playerState.nextBall, ...playerState.shotQueue].filter(Boolean);
+  queue.forEach((type, index) => {
     const icon = document.createElement('span');
     icon.className = 'ammo-ball';
     if (type === 'normal') {
