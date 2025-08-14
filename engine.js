@@ -84,7 +84,7 @@ export function generatePegs(count) {
   initialPegCount = count;
   pegs.forEach((p) => World.remove(world, p));
   pegs = [];
-  for (let i = 0; i < count - 1; i++) {
+  for (let i = 0; i < count; i++) {
     const x = 50 + Math.random() * (width - 100);
     const y = 150 + Math.random() * (height - 250);
     const r = Math.random();
