@@ -269,10 +269,8 @@ window.addEventListener('DOMContentLoaded', () => {
       updateProgress(mapState);
     }
     mapState.currentLayer += 1;
-    if (mapState.currentLayer < mapState.layers.length) {
-      mapState.currentNode = current;
-      showMapOverlay(mapState, handleNodeSelection);
-    }
+    mapState.currentNode = current;
+    showMapOverlay(mapState, handleNodeSelection);
   }
 
   function handleNodeSelection(index) {
@@ -451,9 +449,8 @@ window.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('permXP', playerState.permXP);
       xpGained.textContent = gained;
       xpOverlay.style.display = 'flex';
-    } else {
-      proceedToNextLayer();
     }
+    proceedToNextLayer();
   });
 
   gameOverRetry.addEventListener('click', (e) => {
