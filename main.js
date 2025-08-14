@@ -98,13 +98,21 @@ export let handleShoot;
 
 export const mapState = { layers: [], currentLayer: 0, currentNode: null, path: [] };
 
-export function generateMap(layerCount = 5) {
+export let worldStage = 0;
+
+const stageSettings = [
+  { layerCount: 3, nodesPerLayer: 3 },
+  { layerCount: 7, nodesPerLayer: 5 },
+  { layerCount: 7, nodesPerLayer: 7 }
+];
+
+export function generateMap({ layerCount = 5, nodesPerLayer = 3 } = {}) {
   mapState.layers = [];
   const width = 600;
   const height = 500;
   for (let i = 0; i < layerCount; i++) {
     const layer = [];
-    const nodeCount = i === layerCount - 1 ? 1 : 3;
+    const nodeCount = i === layerCount - 1 ? 1 : nodesPerLayer;
     for (let j = 0; j < nodeCount; j++) {
       let type;
       if (i === layerCount - 1) {
@@ -307,12 +315,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
   startButton.addEventListener('click', (e) => {
     e.stopPropagation();
+    worldStage = 0;
     enemyState.stage = 0;
     enemyState.gameOver = false;
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
-    generateMap();
+    generateMap(stageSettings[worldStage]);
     updateProgress(mapState);
     showMapOverlay(mapState, handleNodeSelection);
     hideOverlay(menuOverlay);
@@ -365,7 +374,7 @@ window.addEventListener('DOMContentLoaded', () => {
     xpContinue.addEventListener('click', (e) => {
       e.stopPropagation();
       xpOverlay.style.display = 'none';
-      showOverlay(menuOverlay);
+      worldStage += 1;
       enemyState.stage = 0;
     playerState.ownedBalls = ['normal', 'normal', 'normal'];
     playerState.ballLevels = { normal: 1 };
@@ -379,12 +388,18 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.reloading = false;
     updatePlayerHP();
     enemyState.selectNextBall();
-    generateMap();
-    updateProgress(mapState);
-    document.getElementById('stage-value').textContent = enemyState.stage;
-    playerState.coins = 0;
-    localStorage.setItem('coins', playerState.coins);
-      updateCoins();
+    if (worldStage > 2) {
+        showOverlay(menuOverlay);
+        playerState.coins = 0;
+        localStorage.setItem('coins', playerState.coins);
+        updateCoins();
+    } else {
+        generateMap(stageSettings[worldStage]);
+        updateProgress(mapState);
+        document.getElementById('stage-value').textContent = enemyState.stage;
+        updateCoins();
+        showMapOverlay(mapState, handleNodeSelection);
+    }
     });
 
     creditBtn.addEventListener('click', (e) => {
@@ -444,6 +459,7 @@ window.addEventListener('DOMContentLoaded', () => {
   gameOverRetry.addEventListener('click', (e) => {
     e.stopPropagation();
     gameOverOverlay.style.display = 'none';
+    worldStage = 0;
     enemyState.stage = 0;
     enemyState.gameOver = false;
     playerState.ownedBalls = ['normal', 'normal', 'normal'];
@@ -461,7 +477,7 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
-    generateMap();
+    generateMap(stageSettings[worldStage]);
     updateProgress(mapState);
     showMapOverlay(mapState, handleNodeSelection);
   });
