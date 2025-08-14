@@ -128,8 +128,21 @@ export function generateMap({ layerCount = 5, nodesPerLayer = 3, bossAtEnd = fal
     mapState.layers.push(layer);
   }
   for (let i = 0; i < mapState.layers.length - 1; i++) {
+    const nextLayer = mapState.layers[i + 1];
     mapState.layers[i].forEach((node) => {
-      node.connections = mapState.layers[i + 1].map((_, idx) => idx);
+      const sorted = nextLayer
+        .map((nextNode, idx) => ({ idx, diff: Math.abs(node.x - nextNode.x) }))
+        .sort((a, b) => a.diff - b.diff)
+        .map((obj) => obj.idx);
+
+      const maxConnections = Math.min(nextLayer.length, 3);
+      const minConnections = Math.min(nextLayer.length, 2);
+      const connectionCount =
+        maxConnections === minConnections
+          ? maxConnections
+          : minConnections + Math.floor(Math.random() * (maxConnections - minConnections + 1));
+
+      node.connections = sorted.slice(0, connectionCount);
     });
   }
   mapState.currentLayer = 0;
