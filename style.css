@@ -884,3 +884,13 @@ canvas {
   cursor: default;
 }
 
+.map-connection {
+  stroke: #888;
+  stroke-width: 2px;
+}
+
+.map-connection.active {
+  stroke: #ff69b4;
+  stroke-width: 4px;
+}
+
