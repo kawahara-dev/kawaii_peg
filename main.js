@@ -4,6 +4,7 @@ import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins } from './ui.js';
 import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
+import { translations } from './i18n.js';
 
 const ballImageMap = {
   normal: './image/balls/normal_ball.png',
@@ -97,6 +98,38 @@ const randomEvents = [
 
 export let handleShoot;
 
+export function setLanguage(lang) {
+  const t = translations[lang];
+  if (!t) return;
+  document.documentElement.lang = lang;
+  const map = {
+    'start-button': 'startButton',
+    'upgrade-menu-button': 'upgradeMenuButton',
+    'reset-progress': 'resetButton',
+    'settings-button': 'settingsButton',
+    'upgrade-hp': 'upgradeHp',
+    'upgrade-atk': 'upgradeAtk',
+    'upgrade-back': 'upgradeBack',
+    'credit-button': 'creditButton',
+    'settings-title': 'settingsTitle',
+    'settings-close': 'settingsClose',
+    'language-label': 'languageLabel',
+    'xp-continue-button': 'xpContinueButton',
+    'game-over-retry-button': 'gameOverRetryButton'
+  };
+  Object.entries(map).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el && t[key]) el.textContent = t[key];
+  });
+  const xpDisplay = document.getElementById('xp-display');
+  if (xpDisplay && t.xpDisplay) xpDisplay.childNodes[0].textContent = t.xpDisplay;
+  const ammoText = document.getElementById('ammo-text');
+  if (ammoText && t.ammoText) ammoText.childNodes[0].textContent = t.ammoText;
+  const stageText = document.getElementById('stage-text');
+  if (stageText && t.stageText) stageText.childNodes[0].textContent = t.stageText;
+  localStorage.setItem('language', lang);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   initEngine();
   setupCollisionHandler();
@@ -135,12 +168,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const settingsButton = document.getElementById('settings-button');
     const settingsOverlay = document.getElementById('settings-overlay');
     const settingsClose = document.getElementById('settings-close');
-
-    if (document.documentElement.lang === 'en') {
-      settingsButton.textContent = 'Settings';
-      document.getElementById('settings-title').textContent = 'Settings';
-      settingsClose.textContent = 'Close';
-    }
+    const languageSelect = document.getElementById('language-select');
 
   const overlays = [
     menuOverlay,
@@ -154,6 +182,13 @@ window.addEventListener('DOMContentLoaded', () => {
       creditOverlay,
       settingsOverlay
     ];
+
+  const savedLang = localStorage.getItem('language') || document.documentElement.lang || 'ja';
+  setLanguage(savedLang);
+  if (languageSelect) {
+    languageSelect.value = savedLang;
+    languageSelect.addEventListener('change', (e) => setLanguage(e.target.value));
+  }
 
   const isAnyOverlayVisible = () =>
     overlays.some(o => window.getComputedStyle(o).display !== 'none');
