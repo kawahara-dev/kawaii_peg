@@ -1,7 +1,7 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins, showMapOverlay } from './ui.js';
 import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
 import { setLanguage, t } from './i18n.js';
@@ -95,6 +95,40 @@ const randomEvents = [
 
 export let handleShoot;
 
+export const mapState = { layers: [], currentLayer: 0, currentNode: null, path: [] };
+
+export function generateMap(layerCount = 5) {
+  mapState.layers = [];
+  const width = 600;
+  const height = 500;
+  for (let i = 0; i < layerCount; i++) {
+    const layer = [];
+    const nodeCount = i === layerCount - 1 ? 1 : 3;
+    for (let j = 0; j < nodeCount; j++) {
+      let type;
+      if (i === layerCount - 1) {
+        type = 'boss';
+      } else {
+        const types = ['battle', 'event', 'shop', 'elite'];
+        type = types[Math.floor(Math.random() * types.length)];
+      }
+      const x = ((j + 1) * width) / (nodeCount + 1);
+      const y = ((i + 1) * height) / (layerCount + 1);
+      layer.push({ type, x, y, connections: [], completed: false });
+    }
+    mapState.layers.push(layer);
+  }
+  for (let i = 0; i < mapState.layers.length - 1; i++) {
+    mapState.layers[i].forEach((node) => {
+      node.connections = mapState.layers[i + 1].map((_, idx) => idx);
+    });
+  }
+  mapState.currentLayer = 0;
+  mapState.currentNode = null;
+  mapState.path = [];
+  return mapState;
+}
+
 
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -176,20 +210,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let aimTimer;
 
-  function triggerRandomEvent() {
-    enemyState.progressIndex++;
-    updateProgress(enemyState);
-    const skipChance = 0.2;
-    if (Math.random() < skipChance) {
-      enemyState.stage += 1;
-      startStage();
-      return;
-    }
+  function triggerRandomEvent(onDone) {
     const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
     if (ev.type === 'shop') {
       showShopOverlay(() => {
-        enemyState.stage += 1;
-        startStage();
+        onDone && onDone();
       });
       return;
     }
@@ -214,28 +239,51 @@ window.addEventListener('DOMContentLoaded', () => {
         updateAmmo();
         eventMessage.textContent = choice.resultKey ? t(choice.resultKey) : choice.result;
         eventOptions.innerHTML = '';
-        let proceeded = false;
-        const proceed = () => {
-          if (proceeded) return;
-          proceeded = true;
-          eventOverlay.style.display = 'none';
-          enemyState.stage += 1;
-          startStage();
-        };
-        let timer;
         const okBtn = document.createElement('button');
         okBtn.textContent = t('common.ok');
         okBtn.addEventListener('click', e2 => {
           e2.stopPropagation();
-          clearTimeout(timer);
-          proceed();
+          eventOverlay.style.display = 'none';
+          onDone && onDone();
         });
         eventOptions.appendChild(okBtn);
-        timer = setTimeout(proceed, 2000);
       });
       eventOptions.appendChild(btn);
     });
     eventOverlay.style.display = 'flex';
+  }
+
+  function proceedToNextLayer() {
+    const current = mapState.path[mapState.path.length - 1];
+    if (current) {
+      current.completed = true;
+      updateProgress(mapState);
+    }
+    mapState.currentLayer += 1;
+    if (mapState.currentLayer < mapState.layers.length) {
+      mapState.currentNode = current;
+      showMapOverlay(mapState, handleNodeSelection);
+    }
+  }
+
+  function handleNodeSelection(index) {
+    const node = mapState.layers[mapState.currentLayer][index];
+    mapState.currentNode = node;
+    node.completed = false;
+    mapState.path.push(node);
+    updateProgress(mapState);
+    if (node.type === 'event') {
+      triggerRandomEvent(() => {
+        proceedToNextLayer();
+      });
+    } else if (node.type === 'shop') {
+      showShopOverlay(() => {
+        proceedToNextLayer();
+      });
+    } else {
+      enemyState.stage += 1;
+      startStage();
+    }
   }
 
   const startReload = () => {
@@ -258,12 +306,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   startButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    enemyState.stage = 1;
+    enemyState.stage = 0;
     enemyState.gameOver = false;
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
-    startStage();
+    generateMap();
+    updateProgress(mapState);
+    showMapOverlay(mapState, handleNodeSelection);
     hideOverlay(menuOverlay);
   });
 
@@ -315,8 +365,7 @@ window.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       xpOverlay.style.display = 'none';
       showOverlay(menuOverlay);
-      enemyState.stage = 1;
-    enemyState.progressIndex = 0;
+      enemyState.stage = 0;
     playerState.ownedBalls = ['normal', 'normal', 'normal'];
     playerState.ballLevels = { normal: 1 };
     playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
@@ -329,7 +378,8 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.reloading = false;
     updatePlayerHP();
     enemyState.selectNextBall();
-    updateProgress(enemyState);
+    generateMap();
+    updateProgress(mapState);
     document.getElementById('stage-value').textContent = enemyState.stage;
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
@@ -368,16 +418,15 @@ window.addEventListener('DOMContentLoaded', () => {
       playerState.shotQueue = shuffle(playerState.ammo.slice());
       enemyState.selectNextBall();
       rewardOverlay.style.display = 'none';
-      triggerRandomEvent();
+      proceedToNextLayer();
     });
   });
 
   gameOverRetry.addEventListener('click', (e) => {
     e.stopPropagation();
     gameOverOverlay.style.display = 'none';
-    enemyState.stage = 1;
+    enemyState.stage = 0;
     enemyState.gameOver = false;
-    enemyState.progressIndex = 0;
     playerState.ownedBalls = ['normal', 'normal', 'normal'];
     playerState.ballLevels = { normal: 1 };
     playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
@@ -390,11 +439,12 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.reloading = false;
     updatePlayerHP();
     enemyState.selectNextBall();
-    updateProgress(enemyState);
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
-    startStage();
+    generateMap();
+    updateProgress(mapState);
+    showMapOverlay(mapState, handleNodeSelection);
   });
 
   const aimSvg = document.getElementById('aim-svg');

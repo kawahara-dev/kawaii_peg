@@ -821,3 +821,42 @@ canvas {
   }
 }
 
+#map-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  background: rgba(0, 0, 0, 0.7);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.map-node {
+  width: 40px;
+  height: 40px;
+  margin: 10px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.map-node.done {
+  opacity: 0.5;
+}
+
+.map-node.current {
+  outline: 2px solid yellow;
+}
+
+.map-node.disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
