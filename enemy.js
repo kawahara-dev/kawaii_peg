@@ -1,6 +1,6 @@
 import { playerState } from './player.js';
 import { firePoint, generatePegs } from './engine.js';
-import { updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, updateProgress, selectNextBall as uiSelectNextBall, updateAttackCountdown } from './ui.js';
+import { updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, selectNextBall as uiSelectNextBall, updateAttackCountdown } from './ui.js';
 import { shuffle } from './utils.js';
 
 export const enemyVariants = [
@@ -47,7 +47,7 @@ export const enemyState = {
   pendingDamage: 0,
   attackCountdown: 0,
   gameOver: false,
-  progressSteps: [1, 'event', 2, 'event', 3, 'event', 4, 'event', 5],
+  progressSteps: [],
   progressIndex: 0,
   lastVariantIndex: -1,
   normalImage: defaultEnemy.normalImage,
@@ -82,8 +82,6 @@ export function startStage() {
   uiSelectNextBall(firePoint);
   enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
   document.getElementById('stage-value').textContent = enemyState.stage;
-  enemyState.progressIndex = (enemyState.stage - 1) * 2;
-  updateProgress(enemyState);
   updateAttackCountdown(enemyState);
   enemyState.lastVariantIndex = newIndex;
 }

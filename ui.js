@@ -25,6 +25,19 @@ const shopOverlay = document.getElementById('shop-overlay');
 const shopOptions = document.getElementById('shop-options');
 const shopClose = document.getElementById('shop-close');
 
+const mapOverlay = document.createElement('div');
+mapOverlay.id = 'map-overlay';
+mapOverlay.style.display = 'none';
+document.getElementById('container').appendChild(mapOverlay);
+
+const nodeIcons = {
+  battle: '⚔️',
+  event: '❓',
+  shop: '🛒',
+  elite: '⭐',
+  boss: '👑'
+};
+
 export { enemyGirl };
 
 export function updateAttackCountdown(enemyState) {
@@ -60,7 +73,6 @@ export function updateHPBar(enemyState) {
           playerState.permXP += gained;
           localStorage.setItem('permXP', playerState.permXP);
           xpGained.textContent = gained;
-          updateProgress(enemyState);
           xpOverlay.style.display = 'flex';
         } else {
           rewardOverlay.style.display = 'flex';
@@ -216,6 +228,50 @@ export function showShopOverlay(onDone) {
   };
 }
 
+export function showMapOverlay(mapState, onSelect) {
+  mapOverlay.innerHTML = '';
+  const area = document.createElement('div');
+  area.style.position = 'relative';
+  area.style.width = '600px';
+  area.style.height = '500px';
+  mapOverlay.appendChild(area);
+  mapState.layers.forEach((layer, li) => {
+    layer.forEach((node, ni) => {
+      const el = document.createElement('div');
+      el.className = 'map-node';
+      el.textContent = nodeIcons[node.type] || '';
+      el.style.left = `${node.x}px`;
+      el.style.top = `${node.y}px`;
+      el.style.position = 'absolute';
+      el.dataset.layer = li;
+      el.dataset.index = ni;
+      if (node.completed) {
+        el.classList.add('done');
+      }
+      const selectable =
+        mapState.currentLayer === li &&
+        (!mapState.currentNode ||
+          mapState.currentNode.connections.includes(ni));
+      if (!selectable) {
+        el.classList.add('disabled');
+      }
+      area.appendChild(el);
+    });
+  });
+  const handler = (e) => {
+    const target = e.target.closest('.map-node');
+    if (!target) return;
+    const layer = parseInt(target.dataset.layer);
+    if (layer !== mapState.currentLayer) return;
+    mapOverlay.style.display = 'none';
+    mapOverlay.removeEventListener('click', handler);
+    const idx = parseInt(target.dataset.index);
+    onSelect && onSelect(idx);
+  };
+  mapOverlay.addEventListener('click', handler);
+  mapOverlay.style.display = 'flex';
+}
+
 export function updateCurrentBall(firePoint) {
   if (!playerState.nextBall) {
     currentBallEl.style.display = 'none';
@@ -352,29 +408,23 @@ export function launchHeartAttack() {
   setTimeout(() => heart.remove(), 800);
 }
 
-export function updateProgress(enemyState) {
+export function updateProgress(state) {
   progressIndicator.innerHTML = '';
-  let enemyCount = 1;
-  enemyState.progressSteps.forEach((step, idx) => {
-    const li = document.createElement('li');
-    if (idx < enemyState.progressIndex) {
-      li.classList.add('done');
-    } else if (idx === enemyState.progressIndex) {
-      li.classList.add('current');
-    }
-
-    const circle = document.createElement('span');
-    circle.classList.add('step-circle');
-    if (step === 'event') {
-      circle.textContent = '?';
-    } else {
-      circle.textContent = enemyCount;
-      enemyCount++;
-    }
-
-    li.appendChild(circle);
-    progressIndicator.appendChild(li);
-  });
+  if (state && state.path) {
+    state.path.forEach((node, idx) => {
+      const li = document.createElement('li');
+      if (node.completed) {
+        li.classList.add('done');
+      } else if (idx === state.path.length - 1) {
+        li.classList.add('current');
+      }
+      const circle = document.createElement('span');
+      circle.classList.add('step-circle');
+      circle.textContent = nodeIcons[node.type] || '';
+      li.appendChild(circle);
+      progressIndicator.appendChild(li);
+    });
+  }
 }
 
 updateCoins();
