@@ -21,6 +21,8 @@ export const enemyVariants = [
   }
 ];
 
+let currentVariantIndex = 0;
+
 export function enemyAttack() {
   if (enemyState.gameOver) {
     return;
@@ -62,7 +64,7 @@ export const enemyState = {
 };
 
 export function startStage() {
-  const variant = enemyVariants[Math.floor(Math.random() * enemyVariants.length)];
+  const variant = enemyVariants[currentVariantIndex];
   enemyState.normalImage = variant.normalImage;
   enemyState.damageImage = variant.damageImage;
   enemyState.defeatImages = variant.defeatImages.slice();
@@ -82,5 +84,6 @@ export function startStage() {
   enemyState.progressIndex = (enemyState.stage - 1) * 2;
   updateProgress(enemyState);
   updateAttackCountdown(enemyState);
+  currentVariantIndex = (currentVariantIndex + 1) % enemyVariants.length;
 }
 
