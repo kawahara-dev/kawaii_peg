@@ -25,7 +25,7 @@ export function enemyAttack() {
   if (enemyState.gameOver) {
     return;
   }
-  playerState.playerHP -= 10;
+  playerState.playerHP = Math.max(0, playerState.playerHP - 10);
   updatePlayerHP();
   showDamageOverlay();
   shakeContainer();
