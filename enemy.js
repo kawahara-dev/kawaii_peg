@@ -3,29 +3,41 @@ import { firePoint, generatePegs } from './engine.js';
 import { updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, selectNextBall as uiSelectNextBall, updateAttackCountdown } from './ui.js';
 import { shuffle } from './utils.js';
 
-export const enemyVariants = [
-  {
+export const enemyVariants = {
+  normal: [
+    {
       normalImage: 'image/enemies/enemy_normal.png',
       damageImage: 'image/enemies/enemy_damage.png',
-      defeatImages: ['image/enemies/enemy_defeat.png', 'image/enemies/enemy_defeat2.png']
-  },
-  {
+      defeatImages: ['image/enemies/enemy_defeat.png', 'image/enemies/enemy_defeat2.png'],
+      hpMultiplier: 1,
+      attackDamage: 10
+    }
+  ],
+  elite: [
+    {
       normalImage: 'image/enemies/enemy2_normal.png',
       damageImage: 'image/enemies/enemy2_damage.png',
-      defeatImages: ['image/enemies/enemy2_defeat.png', 'image/enemies/enemy2_defeat2.png', 'image/enemies/enemy2_defeat3.png']
-  },
-  {
+      defeatImages: ['image/enemies/enemy2_defeat.png', 'image/enemies/enemy2_defeat2.png', 'image/enemies/enemy2_defeat3.png'],
+      hpMultiplier: 2,
+      attackDamage: 15
+    }
+  ],
+  boss: [
+    {
       normalImage: 'image/enemies/enemy3_normal.png',
       damageImage: 'image/enemies/enemy3_damage.png',
-      defeatImages: ['image/enemies/enemy3_defeat.png', 'image/enemies/enemy3_defeat2.png', 'image/enemies/enemy3_defeat3.png']
-  }
-];
+      defeatImages: ['image/enemies/enemy3_defeat.png', 'image/enemies/enemy3_defeat2.png', 'image/enemies/enemy3_defeat3.png'],
+      hpMultiplier: 5,
+      attackDamage: 20
+    }
+  ]
+};
 
 export function enemyAttack() {
   if (enemyState.gameOver) {
     return;
   }
-  playerState.playerHP = Math.max(0, playerState.playerHP - 10);
+  playerState.playerHP = Math.max(0, playerState.playerHP - enemyState.attackDamage);
   updatePlayerHP();
   showDamageOverlay();
   shakeContainer();
@@ -38,7 +50,7 @@ export function enemyAttack() {
   }
 }
 
-const defaultEnemy = enemyVariants[0];
+const defaultEnemy = enemyVariants.normal[0];
 
 export const enemyState = {
   stage: 1,
@@ -50,9 +62,12 @@ export const enemyState = {
   progressSteps: [],
   progressIndex: 0,
   lastVariantIndex: -1,
+  nodeType: 'battle',
+  attackDamage: defaultEnemy.attackDamage,
   normalImage: defaultEnemy.normalImage,
   damageImage: defaultEnemy.damageImage,
   defeatImages: defaultEnemy.defeatImages.slice(),
+  pendingRareReward: null,
   selectNextBall: () => uiSelectNextBall(firePoint),
   updateHPBar: () => updateHPBar(enemyState),
   updatePlayerHP,
@@ -60,24 +75,33 @@ export const enemyState = {
   enemyAttack: enemyAttack
 };
 
-export function startStage() {
+export function startStage(nodeType = 'battle') {
+  enemyState.nodeType = nodeType;
+  let variants = enemyVariants.normal;
+  if (nodeType === 'elite') {
+    variants = enemyVariants.elite;
+  } else if (nodeType === 'boss') {
+    variants = enemyVariants.boss;
+  }
   let newIndex;
   do {
-    newIndex = Math.floor(Math.random() * enemyVariants.length);
+    newIndex = Math.floor(Math.random() * variants.length);
   } while (newIndex === enemyState.lastVariantIndex);
-  const variant = enemyVariants[newIndex];
+  const variant = variants[newIndex];
   enemyState.normalImage = variant.normalImage;
   enemyState.damageImage = variant.damageImage;
   enemyState.defeatImages = variant.defeatImages.slice();
+  enemyState.attackDamage = variant.attackDamage;
   document.getElementById('enemy-girl').src = enemyState.normalImage;
   generatePegs(50 + (enemyState.stage - 1) * 10);
-  enemyState.maxEnemyHP = 100 + (enemyState.stage - 1) * 100;
+  enemyState.maxEnemyHP = (100 + (enemyState.stage - 1) * 100) * variant.hpMultiplier;
   enemyState.enemyHP = enemyState.maxEnemyHP;
   enemyState.pendingDamage = 0;
+  enemyState.pendingRareReward = null;
   playerState.currentBalls = [];
   playerState.currentShotType = null;
-    playerState.ammo = playerState.ownedBalls.slice();
-    playerState.shotQueue = shuffle(playerState.ammo.slice());
+  playerState.ammo = playerState.ownedBalls.slice();
+  playerState.shotQueue = shuffle(playerState.ammo.slice());
   enemyState.updateHPBar();
   uiSelectNextBall(firePoint);
   enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
@@ -85,4 +109,3 @@ export function startStage() {
   updateAttackCountdown(enemyState);
   enemyState.lastVariantIndex = newIndex;
 }
-
