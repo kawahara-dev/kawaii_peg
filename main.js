@@ -101,21 +101,21 @@ export const mapState = { layers: [], currentLayer: 0, currentNode: null, path: 
 export let worldStage = 0;
 
 const stageSettings = [
-  { layerCount: 3, nodesPerLayer: 3 },
-  { layerCount: 7, nodesPerLayer: 5 },
-  { layerCount: 7, nodesPerLayer: 7 }
+  { layerCount: 3, nodesPerLayer: 3, bossAtEnd: true },
+  { layerCount: 7, nodesPerLayer: 5, bossAtEnd: true },
+  { layerCount: 7, nodesPerLayer: 7, bossAtEnd: true }
 ];
 
-export function generateMap({ layerCount = 5, nodesPerLayer = 3 } = {}) {
+export function generateMap({ layerCount = 5, nodesPerLayer = 3, bossAtEnd = false } = {}) {
   mapState.layers = [];
   const width = 600;
   const height = 500;
   for (let i = 0; i < layerCount; i++) {
     const layer = [];
-    const nodeCount = i === layerCount - 1 ? 1 : nodesPerLayer;
+    const nodeCount = bossAtEnd && i === layerCount - 1 ? 1 : nodesPerLayer;
     for (let j = 0; j < nodeCount; j++) {
       let type;
-      if (i === layerCount - 1) {
+      if (bossAtEnd && i === layerCount - 1) {
         type = 'boss';
       } else {
         const types = ['battle', 'event', 'shop', 'elite'];
