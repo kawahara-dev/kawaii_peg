@@ -1,7 +1,7 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton, xpGained } from './ui.js';
 import { applyRareReward } from './rewards.js';
 import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
