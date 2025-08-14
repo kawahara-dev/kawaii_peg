@@ -248,6 +248,14 @@ export function showMapOverlay(mapState, onSelect) {
   area.style.position = 'relative';
   area.style.width = '600px';
   area.style.height = '500px';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', '600');
+  svg.setAttribute('height', '500');
+  svg.style.position = 'absolute';
+  svg.style.left = '0';
+  svg.style.top = '0';
+  svg.style.pointerEvents = 'none';
+  area.appendChild(svg);
   mapOverlay.appendChild(area);
   mapState.layers.forEach((layer, li) => {
     layer.forEach((node, ni) => {
@@ -270,6 +278,34 @@ export function showMapOverlay(mapState, onSelect) {
         el.classList.add('disabled');
       }
       area.appendChild(el);
+    });
+  });
+
+  const isActiveConnection = (a, b) => {
+    for (let i = 0; i < mapState.path.length - 1; i++) {
+      if (mapState.path[i] === a && mapState.path[i + 1] === b) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  mapState.layers.forEach((layer, li) => {
+    if (li >= mapState.layers.length - 1) return;
+    layer.forEach((node) => {
+      node.connections.forEach((nextIndex) => {
+        const nextNode = mapState.layers[li + 1][nextIndex];
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', node.x + 20);
+        line.setAttribute('y1', node.y + 20);
+        line.setAttribute('x2', nextNode.x + 20);
+        line.setAttribute('y2', nextNode.y + 20);
+        line.classList.add('map-connection');
+        if (isActiveConnection(node, nextNode)) {
+          line.classList.add('active');
+        }
+        svg.appendChild(line);
+      });
     });
   });
   const handler = (e) => {
