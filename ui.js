@@ -21,6 +21,7 @@ const victoryImg = document.getElementById('victory-img');
 const rewardOverlay = document.getElementById('reward-overlay');
 const xpOverlay = document.getElementById('xp-overlay');
 const xpGained = document.getElementById('xp-gained');
+export { xpGained };
 const progressIndicator = document.getElementById('progress-indicator');
 const shopOverlay = document.getElementById('shop-overlay');
 const shopOptions = document.getElementById('shop-options');
