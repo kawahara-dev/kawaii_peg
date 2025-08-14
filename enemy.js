@@ -93,7 +93,7 @@ export function startStage(nodeType = 'battle') {
   enemyState.defeatImages = variant.defeatImages.slice();
   enemyState.attackDamage = variant.attackDamage;
   document.getElementById('enemy-girl').src = enemyState.normalImage;
-  generatePegs(50 + (enemyState.stage - 1) * 10);
+  generatePegs(50 + (enemyState.stage - 1) * 10, enemyState.nodeType === 'boss');
   enemyState.maxEnemyHP = (100 + (enemyState.stage - 1) * 100) * variant.hpMultiplier;
   enemyState.enemyHP = enemyState.maxEnemyHP;
   enemyState.pendingDamage = 0;
