@@ -327,6 +327,74 @@ export function showMapOverlay(mapState, onSelect) {
   mapOverlay.style.display = 'flex';
 }
 
+export function renderMiniMap(mapState) {
+  const miniMap = document.getElementById('mini-map');
+  if (!miniMap) return;
+  miniMap.innerHTML = '';
+  const area = document.createElement('div');
+  area.style.position = 'relative';
+  area.style.width = '100%';
+  area.style.height = '100%';
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', '200');
+  svg.setAttribute('height', '200');
+  svg.style.position = 'absolute';
+  svg.style.left = '0';
+  svg.style.top = '0';
+  svg.style.pointerEvents = 'none';
+  area.appendChild(svg);
+  miniMap.appendChild(area);
+  const scaleX = 200 / 600;
+  const scaleY = 200 / 500;
+
+  const isActiveConnection = (a, b) => {
+    for (let i = 0; i < mapState.path.length - 1; i++) {
+      if (mapState.path[i] === a && mapState.path[i + 1] === b) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  mapState.layers.forEach((layer) => {
+    layer.forEach((node) => {
+      const el = document.createElement('div');
+      el.className = 'map-node';
+      el.textContent = nodeIcons[node.type] || '';
+      el.style.position = 'absolute';
+      el.style.left = `${node.x * scaleX}px`;
+      el.style.top = `${node.y * scaleY}px`;
+      el.style.pointerEvents = 'none';
+      if (node.completed) {
+        el.classList.add('done');
+      }
+      if (mapState.currentNode === node) {
+        el.classList.add('current');
+      }
+      area.appendChild(el);
+    });
+  });
+
+  mapState.layers.forEach((layer, li) => {
+    if (li >= mapState.layers.length - 1) return;
+    layer.forEach((node) => {
+      node.connections.forEach((nextIndex) => {
+        const nextNode = mapState.layers[li + 1][nextIndex];
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', node.x * scaleX + 5);
+        line.setAttribute('y1', node.y * scaleY + 5);
+        line.setAttribute('x2', nextNode.x * scaleX + 5);
+        line.setAttribute('y2', nextNode.y * scaleY + 5);
+        line.classList.add('map-connection');
+        if (isActiveConnection(node, nextNode)) {
+          line.classList.add('active');
+        }
+        svg.appendChild(line);
+      });
+    });
+  });
+}
+
 export function updateCurrentBall(firePoint) {
   if (!playerState.nextBall) {
     currentBallEl.style.display = 'none';
@@ -480,6 +548,7 @@ export function updateProgress(state) {
       progressIndicator.appendChild(li);
     });
   }
+  renderMiniMap(state);
 }
 
 updateCoins();
