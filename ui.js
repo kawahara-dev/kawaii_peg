@@ -34,6 +34,7 @@ const mapOverlay = document.createElement('div');
 mapOverlay.id = 'map-overlay';
 mapOverlay.style.display = 'none';
 document.getElementById('container').appendChild(mapOverlay);
+let mapOverlayHandler;
 
 const nodeIcons = {
   battle: '⚔️',
@@ -309,17 +310,20 @@ export function showMapOverlay(mapState, onSelect) {
       });
     });
   });
-  const handler = (e) => {
+  if (mapOverlayHandler) {
+    mapOverlay.removeEventListener('click', mapOverlayHandler);
+  }
+  mapOverlayHandler = (e) => {
     const target = e.target.closest('.map-node');
     if (!target) return;
     const layer = parseInt(target.dataset.layer);
     if (layer !== mapState.currentLayer) return;
     mapOverlay.style.display = 'none';
-    mapOverlay.removeEventListener('click', handler);
+    mapOverlay.removeEventListener('click', mapOverlayHandler);
     const idx = parseInt(target.dataset.index);
     onSelect && onSelect(idx);
   };
-  mapOverlay.addEventListener('click', handler);
+  mapOverlay.addEventListener('click', mapOverlayHandler);
   mapOverlay.style.display = 'flex';
 }
 
