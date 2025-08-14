@@ -22,6 +22,9 @@ let pegs = [];
 let initialPegCount = 0;
 let ghostEngine;
 let ghostBall;
+let currentShotHits = 0;
+const comboThreshold = 20;
+const comboBonusDamage = 50;
 
 function createGhostEngine() {
   ghostEngine = Engine.create({ gravity: engine.gravity });
@@ -314,6 +317,7 @@ function handlePenetrationHits() {
       } else if (peg.label === 'peg-blue') {
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
+        currentShotHits++;
         let damage = 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
@@ -328,6 +332,7 @@ function handlePenetrationHits() {
       } else if (peg.label === 'coin') {
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
+        currentShotHits++;
         const gain = enemyState.stage;
         playerState.coins += gain;
         localStorage.setItem('coins', playerState.coins);
@@ -335,6 +340,7 @@ function handlePenetrationHits() {
       } else if (peg.label === 'peg' || peg.label === 'peg-yellow') {
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
+        currentShotHits++;
         let damage = peg.label === 'peg-yellow' ? 20 : 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
@@ -368,6 +374,7 @@ export function setupCollisionHandler() {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
+        currentShotHits++;
         let damage = 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
@@ -383,6 +390,7 @@ export function setupCollisionHandler() {
         const coin = pair.bodyA.label === 'coin' ? pair.bodyA : pair.bodyB;
         World.remove(world, coin);
         pegs = pegs.filter(p => p !== coin);
+        currentShotHits++;
         const gain = enemyState.stage;
         playerState.coins += gain;
         localStorage.setItem('coins', playerState.coins);
@@ -392,6 +400,7 @@ export function setupCollisionHandler() {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
+        currentShotHits++;
         let damage = peg.label === 'peg-yellow' ? 20 : 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
@@ -409,6 +418,10 @@ export function setupCollisionHandler() {
         World.remove(world, ball);
         playerState.currentBalls = playerState.currentBalls.filter(b => b !== ball);
         if (playerState.currentBalls.length === 0) {
+          if (currentShotHits >= comboThreshold) {
+            enemyState.pendingDamage += comboBonusDamage;
+            showDamageText(Math.round(x), Math.round(y), 'コンボ！');
+          }
           let totalDamage = enemyState.pendingDamage;
           if (playerState.currentShotType !== 'heal') {
             totalDamage = Math.min(totalDamage, Math.max(enemyState.enemyHP, 0));
@@ -429,6 +442,7 @@ export function setupCollisionHandler() {
           }
           enemyState.pendingDamage = 0;
           playerState.currentShotType = null;
+          currentShotHits = 0;
           enemyState.attackCountdown--;
           if (enemyState.attackCountdown <= 0 && enemyState.enemyHP > 0) {
             enemyState.enemyAttack();
@@ -455,6 +469,7 @@ export function explodeBomb(peg, ball) {
       if (Math.sqrt(dx * dx + dy * dy) <= 80) {
         World.remove(world, body);
         pegs = pegs.filter(p => p !== body);
+        currentShotHits++;
         let dmg = body.label === 'peg-yellow' ? 20 : 10;
         dmg *= ball.damageMultiplier || 1;
         dmg *= 1 + playerState.atkLevel * 0.1;
