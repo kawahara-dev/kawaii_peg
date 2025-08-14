@@ -17,7 +17,7 @@ export const enemyVariants = [
   {
       normalImage: 'image/enemies/enemy3_normal.png',
       damageImage: 'image/enemies/enemy3_damage.png',
-      defeatImages: ['image/enemies/enemy3_defeat.png', 'image/enemies/enemy3_defeat2.png']
+      defeatImages: ['image/enemies/enemy3_defeat.png', 'image/enemies/enemy3_defeat2.png', 'image/enemies/enemy3_defeat3.png']
   }
 ];
 
