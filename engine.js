@@ -82,7 +82,7 @@ export function initEngine() {
   createGhostEngine();
 }
 
-export function generatePegs(count) {
+export function generatePegs(count, isBoss = enemyState.nodeType === 'boss') {
   initialPegCount = count;
   pegs.forEach((p) => World.remove(world, p));
   pegs = [];
@@ -136,15 +136,17 @@ export function generatePegs(count) {
     }
     pegs.push(peg);
   }
-  const bx = 50 + Math.random() * (width - 100);
-  const by = 150 + Math.random() * (height - 250);
-  const bluePeg = Bodies.circle(bx, by, 10, {
-    isStatic: true,
-    render: { fillStyle: '#1e90ff' },
-    label: 'peg-blue',
-    collisionFilter: { category: pegCategory }
-  });
-  pegs.push(bluePeg);
+  if (isBoss) {
+    const bx = 50 + Math.random() * (width - 100);
+    const by = 150 + Math.random() * (height - 250);
+    const bluePeg = Bodies.circle(bx, by, 10, {
+      isStatic: true,
+      render: { fillStyle: '#1e90ff' },
+      label: 'peg-blue',
+      collisionFilter: { category: pegCategory }
+    });
+    pegs.push(bluePeg);
+  }
   World.add(world, pegs);
 
   const hasCoin = pegs.some(p => p.label === 'coin');
@@ -328,7 +330,7 @@ function handlePenetrationHits() {
         } else {
           showHitSpark(peg.position.x, peg.position.y);
         }
-        generatePegs(initialPegCount);
+        generatePegs(initialPegCount, enemyState.nodeType === 'boss');
       } else if (peg.label === 'coin') {
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
@@ -385,7 +387,7 @@ export function setupCollisionHandler() {
         } else {
           showHitSpark(peg.position.x, peg.position.y);
         }
-        generatePegs(initialPegCount);
+        generatePegs(initialPegCount, enemyState.nodeType === 'boss');
       } else if (labels.includes('ball') && labels.includes('coin')) {
         const coin = pair.bodyA.label === 'coin' ? pair.bodyA : pair.bodyB;
         World.remove(world, coin);
