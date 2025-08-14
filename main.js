@@ -132,6 +132,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const creditBtn = document.getElementById('credit-button');
     const creditOverlay = document.getElementById('credit-overlay');
     const creditClose = document.getElementById('credit-close');
+    const settingsButton = document.getElementById('settings-button');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const settingsClose = document.getElementById('settings-close');
+
+    if (document.documentElement.lang === 'en') {
+      settingsButton.textContent = 'Settings';
+      document.getElementById('settings-title').textContent = 'Settings';
+      settingsClose.textContent = 'Close';
+    }
 
   const overlays = [
     menuOverlay,
@@ -142,7 +151,8 @@ window.addEventListener('DOMContentLoaded', () => {
     reloadOverlay,
       victoryOverlay,
       shopOverlay,
-      creditOverlay
+      creditOverlay,
+      settingsOverlay
     ];
 
   const isAnyOverlayVisible = () =>
@@ -332,6 +342,16 @@ window.addEventListener('DOMContentLoaded', () => {
     creditClose.addEventListener('click', (e) => {
       e.stopPropagation();
       hideOverlay(creditOverlay);
+    });
+
+    settingsButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showOverlay(settingsOverlay);
+    });
+
+    settingsClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hideOverlay(settingsOverlay);
     });
 
   rewardButtons.forEach(btn => {
