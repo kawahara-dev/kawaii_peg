@@ -231,15 +231,15 @@ export function updateCurrentBall(firePoint) {
   currentBallEl.style.left = `${firePoint.x - radius}px`;
   currentBallEl.style.top = `${firePoint.y - radius}px`;
   const imageMap = {
-    normal: 'normal_ball.png',
-    split: 'split_ball.png',
-    big: 'big_ball.png',
-    heal: 'recovery_ball.png',
-    penetration: 'penetration_ball.png'
+    normal: './image/balls/normal_ball.png',
+    split: './image/balls/split_ball.png',
+    big: './image/balls/big_ball.png',
+    heal: healBallPath,
+    penetration: './image/balls/penetration_ball.png'
   };
   const img = imageMap[playerState.nextBall];
   if (img) {
-      currentBallEl.style.backgroundImage = `url("./image/balls/${img}")`;
+    currentBallEl.style.backgroundImage = `url(${img})`;
     currentBallEl.style.backgroundSize = 'cover';
     currentBallEl.style.backgroundColor = 'transparent';
   } else {
