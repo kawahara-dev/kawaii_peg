@@ -1,7 +1,7 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton, xpGained } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall, updateMapDisplay, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton, xpGained } from './ui.js';
 import { applyRareReward } from './rewards.js';
 import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
@@ -279,7 +279,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const current = mapState.path[mapState.path.length - 1];
     if (current) {
       current.completed = true;
-      updateProgress(mapState);
+      updateMapDisplay(mapState);
     }
     mapState.currentLayer += 1;
     mapState.currentNode = current;
@@ -291,7 +291,7 @@ window.addEventListener('DOMContentLoaded', () => {
     mapState.currentNode = node;
     node.completed = false;
     mapState.path.push(node);
-    updateProgress(mapState);
+    updateMapDisplay(mapState);
     if (node.type === 'event') {
       triggerRandomEvent(() => {
         proceedToNextLayer();
@@ -333,7 +333,7 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
     generateMap(stageSettings[worldStage]);
-    updateProgress(mapState);
+    updateMapDisplay(mapState);
     showMapOverlay(mapState, handleNodeSelection);
     hideOverlay(menuOverlay);
   });
@@ -409,7 +409,7 @@ window.addEventListener('DOMContentLoaded', () => {
         updateCoins();
     } else {
         generateMap(stageSettings[worldStage]);
-        updateProgress(mapState);
+        updateMapDisplay(mapState);
         document.getElementById('stage-value').textContent = enemyState.stage;
         updateCoins();
         showMapOverlay(mapState, handleNodeSelection);
@@ -491,7 +491,7 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
     generateMap(stageSettings[worldStage]);
-    updateProgress(mapState);
+    updateMapDisplay(mapState);
     showMapOverlay(mapState, handleNodeSelection);
   });
 

@@ -22,7 +22,6 @@ const rewardOverlay = document.getElementById('reward-overlay');
 const xpOverlay = document.getElementById('xp-overlay');
 const xpGained = document.getElementById('xp-gained');
 export { xpGained };
-const progressIndicator = document.getElementById('progress-indicator');
 const shopOverlay = document.getElementById('shop-overlay');
 const shopOptions = document.getElementById('shop-options');
 const shopClose = document.getElementById('shop-close');
@@ -531,23 +530,7 @@ export function launchHeartAttack() {
   setTimeout(() => heart.remove(), 800);
 }
 
-export function updateProgress(state) {
-  progressIndicator.innerHTML = '';
-  if (state && state.path) {
-    state.path.forEach((node, idx) => {
-      const li = document.createElement('li');
-      if (node.completed) {
-        li.classList.add('done');
-      } else if (idx === state.path.length - 1) {
-        li.classList.add('current');
-      }
-      const circle = document.createElement('span');
-      circle.classList.add('step-circle');
-      circle.textContent = nodeIcons[node.type] || '';
-      li.appendChild(circle);
-      progressIndicator.appendChild(li);
-    });
-  }
+export function updateMapDisplay(state) {
   renderMiniMap(state);
 }
 
