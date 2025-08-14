@@ -1,7 +1,8 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins, showMapOverlay } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall, updateProgress, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton } from './ui.js';
+import { applyRareReward } from './rewards.js';
 import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
 import { setLanguage, t } from './i18n.js';
@@ -282,7 +283,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     } else {
       enemyState.stage += 1;
-      startStage();
+      startStage(node.type);
     }
   }
 
@@ -420,6 +421,24 @@ window.addEventListener('DOMContentLoaded', () => {
       rewardOverlay.style.display = 'none';
       proceedToNextLayer();
     });
+  });
+
+  rareRewardButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    rareRewardOverlay.style.display = 'none';
+    if (enemyState.pendingRareReward) {
+      applyRareReward(enemyState.pendingRareReward);
+      enemyState.pendingRareReward = null;
+    }
+    if (enemyState.nodeType === 'boss') {
+      const gained = 10;
+      playerState.permXP += gained;
+      localStorage.setItem('permXP', playerState.permXP);
+      xpGained.textContent = gained;
+      xpOverlay.style.display = 'flex';
+    } else {
+      proceedToNextLayer();
+    }
   });
 
   gameOverRetry.addEventListener('click', (e) => {

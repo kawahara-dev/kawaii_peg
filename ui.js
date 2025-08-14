@@ -4,6 +4,7 @@ import { healBallPath } from './constants.js';
 import { firePoint } from './engine.js';
 import { shuffle } from './utils.js';
 import { t } from './i18n.js';
+import { getRareReward } from './rewards.js';
 
 const hpFill = document.getElementById('hp-fill');
 const hpText = document.getElementById('hp-text');
@@ -24,6 +25,9 @@ const progressIndicator = document.getElementById('progress-indicator');
 const shopOverlay = document.getElementById('shop-overlay');
 const shopOptions = document.getElementById('shop-options');
 const shopClose = document.getElementById('shop-close');
+const rareRewardOverlay = document.getElementById('rare-reward-overlay');
+const rareRewardDesc = document.getElementById('rare-reward-desc');
+const rareRewardButton = document.getElementById('rare-reward-continue');
 
 const mapOverlay = document.createElement('div');
 mapOverlay.id = 'map-overlay';
@@ -40,6 +44,13 @@ const nodeIcons = {
 
 export { enemyGirl };
 
+export function showRareRewardOverlay(reward) {
+  rareRewardDesc.textContent = reward.description;
+  rareRewardOverlay.style.display = 'flex';
+}
+
+export { rareRewardOverlay, rareRewardButton };
+
 export function updateAttackCountdown(enemyState) {
   const timer = document.getElementById('enemy-attack-timer');
   if (timer) {
@@ -55,7 +66,12 @@ export function updateHPBar(enemyState) {
   hpDisplay.textContent = `${hp} / ${enemyState.maxEnemyHP}`;
   if (enemyState.enemyHP <= 0 && !enemyState.gameOver) {
     enemyState.gameOver = true;
-    const coinsEarned = enemyState.stage * 3;
+    let coinsEarned = enemyState.stage * 3;
+    if (enemyState.nodeType === 'elite') {
+      coinsEarned = enemyState.stage * 5;
+    } else if (enemyState.nodeType === 'boss') {
+      coinsEarned = enemyState.stage * 10;
+    }
     playerState.coins += coinsEarned;
     updateCoins();
     document.getElementById('reward-coin-value').textContent = coinsEarned;
@@ -68,12 +84,10 @@ export function updateHPBar(enemyState) {
         victoryOverlay.style.display = 'none';
         enemyState.gameOver = false;
         document.getElementById('aim-svg').addEventListener('click', handleShoot);
-        if (enemyState.stage >= 5) {
-          const gained = 10;
-          playerState.permXP += gained;
-          localStorage.setItem('permXP', playerState.permXP);
-          xpGained.textContent = gained;
-          xpOverlay.style.display = 'flex';
+        if (enemyState.nodeType === 'elite' || enemyState.nodeType === 'boss') {
+          const reward = getRareReward(enemyState.nodeType);
+          enemyState.pendingRareReward = reward;
+          showRareRewardOverlay(reward);
         } else {
           rewardOverlay.style.display = 'flex';
         }
