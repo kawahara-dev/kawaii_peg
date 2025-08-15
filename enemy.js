@@ -50,7 +50,7 @@ export function enemyAttack() {
   shakeContainer();
   if (playerState.playerHP <= 0 && !enemyState.gameOver) {
     enemyState.gameOver = true;
-    document.getElementById('game-over-overlay').style.display = 'flex';
+    document.getElementById('game-over-overlay').classList.add('show');
   } else {
     enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
     updateAttackCountdown(enemyState);
