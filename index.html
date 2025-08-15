@@ -6,8 +6,10 @@
   <title>Peggy Girls</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <noscript><style>body.hidden{display:block;}</style></noscript>
 </head>
-<body style="display: none;">
+<body class="hidden">
+  <noscript><p>JavaScriptが無効だと遊べないよ〜✨</p></noscript>
   <div id="container">
     <div id="menu-overlay">
       <div id="main-menu">
@@ -141,14 +143,26 @@
 
   <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
   <script>
-    if (!window.Matter) {
-      document.body.insertAdjacentHTML('beforeend', '<p>Matter.js の読み込みに失敗しました。</p>');
+    function showError(message) {
+      document.body.classList.remove('hidden');
+      document.body.insertAdjacentHTML('beforeend', `<p>${message}</p>`);
     }
-  </script>
-  <script>
+
+    if (!window.Matter) {
+      showError('Matter.js の読み込みに失敗しました。');
+    }
+
     window.addEventListener('load', () => {
-      document.body.style.display = 'block';
+      try {
+        document.body.classList.remove('hidden');
+      } catch (e) {
+        showError('読み込みエラーが発生しちゃった…');
+      }
     });
+
+    window.addEventListener('error', () => {
+      showError('なんかエラーが起きちゃったみたい…');
+    }, { once: true });
   </script>
   <script type="module" src="main.js"></script>
 </body>
