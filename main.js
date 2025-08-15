@@ -1,4 +1,5 @@
-import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
+import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, clearSimulatedPath } from './engine.js';
+import { firePoint } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, updatePlayerHP, updateCurrentBall, updateMapDisplay, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton, xpGained, updateRelicIcons } from './ui.js';
