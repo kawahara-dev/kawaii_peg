@@ -228,6 +228,53 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let aimTimer;
 
+  function onRewardClick(e) {
+    e.stopPropagation();
+    rewardButtons.forEach(b => (b.disabled = true));
+    const btn = e.currentTarget;
+    const type = btn.dataset.type;
+    playerState.ownedBalls.push(type);
+    if (!playerState.ballLevels[type]) {
+      playerState.ballLevels[type] = 1;
+    }
+    playerState.ammo = playerState.ownedBalls.slice();
+    playerState.shotQueue = shuffle(playerState.ammo.slice());
+    enemyState.selectNextBall();
+    hideOverlay(rewardOverlay);
+    proceedToNextLayer();
+  }
+
+  function setupRewardButtons() {
+    rewardButtons.forEach(btn => {
+      btn.disabled = false;
+      btn.addEventListener('click', onRewardClick, { once: true });
+    });
+  }
+
+  function onRareRewardClick(e) {
+    e.stopPropagation();
+    rareRewardButton.disabled = true;
+    rareRewardOverlay.style.display = 'none';
+    if (enemyState.pendingRareReward) {
+      applyRareReward(enemyState.pendingRareReward);
+      enemyState.pendingRareReward = null;
+    }
+    if (enemyState.nodeType === 'boss') {
+      const gained = 10;
+      playerState.permXP += gained;
+      localStorage.setItem('permXP', playerState.permXP);
+      xpGained.textContent = gained;
+      showOverlay(xpOverlay);
+    } else {
+      proceedToNextLayer();
+    }
+  }
+
+  function setupRareRewardButton() {
+    rareRewardButton.disabled = false;
+    rareRewardButton.addEventListener('click', onRareRewardClick, { once: true });
+  }
+
   function triggerRandomEvent(onDone) {
     const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
     if (ev.type === 'shop') {
@@ -252,6 +299,7 @@ window.addEventListener('DOMContentLoaded', () => {
       btn.appendChild(span);
       btn.addEventListener('click', e => {
         e.stopPropagation();
+        btn.disabled = true;
         choice.apply();
         updatePlayerHP();
         updateAmmo();
@@ -261,11 +309,12 @@ window.addEventListener('DOMContentLoaded', () => {
         okBtn.textContent = t('common.ok');
         okBtn.addEventListener('click', e2 => {
           e2.stopPropagation();
+          okBtn.disabled = true;
           hideOverlay(eventOverlay);
           onDone && onDone();
-        });
+        }, { once: true });
         eventOptions.appendChild(okBtn);
-      });
+      }, { once: true });
       eventOptions.appendChild(btn);
     });
     showOverlay(eventOverlay);
@@ -289,6 +338,8 @@ window.addEventListener('DOMContentLoaded', () => {
     ) {
       showMapOverlay(mapState, handleNodeSelection);
     }
+    setupRewardButtons();
+    setupRareRewardButton();
   }
 
   function handleNodeSelection(index) {
@@ -441,39 +492,8 @@ window.addEventListener('DOMContentLoaded', () => {
       hideOverlay(settingsOverlay);
     });
 
-  rewardButtons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const type = btn.dataset.type;
-      playerState.ownedBalls.push(type);
-      if (!playerState.ballLevels[type]) {
-        playerState.ballLevels[type] = 1;
-      }
-      playerState.ammo = playerState.ownedBalls.slice();
-      playerState.shotQueue = shuffle(playerState.ammo.slice());
-      enemyState.selectNextBall();
-      hideOverlay(rewardOverlay);
-      proceedToNextLayer();
-    });
-  });
-
-  rareRewardButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    rareRewardOverlay.style.display = 'none';
-    if (enemyState.pendingRareReward) {
-      applyRareReward(enemyState.pendingRareReward);
-      enemyState.pendingRareReward = null;
-    }
-    if (enemyState.nodeType === 'boss') {
-      const gained = 10;
-      playerState.permXP += gained;
-      localStorage.setItem('permXP', playerState.permXP);
-      xpGained.textContent = gained;
-      showOverlay(xpOverlay);
-    } else {
-      proceedToNextLayer();
-    }
-  });
+  setupRewardButtons();
+  setupRareRewardButton();
 
   gameOverRetry.addEventListener('click', (e) => {
     e.stopPropagation();
