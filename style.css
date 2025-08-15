@@ -54,8 +54,8 @@ html, body {
 
 #mini-map {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 8px;
+  right: 8px;
   width: 200px;
   height: 200px;
   pointer-events: none;
