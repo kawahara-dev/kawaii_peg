@@ -203,6 +203,7 @@ window.addEventListener('DOMContentLoaded', () => {
     menuOverlay,
     xpOverlay,
     rewardOverlay,
+    rareRewardOverlay,
     eventOverlay,
     gameOverOverlay,
     reloadOverlay,
@@ -220,7 +221,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const isAnyOverlayVisible = () =>
-    overlays.some(o => o.classList.contains('show'));
+    overlays.some(o => o.classList.contains('show') || o.style.display !== 'none');
 
   const showOverlay = (overlay) => {
     overlay.classList.add('show');
