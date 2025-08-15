@@ -91,9 +91,13 @@ export function startStage(nodeType = 'battle') {
     variants = enemyVariants.boss;
   }
   let newIndex;
-  do {
-    newIndex = Math.floor(Math.random() * variants.length);
-  } while (newIndex === enemyState.lastVariantIndex);
+  if (variants.length <= 1) {
+    newIndex = 0;
+  } else {
+    do {
+      newIndex = Math.floor(Math.random() * variants.length);
+    } while (newIndex === enemyState.lastVariantIndex);
+  }
   const variant = variants[newIndex];
   enemyState.normalImage = variant.normalImage;
   enemyState.damageImage = variant.damageImage;
