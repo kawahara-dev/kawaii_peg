@@ -214,18 +214,14 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const isAnyOverlayVisible = () =>
-    overlays.some(o => window.getComputedStyle(o).display !== 'none');
+    overlays.some(o => o.classList.contains('show'));
 
   const showOverlay = (overlay) => {
-    overlay.style.display = 'flex';
-    requestAnimationFrame(() => overlay.classList.add('show'));
+    overlay.classList.add('show');
   };
 
   const hideOverlay = (overlay) => {
     overlay.classList.remove('show');
-    overlay.addEventListener('transitionend', () => {
-      overlay.style.display = 'none';
-    }, { once: true });
   };
 
   showOverlay(menuOverlay);
@@ -265,14 +261,14 @@ window.addEventListener('DOMContentLoaded', () => {
         okBtn.textContent = t('common.ok');
         okBtn.addEventListener('click', e2 => {
           e2.stopPropagation();
-          eventOverlay.style.display = 'none';
+          hideOverlay(eventOverlay);
           onDone && onDone();
         });
         eventOptions.appendChild(okBtn);
       });
       eventOptions.appendChild(btn);
     });
-    eventOverlay.style.display = 'flex';
+    showOverlay(eventOverlay);
   }
 
   function proceedToNextLayer() {
@@ -307,12 +303,12 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const startReload = () => {
-    reloadOverlay.style.display = 'flex';
+    showOverlay(reloadOverlay);
     playerState.reloading = true;
     setTimeout(() => {
       playerState.ammo = playerState.ownedBalls.slice();
       playerState.shotQueue = shuffle(playerState.ammo.slice());
-      reloadOverlay.style.display = 'none';
+      hideOverlay(reloadOverlay);
       enemyState.selectNextBall();
       playerState.reloading = false;
     }, 1000);
@@ -384,7 +380,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     xpContinue.addEventListener('click', (e) => {
       e.stopPropagation();
-      xpOverlay.style.display = 'none';
+      hideOverlay(xpOverlay);
       worldStage += 1;
       enemyState.stage = 0;
       mapState.currentLayer = 0;
@@ -447,7 +443,7 @@ window.addEventListener('DOMContentLoaded', () => {
       playerState.ammo = playerState.ownedBalls.slice();
       playerState.shotQueue = shuffle(playerState.ammo.slice());
       enemyState.selectNextBall();
-      rewardOverlay.style.display = 'none';
+      hideOverlay(rewardOverlay);
       proceedToNextLayer();
     });
   });
@@ -464,7 +460,7 @@ window.addEventListener('DOMContentLoaded', () => {
       playerState.permXP += gained;
       localStorage.setItem('permXP', playerState.permXP);
       xpGained.textContent = gained;
-      xpOverlay.style.display = 'flex';
+      showOverlay(xpOverlay);
     } else {
       proceedToNextLayer();
     }
@@ -472,7 +468,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   gameOverRetry.addEventListener('click', (e) => {
     e.stopPropagation();
-    gameOverOverlay.style.display = 'none';
+    hideOverlay(gameOverOverlay);
     worldStage = 0;
     enemyState.stage = 0;
     enemyState.gameOver = false;

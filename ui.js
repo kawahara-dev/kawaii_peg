@@ -79,10 +79,10 @@ export function updateHPBar(enemyState) {
     localStorage.setItem('coins', playerState.coins);
     setTimeout(() => {
       victoryImg.src = enemyState.defeatImages[Math.floor(Math.random() * enemyState.defeatImages.length)];
-      victoryOverlay.style.display = 'flex';
+      victoryOverlay.classList.add('show');
       document.getElementById('aim-svg').removeEventListener('click', handleShoot);
       const proceed = () => {
-        victoryOverlay.style.display = 'none';
+        victoryOverlay.classList.remove('show');
         enemyState.gameOver = false;
         document.getElementById('aim-svg').addEventListener('click', handleShoot);
         if (enemyState.nodeType === 'elite' || enemyState.nodeType === 'boss') {
@@ -90,7 +90,7 @@ export function updateHPBar(enemyState) {
           enemyState.pendingRareReward = reward;
           showRareRewardOverlay(reward);
         } else {
-          rewardOverlay.style.display = 'flex';
+          rewardOverlay.classList.add('show');
         }
       };
       victoryOverlay.addEventListener('click', (e) => { e.stopPropagation(); proceed(); }, { once: true });
@@ -171,7 +171,7 @@ const shopImageMap = {
 };
 
 export function showShopOverlay(onDone) {
-  shopOverlay.style.display = 'flex';
+  shopOverlay.classList.add('show');
   updateCoins();
   shopOptions.innerHTML = '';
   Object.entries(shopData).forEach(([type, data]) => {
@@ -228,7 +228,7 @@ export function showShopOverlay(onDone) {
     playerState.shotQueue = shuffle(playerState.ammo.slice());
     localStorage.setItem('coins', playerState.coins);
     shopOptions.removeEventListener('click', handleClick);
-    shopOverlay.style.display = 'none';
+    shopOverlay.classList.remove('show');
     selectNextBall(firePoint);
     updateCoins();
     onDone && onDone();
@@ -238,7 +238,7 @@ export function showShopOverlay(onDone) {
 
   shopClose.onclick = () => {
     shopOptions.removeEventListener('click', handleClick);
-    shopOverlay.style.display = 'none';
+    shopOverlay.classList.remove('show');
     onDone && onDone();
   };
 }
