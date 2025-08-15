@@ -21,6 +21,7 @@ html, body {
   width: 880px;
   height: 100%;
   background: #fff0f5;
+  border-radius: 8px;
   overflow: hidden;
   z-index: 1;
   border: 8px solid #ff69b4;
@@ -238,7 +239,8 @@ html, body {
   font-size: 14px;
 }
 #enemy-girl {
-  width: 400px;
+  width: 100%;
+  display: block;
 }
 
 .boss-aura {
@@ -257,6 +259,11 @@ html, body {
 }
 #enemy-image-wrapper {
   position: relative;
+  border: 8px solid #ff69b4;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 4px;
+  overflow: hidden;
 }
 #enemy-attack-timer {
   position: absolute;
