@@ -363,7 +363,7 @@ export function showMapOverlay(mapState, onSelect) {
     onSelect && onSelect(idx);
   };
   mapOverlay.addEventListener('click', mapOverlayHandler);
-  mapOverlay.addEventListener('touchstart', mapOverlayHandler);
+  mapOverlay.addEventListener('touchstart', mapOverlayHandler, { passive: true });
   mapOverlay.style.display = 'flex';
 }
 
