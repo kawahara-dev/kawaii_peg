@@ -268,5 +268,24 @@ export function setLanguage(lang) {
       el.textContent = txt;
     }
   });
+  const historyEl = document.getElementById('version-history');
+  if (historyEl) {
+    const history = translations[currentLang].history;
+    const titleEl = historyEl.querySelector('h3');
+    const listEl = historyEl.querySelector('ul');
+    if (history) {
+      if (titleEl) titleEl.textContent = history.title || '';
+      if (listEl) {
+        listEl.innerHTML = '';
+        Object.keys(history)
+          .filter(k => k !== 'title')
+          .forEach(k => {
+            const li = document.createElement('li');
+            li.textContent = history[k];
+            listEl.appendChild(li);
+          });
+      }
+    }
+  }
   localStorage.setItem('lang', lang);
 }
