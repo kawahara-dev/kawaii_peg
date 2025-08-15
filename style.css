@@ -733,6 +733,16 @@ canvas {
   z-index: 30;
 }
 
+#rare-reward-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 10px;
+  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #rare-reward-overlay button {
   margin-top: 20px;
   padding: 10px 20px;
