@@ -32,7 +32,7 @@ const rareRewardButton = document.getElementById('rare-reward-continue');
 const mapOverlay = document.createElement('div');
 mapOverlay.id = 'map-overlay';
 mapOverlay.style.display = 'none';
-document.getElementById('container').appendChild(mapOverlay);
+document.getElementById('game-wrapper').appendChild(mapOverlay);
 let mapOverlayHandler;
 
 const nodeIcons = {
