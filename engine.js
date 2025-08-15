@@ -43,9 +43,9 @@ export function initEngine() {
     engine,
     options: { width, height, wireframes: false, background: '#fff0f5' }
   });
-  Render.run(render);
+  // Render.run(render);
   runner = Runner.create();
-  Runner.run(runner, engine);
+  // Runner.run(runner, engine);
 
   Events.on(engine, 'beforeUpdate', () => {
     playerState.currentBalls.forEach(ball => {

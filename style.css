@@ -10,14 +10,7 @@ html, body {
   justify-content: flex-start;
 }
 #container {
-  display: flex;
-  height: 700px;
-  width: 100%;
-  max-width: 1280px;
-  border: 8px solid #ff69b4;
-  box-sizing: content-box;
-  position: relative;
-  overflow: hidden;
+  display: none;
 }
 #game-wrapper {
   position: relative;
