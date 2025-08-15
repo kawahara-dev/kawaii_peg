@@ -10,7 +10,7 @@ html, body {
   justify-content: flex-start;
 }
 #container {
-  display: none;
+  display: flex;
 }
 #game-wrapper {
   position: relative;
