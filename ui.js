@@ -66,7 +66,7 @@ export { rareRewardOverlay, rareRewardButton };
 export function updateAttackCountdown(enemyState) {
   const timer = document.getElementById('enemy-attack-timer');
   if (timer) {
-    timer.textContent = enemyState.attackCountdown;
+    timer.textContent = `${t('hud.untilAttack')}: ${enemyState.attackCountdown} / ${t('hud.damage')}: ${enemyState.attackDamage}`;
   }
 }
 

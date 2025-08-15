@@ -17,7 +17,9 @@ export const translations = {
     hud: {
       hp: 'HP: ',
       ammo: '弾: ',
-      stage: 'ステージ: '
+      stage: 'ステージ: ',
+      untilAttack: '攻撃まで',
+      damage: 'ダメージ'
     },
     balls: {
       normal: { name: 'ノーマル', full: 'ノーマルボール' },
@@ -139,7 +141,9 @@ export const translations = {
     hud: {
       hp: 'HP: ',
       ammo: 'Ammo: ',
-      stage: 'Stage: '
+      stage: 'Stage: ',
+      untilAttack: 'Until Attack',
+      damage: 'Damage'
     },
     balls: {
       normal: { name: 'Normal', full: 'Normal Ball' },
