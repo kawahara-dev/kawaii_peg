@@ -5,31 +5,31 @@ export const relicList = [
     key: 'timeLag',
     name: 'タイムラグ',
     description: '1/5の確率で敵の攻撃を1ターン遅くする',
-    icon: '⏳'
+    icon: 'image/relics/time_lag.svg'
   },
   {
     key: 'rebound',
     name: 'リバウンド',
     description: '1/2の確率で落下したボールが再落下する',
-    icon: '🔄'
+    icon: 'image/relics/rebound.svg'
   },
   {
     key: 'killHeal',
     name: 'キルヒール',
     description: '敵撃破でHP10回復',
-    icon: '💖'
+    icon: 'image/relics/kill_heal.svg'
   },
   {
     key: 'damageBoost',
     name: 'ダメブースト',
     description: 'ペグ破壊時に追加ダメージ1~3',
-    icon: '💥'
+    icon: 'image/relics/damage_boost.svg'
   },
   {
     key: 'coinCharm',
     name: 'コインチャーム',
     description: '敵撃破でコイン10追加',
-    icon: '💰'
+    icon: 'image/relics/coin_charm.svg'
   }
 ];
 

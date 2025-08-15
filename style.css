@@ -737,10 +737,7 @@ canvas {
   width: 64px;
   height: 64px;
   margin-bottom: 10px;
-  font-size: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 }
 
 #rare-reward-overlay button {
