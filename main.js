@@ -228,9 +228,10 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   const isAnyOverlayVisible = () =>
-    overlays.some(o =>
-      o.classList.contains('show') || getComputedStyle(o).display !== 'none'
-    );
+    overlays.some((o) => {
+      const display = window.getComputedStyle(o).display;
+      return o.classList.contains('show') || display !== 'none';
+    });
 
   const showOverlay = (overlay) => {
     overlay.classList.add('show');
