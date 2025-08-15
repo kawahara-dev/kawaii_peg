@@ -11,6 +11,13 @@ export const enemyVariants = {
       defeatImages: ['image/enemies/enemy_defeat.png', 'image/enemies/enemy_defeat2.png'],
       hpMultiplier: 1,
       attackDamage: 10
+    },
+    {
+      normalImage: 'image/enemies/enemy4_normal.png',
+      damageImage: 'image/enemies/enemy4_damage.png',
+      defeatImages: ['image/enemies/enemy4_defeat.png'],
+      hpMultiplier: 1,
+      attackDamage: 10
     }
   ],
   elite: [
