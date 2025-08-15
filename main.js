@@ -121,8 +121,14 @@ export function generateMap({ layerCount = 5, nodesPerLayer = 3, bossAtEnd = fal
         if (r < 0.1) {
           type = 'shop';
         } else {
-          const types = ['battle', 'event', 'elite'];
-          type = types[Math.floor(Math.random() * types.length)];
+          const r2 = Math.random();
+          if (r2 < 0.6) {
+            type = 'battle';
+          } else if (r2 < 0.9) {
+            type = 'event';
+          } else {
+            type = 'elite';
+          }
         }
       }
       const x = ((j + 1) * width) / (nodeCount + 1);
