@@ -1,5 +1,5 @@
 import { playerState } from './player.js';
-import { handleShoot } from './main.js';
+import { handleShoot, onRareRewardClick } from './main.js';
 import { healBallPath } from './constants.js';
 import { firePoint } from './engine.js';
 import { shuffle } from './utils.js';
@@ -58,6 +58,8 @@ export function showRareRewardOverlay(reward) {
     rareRewardIcon.removeAttribute('src');
     rareRewardIcon.style.display = 'none';
   }
+  rareRewardButton.disabled = false;
+  rareRewardButton.addEventListener('click', onRareRewardClick, { once: true });
   rareRewardOverlay.style.display = 'flex';
 }
 

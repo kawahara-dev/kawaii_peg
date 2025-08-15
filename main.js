@@ -268,7 +268,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function onRareRewardClick(e) {
+  export function onRareRewardClick(e) {
     e.stopPropagation();
     rareRewardButton.disabled = true;
     rareRewardOverlay.style.display = 'none';
@@ -288,10 +288,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function setupRareRewardButton() {
-    rareRewardButton.disabled = false;
-    rareRewardButton.addEventListener('click', onRareRewardClick, { once: true });
-  }
 
   function triggerRandomEvent(onDone) {
     const shopChance = 0.05;
@@ -358,7 +354,6 @@ window.addEventListener('DOMContentLoaded', () => {
       showMapOverlay(mapState, handleNodeSelection);
     }
     setupRewardButtons();
-    setupRareRewardButton();
   }
 
   function handleNodeSelection(index) {
@@ -515,7 +510,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
   setupRewardButtons();
-  setupRareRewardButton();
 
   gameOverRetry.addEventListener('click', (e) => {
     e.stopPropagation();
