@@ -47,7 +47,7 @@ const nodeIcons = {
 export { enemyGirl };
 
 export function showRareRewardOverlay(reward) {
-  rareRewardDesc.textContent = reward.description;
+  rareRewardDesc.innerHTML = reward.description;
   if (reward.icon) {
     rareRewardIcon.src = reward.icon;
     rareRewardIcon.alt = reward.description;

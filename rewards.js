@@ -30,36 +30,25 @@ export const rareRewardPools = {
       }
     }
   ],
-  boss: [
-    {
-      description: '貫通ボールを入手！',
-      apply() {
-        playerState.ownedBalls.push('penetration');
-        if (!playerState.ballLevels.penetration) {
-          playerState.ballLevels.penetration = 1;
-        }
-        playerState.ammo = playerState.ownedBalls.slice();
-        playerState.shotQueue = shuffle(playerState.ammo.slice());
-      }
-    },
-    {
-      description: '50XPを獲得！',
-      apply() {
-        playerState.permXP += 50;
-        localStorage.setItem('permXP', playerState.permXP);
-      }
-    },
-    { type: 'relic' }
-  ]
 };
 
 export function getRareReward(type) {
+  if (type === 'boss') {
+    const relic = getRandomRelic();
+    return {
+      description: `${relic.name}を入手！<br>${relic.description}`,
+      icon: relic.icon,
+      apply() {
+        addRelic(relic.key);
+      }
+    };
+  }
   const pool = rareRewardPools[type] || [];
   const reward = pool[Math.floor(Math.random() * pool.length)];
   if (reward.type === 'relic') {
     const relic = getRandomRelic();
     return {
-      description: `${relic.name}を入手！`,
+      description: `${relic.name}を入手！<br>${relic.description}`,
       icon: relic.icon,
       apply() {
         addRelic(relic.key);
