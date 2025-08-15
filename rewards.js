@@ -1,5 +1,6 @@
 import { playerState } from './player.js';
 import { shuffle } from './utils.js';
+import { addRelic, getRandomRelic } from './relics.js';
 
 export const rareRewardPools = {
   elite: [
@@ -48,19 +49,24 @@ export const rareRewardPools = {
         localStorage.setItem('permXP', playerState.permXP);
       }
     },
-    {
-      description: 'メガバーストを習得！',
-      apply() {
-        playerState.skills = playerState.skills || [];
-        playerState.skills.push('megaBlast');
-      }
-    }
+    { type: 'relic' }
   ]
 };
 
 export function getRareReward(type) {
   const pool = rareRewardPools[type] || [];
-  return pool[Math.floor(Math.random() * pool.length)];
+  const reward = pool[Math.floor(Math.random() * pool.length)];
+  if (reward.type === 'relic') {
+    const relic = getRandomRelic();
+    return {
+      description: `${relic.name}を入手！`,
+      icon: relic.icon,
+      apply() {
+        addRelic(relic.key);
+      }
+    };
+  }
+  return reward;
 }
 
 export function applyRareReward(reward) {

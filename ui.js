@@ -27,6 +27,7 @@ const shopOptions = document.getElementById('shop-options');
 const shopClose = document.getElementById('shop-close');
 const rareRewardOverlay = document.getElementById('rare-reward-overlay');
 const rareRewardDesc = document.getElementById('rare-reward-desc');
+const rareRewardIcon = document.getElementById('rare-reward-icon');
 const rareRewardButton = document.getElementById('rare-reward-continue');
 
 const mapOverlay = document.createElement('div');
@@ -47,6 +48,12 @@ export { enemyGirl };
 
 export function showRareRewardOverlay(reward) {
   rareRewardDesc.textContent = reward.description;
+  if (reward.icon) {
+    rareRewardIcon.textContent = reward.icon;
+    rareRewardIcon.style.display = 'block';
+  } else {
+    rareRewardIcon.style.display = 'none';
+  }
   rareRewardOverlay.style.display = 'flex';
 }
 
@@ -73,10 +80,17 @@ export function updateHPBar(enemyState) {
     } else if (enemyState.nodeType === 'boss') {
       coinsEarned = enemyState.stage * 10;
     }
+    if (playerState.relics && playerState.relics.includes('coinCharm')) {
+      coinsEarned += 10;
+    }
     playerState.coins += coinsEarned;
     updateCoins();
     document.getElementById('reward-coin-value').textContent = coinsEarned;
     localStorage.setItem('coins', playerState.coins);
+    if (playerState.relics && playerState.relics.includes('killHeal')) {
+      playerState.playerHP = Math.min(playerState.playerMaxHP, playerState.playerHP + 10);
+      updatePlayerHP();
+    }
     setTimeout(() => {
       victoryImg.src = enemyState.defeatImages[Math.floor(Math.random() * enemyState.defeatImages.length)];
       victoryOverlay.classList.add('show');

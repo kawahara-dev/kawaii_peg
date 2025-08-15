@@ -323,6 +323,9 @@ function handlePenetrationHits() {
         let damage = 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
+        if (playerState.relics && playerState.relics.includes('damageBoost')) {
+          damage += Math.floor(Math.random() * 3) + 1;
+        }
         enemyState.pendingDamage += damage;
         showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
         if (ball.ballType === 'heal') {
@@ -346,6 +349,9 @@ function handlePenetrationHits() {
         let damage = peg.label === 'peg-yellow' ? 20 : 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
+        if (playerState.relics && playerState.relics.includes('damageBoost')) {
+          damage += Math.floor(Math.random() * 3) + 1;
+        }
         enemyState.pendingDamage += damage;
         showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
         if (ball.ballType === 'heal') {
@@ -380,6 +386,9 @@ export function setupCollisionHandler() {
         let damage = 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
+        if (playerState.relics && playerState.relics.includes('damageBoost')) {
+          damage += Math.floor(Math.random() * 3) + 1;
+        }
         enemyState.pendingDamage += damage;
         showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
         if (ball.ballType === 'heal') {
@@ -406,6 +415,9 @@ export function setupCollisionHandler() {
         let damage = peg.label === 'peg-yellow' ? 20 : 10;
         damage *= ball.damageMultiplier || 1;
         damage *= 1 + playerState.atkLevel * 0.1;
+        if (playerState.relics && playerState.relics.includes('damageBoost')) {
+          damage += Math.floor(Math.random() * 3) + 1;
+        }
         enemyState.pendingDamage += damage;
         showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
         if (ball.ballType === 'heal') {
@@ -416,6 +428,11 @@ export function setupCollisionHandler() {
       }
       if (labels.includes('ball') && labels.includes('bottom-sensor')) {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
+        if (playerState.relics && playerState.relics.includes('rebound') && Math.random() < 0.5) {
+          Body.setPosition(ball, { x: ball.position.x, y: 0 });
+          Body.setVelocity(ball, { x: 0, y: 20 });
+          return;
+        }
         const { x, y } = ball.position;
         World.remove(world, ball);
         playerState.currentBalls = playerState.currentBalls.filter(b => b !== ball);
@@ -446,6 +463,9 @@ export function setupCollisionHandler() {
           playerState.currentShotType = null;
           currentShotHits = 0;
           enemyState.attackCountdown--;
+          if (playerState.relics && playerState.relics.includes('timeLag') && Math.random() < 0.2) {
+            enemyState.attackCountdown++;
+          }
           if (enemyState.attackCountdown <= 0 && enemyState.enemyHP > 0) {
             enemyState.enemyAttack();
             launchHeartAttack();
@@ -475,6 +495,9 @@ export function explodeBomb(peg, ball) {
         let dmg = body.label === 'peg-yellow' ? 20 : 10;
         dmg *= ball.damageMultiplier || 1;
         dmg *= 1 + playerState.atkLevel * 0.1;
+        if (playerState.relics && playerState.relics.includes('damageBoost')) {
+          dmg += Math.floor(Math.random() * 3) + 1;
+        }
         enemyState.pendingDamage += dmg;
         showDamageText(Math.round(body.position.x), Math.round(body.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
         if (ball.ballType === 'heal') {

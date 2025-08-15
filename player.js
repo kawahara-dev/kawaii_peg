@@ -12,5 +12,6 @@ export const playerState = {
   permXP: parseInt(localStorage.getItem('permXP') || '0', 10),
   hpLevel: parseInt(localStorage.getItem('hpLevel') || '0', 10),
   atkLevel: parseInt(localStorage.getItem('atkLevel') || '0', 10),
-  coins: parseInt(localStorage.getItem('coins') || '0', 10)
+  coins: parseInt(localStorage.getItem('coins') || '0', 10),
+  relics: []
 };
