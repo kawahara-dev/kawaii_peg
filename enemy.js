@@ -113,8 +113,8 @@ export function startStage(nodeType = 'battle') {
   playerState.currentShotType = null;
   playerState.ammo = playerState.ownedBalls.slice();
   playerState.shotQueue = shuffle(playerState.ammo.slice());
+  enemyState.selectNextBall();
   enemyState.updateHPBar();
-  uiSelectNextBall(firePoint);
   enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
   document.getElementById('stage-value').textContent = enemyState.stage;
   updateAttackCountdown(enemyState);
