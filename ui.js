@@ -279,6 +279,9 @@ export function showMapOverlay(mapState, onSelect) {
         el.classList.add('disabled');
       }
       area.appendChild(el);
+      el.addEventListener('click', () => {
+        console.log('map node clicked', li, ni);
+      });
     });
   });
 
@@ -311,6 +314,7 @@ export function showMapOverlay(mapState, onSelect) {
   });
   if (mapOverlayHandler) {
     mapOverlay.removeEventListener('click', mapOverlayHandler);
+    mapOverlay.removeEventListener('touchstart', mapOverlayHandler);
   }
   mapOverlayHandler = (e) => {
     const target = e.target.closest('.map-node');
@@ -323,6 +327,7 @@ export function showMapOverlay(mapState, onSelect) {
     onSelect && onSelect(idx);
   };
   mapOverlay.addEventListener('click', mapOverlayHandler);
+  mapOverlay.addEventListener('touchstart', mapOverlayHandler);
   mapOverlay.style.display = 'flex';
 }
 
