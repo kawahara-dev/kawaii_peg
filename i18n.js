@@ -101,9 +101,10 @@ export const translations = {
         }
       }
     },
-    history: {
-      title: 'バージョン履歴',
-      v1_5: 'v1.5 (2025-08-11) 4人目キャラ追加',
+      history: {
+        title: 'バージョン履歴',
+        v1_6: 'v1.6 (2025-08-15) ボスのオーラ演出と攻撃カウントダウン追加、ボス撃破後に全回復、レア報酬改善',
+        v1_5: 'v1.5 (2025-08-11) 4人目キャラ追加',
       v1_4: 'v1.4 (2025-08-10) 敵画像ファイル名の整理＆参照更新',
       v1_3: 'v1.3 (2025-08-09) 爆弾衝突のバグ修正＆コインアイコンクレジット追加',
       v1_2: 'v1.2 (2025-08-06) バージョン履歴を更新',
@@ -225,9 +226,10 @@ export const translations = {
         }
       }
     },
-    history: {
-      title: 'Version History',
-      v1_5: 'v1.5 (2025-08-11) Added 4th character',
+      history: {
+        title: 'Version History',
+        v1_6: 'v1.6 (2025-08-15) Added boss aura and attack countdown, fully heal after boss defeat, and improved rare rewards',
+        v1_5: 'v1.5 (2025-08-11) Added 4th character',
       v1_4: 'v1.4 (2025-08-10) Organized enemy image filenames and updated references',
       v1_3: 'v1.3 (2025-08-09) Fixed bomb collision bug and added coin icon credit',
       v1_2: 'v1.2 (2025-08-06) Updated version history',
