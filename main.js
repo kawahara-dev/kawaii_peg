@@ -95,6 +95,7 @@ const randomEvents = [
 ];
 
 export let handleShoot;
+export let onRareRewardClick;
 
 export const mapState = { layers: [], currentLayer: 0, currentNode: null, path: [] };
 
@@ -268,7 +269,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  export function onRareRewardClick(e) {
+  onRareRewardClick = function onRareRewardClick(e) {
     e.stopPropagation();
     rareRewardButton.disabled = true;
     rareRewardOverlay.style.display = 'none';
@@ -286,7 +287,7 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
       proceedToNextLayer();
     }
-  }
+  };
 
 
   function triggerRandomEvent(onDone) {
