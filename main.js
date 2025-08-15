@@ -536,9 +536,7 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
     updateRelicIcons();
-    generateMap(stageSettings[worldStage]);
-    updateMapDisplay(mapState);
-    showMapOverlay(mapState, handleNodeSelection);
+    showOverlay(menuOverlay);
   });
 
   const aimSvg = document.getElementById('aim-svg');
