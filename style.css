@@ -820,6 +820,7 @@ canvas {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  pointer-events: auto;
 }
 
 .map-node {
@@ -833,6 +834,8 @@ canvas {
   justify-content: center;
   cursor: pointer;
   font-size: 24px;
+  pointer-events: auto;
+  z-index: 1001;
 }
 
 .map-node.done {
