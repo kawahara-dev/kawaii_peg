@@ -16,6 +16,8 @@ const playerHpFill = document.getElementById('player-hp-fill');
 const ammoValue = document.getElementById('ammo-value');
 const coinValue = document.getElementById('coin-value');
 const relicContainer = document.getElementById('relic-container');
+const playerAtkLevel = document.getElementById('player-atk-level');
+const playerHpLevel = document.getElementById('player-hp-level');
 const currentBallEl = document.getElementById('current-ball');
 const enemyGirl = document.getElementById('enemy-girl');
 const victoryOverlay = document.getElementById('victory-overlay');
@@ -174,6 +176,15 @@ export function updateCoins() {
   const shopCoinValue = document.getElementById('shop-coin-value');
   if (shopCoinValue) {
     shopCoinValue.textContent = playerState.coins;
+  }
+}
+
+export function updatePlayerStatus() {
+  if (playerAtkLevel) {
+    playerAtkLevel.textContent = playerState.atkLevel;
+  }
+  if (playerHpLevel) {
+    playerHpLevel.textContent = playerState.hpLevel;
   }
 }
 
