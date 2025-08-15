@@ -1,7 +1,7 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, firePoint, clearSimulatedPath } from './engine.js';
 import { playerState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
-import { updateAmmo, updatePlayerHP, updateCurrentBall, updateMapDisplay, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton, xpGained } from './ui.js';
+import { updateAmmo, updatePlayerHP, updateCurrentBall, updateMapDisplay, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton, xpGained, updateRelicIcons } from './ui.js';
 import { applyRareReward } from './rewards.js';
 import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
@@ -162,6 +162,8 @@ window.addEventListener('DOMContentLoaded', () => {
   playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
   playerState.playerHP = playerState.playerMaxHP;
   updatePlayerHP();
+  updateCoins();
+  updateRelicIcons();
 
   const menuOverlay = document.getElementById('menu-overlay');
   const startButton = document.getElementById('start-button');
@@ -257,6 +259,7 @@ window.addEventListener('DOMContentLoaded', () => {
     rareRewardOverlay.style.display = 'none';
     if (enemyState.pendingRareReward) {
       applyRareReward(enemyState.pendingRareReward);
+      updateRelicIcons();
       enemyState.pendingRareReward = null;
     }
     if (enemyState.nodeType === 'boss') {
@@ -388,6 +391,7 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
+    updateRelicIcons();
     generateMap(stageSettings[worldStage]);
     updateMapDisplay(mapState);
     showMapOverlay(mapState, handleNodeSelection);
@@ -463,11 +467,13 @@ window.addEventListener('DOMContentLoaded', () => {
         playerState.coins = 0;
         localStorage.setItem('coins', playerState.coins);
         updateCoins();
+        updateRelicIcons();
     } else {
         generateMap(stageSettings[worldStage]);
         updateMapDisplay(mapState);
         document.getElementById('stage-value').textContent = enemyState.stage;
         updateCoins();
+        updateRelicIcons();
         showMapOverlay(mapState, handleNodeSelection);
     }
     });
@@ -516,6 +522,7 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
+    updateRelicIcons();
     generateMap(stageSettings[worldStage]);
     updateMapDisplay(mapState);
     showMapOverlay(mapState, handleNodeSelection);

@@ -122,6 +122,15 @@ html, body {
   height: 24px;
   margin-right: 4px;
 }
+#relic-container {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+#relic-container img {
+  width: 24px;
+  height: 24px;
+}
 #shop-coin-counter {
   display: flex;
   align-items: center;
