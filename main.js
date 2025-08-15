@@ -100,6 +100,30 @@ export const mapState = { layers: [], currentLayer: 0, currentNode: null, path: 
 
 export let worldStage = 0;
 
+let showOverlay;
+let xpOverlay;
+let proceedToNextLayer;
+
+export function onRareRewardClick(e) {
+  e.stopPropagation();
+  rareRewardButton.disabled = true;
+  rareRewardOverlay.style.display = 'none';
+  if (enemyState.pendingRareReward) {
+    applyRareReward(enemyState.pendingRareReward);
+    updateRelicIcons();
+    enemyState.pendingRareReward = null;
+  }
+  if (enemyState.nodeType === 'boss') {
+    const gained = 10;
+    playerState.permXP += gained;
+    localStorage.setItem('permXP', playerState.permXP);
+    xpGained.textContent = gained;
+    showOverlay(xpOverlay);
+  } else {
+    proceedToNextLayer();
+  }
+}
+
 const stageSettings = [
   { layerCount: 3, nodesPerLayer: 3, bossAtEnd: true },
   { layerCount: 7, nodesPerLayer: 5, bossAtEnd: true },
@@ -186,7 +210,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const upgradeATK = document.getElementById('upgrade-atk');
   const upgradeBack = document.getElementById('upgrade-back');
   const xpDisplay = document.getElementById('xp-value');
-  const xpOverlay = document.getElementById('xp-overlay');
+  xpOverlay = document.getElementById('xp-overlay');
   const xpContinue = document.getElementById('xp-continue-button');
     const rewardOverlay = document.getElementById('reward-overlay');
     const rewardButtons = document.querySelectorAll('.reward-button');
@@ -233,7 +257,7 @@ window.addEventListener('DOMContentLoaded', () => {
       return o.classList.contains('show') || display !== 'none';
     });
 
-  const showOverlay = (overlay) => {
+  showOverlay = (overlay) => {
     overlay.classList.add('show');
   };
 
@@ -267,27 +291,6 @@ window.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', onRewardClick, { once: true });
     });
   }
-
-  export function onRareRewardClick(e) {
-    e.stopPropagation();
-    rareRewardButton.disabled = true;
-    rareRewardOverlay.style.display = 'none';
-    if (enemyState.pendingRareReward) {
-      applyRareReward(enemyState.pendingRareReward);
-      updateRelicIcons();
-      enemyState.pendingRareReward = null;
-    }
-    if (enemyState.nodeType === 'boss') {
-      const gained = 10;
-      playerState.permXP += gained;
-      localStorage.setItem('permXP', playerState.permXP);
-      xpGained.textContent = gained;
-      showOverlay(xpOverlay);
-    } else {
-      proceedToNextLayer();
-    }
-  }
-
 
   function triggerRandomEvent(onDone) {
     const shopChance = 0.05;
@@ -335,7 +338,7 @@ window.addEventListener('DOMContentLoaded', () => {
     showOverlay(eventOverlay);
   }
 
-  function proceedToNextLayer() {
+  proceedToNextLayer = function() {
     const current = mapState.path[mapState.path.length - 1];
     if (current) {
       current.completed = true;
@@ -354,7 +357,7 @@ window.addEventListener('DOMContentLoaded', () => {
       showMapOverlay(mapState, handleNodeSelection);
     }
     setupRewardButtons();
-  }
+  };
 
   function handleNodeSelection(index) {
     const node = mapState.layers[mapState.currentLayer][index];
