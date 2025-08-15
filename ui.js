@@ -303,9 +303,11 @@ export function showMapOverlay(mapState, onSelect) {
       if (node.completed) {
         el.classList.add('done');
       }
+      const isBossLayer = li === mapState.layers.length - 1;
       const selectable =
         mapState.currentLayer === li &&
         (!mapState.currentNode ||
+          isBossLayer ||
           mapState.currentNode.connections.includes(ni));
       if (!selectable) {
         el.classList.add('disabled');
