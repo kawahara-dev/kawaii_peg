@@ -248,6 +248,8 @@ html, body {
   padding: 4px 8px;
   border: 2px solid #ff69b4;
   border-radius: 4px;
+  display: inline-block;
+  white-space: nowrap;
 }
 canvas {
   display: block;
