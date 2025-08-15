@@ -90,8 +90,7 @@ const randomEvents = [
         resultKey: 'events.foundBall.results.skip'
       }
     ]
-  },
-  { type: 'shop' }
+  }
 ];
 
 export let handleShoot;
@@ -284,13 +283,14 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   function triggerRandomEvent(onDone) {
-    const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
-    if (ev.type === 'shop') {
+    const shopChance = 0.05;
+    if (Math.random() < shopChance) {
       showShopOverlay(() => {
         onDone && onDone();
       });
       return;
     }
+    const ev = randomEvents[Math.floor(Math.random() * randomEvents.length)];
     eventMessage.textContent = t(ev.textKey);
     eventOptions.innerHTML = '';
     const choices = typeof ev.choices === 'function' ? ev.choices() : ev.choices;
