@@ -164,6 +164,11 @@
       document.body.insertAdjacentHTML('beforeend', '<p>Matter.js の読み込みに失敗しました。</p>');
     }
   </script>
+  <script>
+    window.addEventListener('load', () => {
+      document.body.style.display = 'block';
+    });
+  </script>
   <script type="module" src="main.js"></script>
 </body>
 </html>
