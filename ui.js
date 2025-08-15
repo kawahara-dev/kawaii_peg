@@ -91,7 +91,10 @@ export function updateHPBar(enemyState) {
     updateCoins();
     document.getElementById('reward-coin-value').textContent = coinsEarned;
     localStorage.setItem('coins', playerState.coins);
-    if (playerState.relics && playerState.relics.includes('killHeal')) {
+    if (enemyState.nodeType === 'boss') {
+      playerState.playerHP = playerState.playerMaxHP;
+      updatePlayerHP();
+    } else if (playerState.relics && playerState.relics.includes('killHeal')) {
       playerState.playerHP = Math.min(playerState.playerMaxHP, playerState.playerHP + 10);
       updatePlayerHP();
     }
