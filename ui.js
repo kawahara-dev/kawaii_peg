@@ -49,9 +49,11 @@ export { enemyGirl };
 export function showRareRewardOverlay(reward) {
   rareRewardDesc.textContent = reward.description;
   if (reward.icon) {
-    rareRewardIcon.textContent = reward.icon;
+    rareRewardIcon.src = reward.icon;
+    rareRewardIcon.alt = reward.description;
     rareRewardIcon.style.display = 'block';
   } else {
+    rareRewardIcon.removeAttribute('src');
     rareRewardIcon.style.display = 'none';
   }
   rareRewardOverlay.style.display = 'flex';
