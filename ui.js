@@ -5,6 +5,7 @@ import { firePoint } from './engine.js';
 import { shuffle } from './utils.js';
 import { t } from './i18n.js';
 import { getRareReward } from './rewards.js';
+import { relicList } from './relics.js';
 
 const hpFill = document.getElementById('hp-fill');
 const hpText = document.getElementById('hp-text');
@@ -14,6 +15,7 @@ const playerHpMaxText = document.getElementById('player-hp-max');
 const playerHpFill = document.getElementById('player-hp-fill');
 const ammoValue = document.getElementById('ammo-value');
 const coinValue = document.getElementById('coin-value');
+const relicContainer = document.getElementById('relic-container');
 const currentBallEl = document.getElementById('current-ball');
 const enemyGirl = document.getElementById('enemy-girl');
 const victoryOverlay = document.getElementById('victory-overlay');
@@ -168,6 +170,20 @@ export function updateCoins() {
   if (shopCoinValue) {
     shopCoinValue.textContent = playerState.coins;
   }
+}
+
+export function updateRelicIcons() {
+  if (!relicContainer) return;
+  relicContainer.innerHTML = '';
+  (playerState.relics || []).forEach(key => {
+    const relic = relicList.find(r => r.key === key);
+    if (relic && relic.icon) {
+      const img = document.createElement('img');
+      img.src = relic.icon;
+      img.alt = relic.name;
+      relicContainer.appendChild(img);
+    }
+  });
 }
 
 const shopData = {
