@@ -898,3 +898,21 @@ canvas {
   stroke-width: 4px;
 }
 
+/* Responsive layout adjustments */
+@media (max-width: 1280px) {
+  #container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #game-wrapper,
+  #side-panel {
+    width: 100%;
+  }
+
+  #side-panel {
+    border-left: none;
+    border-top: 8px solid #ff69b4;
+  }
+}
+
