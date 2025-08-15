@@ -23,6 +23,8 @@ html, body {
   background: #fff0f5;
   overflow: hidden;
   z-index: 1;
+  border: 8px solid #ff69b4;
+  box-sizing: border-box;
 }
 #side-panel {
   width: 400px;
