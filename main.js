@@ -277,9 +277,18 @@ window.addEventListener('DOMContentLoaded', () => {
       current.completed = true;
       updateMapDisplay(mapState);
     }
-    mapState.currentLayer += 1;
+    const maxLayerIndex = mapState.layers.length - 1;
+    mapState.currentLayer = Math.min(
+      mapState.currentLayer + 1,
+      maxLayerIndex
+    );
     mapState.currentNode = current;
-    showMapOverlay(mapState, handleNodeSelection);
+    if (
+      mapState.currentLayer >= 0 &&
+      mapState.currentLayer < mapState.layers.length
+    ) {
+      showMapOverlay(mapState, handleNodeSelection);
+    }
   }
 
   function handleNodeSelection(index) {
