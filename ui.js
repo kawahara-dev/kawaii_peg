@@ -73,9 +73,9 @@ export function updateAttackCountdown(enemyState) {
 export function updateHPBar(enemyState) {
   const percent = Math.max(0, (enemyState.enemyHP / enemyState.maxEnemyHP) * 100);
   hpFill.style.width = `${percent}%`;
-  const hp = Math.max(0, enemyState.enemyHP);
+  const hp = Math.max(0, Math.ceil(enemyState.enemyHP));
   hpText.textContent = `${hp}`;
-  hpDisplay.textContent = `${hp} / ${enemyState.maxEnemyHP}`;
+  hpDisplay.textContent = `${hp} / ${Math.ceil(enemyState.maxEnemyHP)}`;
   if (enemyState.enemyHP <= 0 && !enemyState.gameOver) {
     enemyState.gameOver = true;
     let coinsEarned = enemyState.stage * 3;
