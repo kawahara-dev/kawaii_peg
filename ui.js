@@ -313,9 +313,6 @@ export function showMapOverlay(mapState, onSelect) {
         el.classList.add('disabled');
       }
       area.appendChild(el);
-      el.addEventListener('click', () => {
-        console.log('map node clicked', li, ni);
-      });
     });
   });
 
