@@ -37,6 +37,7 @@ export const translations = {
         penetration: { desc: '敵を貫通するよ♡' }
       }
     },
+    rareReward: { title: 'レア報酬ゲット！', continue: 'OK' },
     event: { title: 'ランダムイベント発生☆' },
     shop: {
       title: 'ショップだよ☆',
@@ -46,7 +47,7 @@ export const translations = {
       upgrade: '強化'
     },
     xp: { title: '経験値GET! +', continue: 'メニューへ' },
-    gameOver: { retry: 'リトライ' },
+    gameOver: { title: 'ゲームオーバー😭', retry: 'リトライ' },
     reload: { text: 'リロード中…' },
     settings: {
       title: '設定',
@@ -158,6 +159,7 @@ export const translations = {
         penetration: { desc: 'Pierces enemies♡' }
       }
     },
+    rareReward: { title: 'Rare Reward!', continue: 'OK' },
     event: { title: 'Random Event☆' },
     shop: {
       title: 'Shop Time☆',
@@ -167,7 +169,7 @@ export const translations = {
       upgrade: 'Upgrade'
     },
     xp: { title: 'XP Gained! +', continue: 'Menu' },
-    gameOver: { retry: 'Retry' },
+    gameOver: { title: 'Game Over😭', retry: 'Retry' },
     reload: { text: 'Reloading…' },
     settings: {
       title: 'Settings',
