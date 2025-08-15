@@ -43,7 +43,7 @@ const randomEvents = [
       const types = [...new Set(playerState.ownedBalls)];
       const opts = types.map(type => ({
         type,
-        label: t('events.powerStone.choiceLabel').replace('{type}', t(`balls.${type}.full`)),
+        label: t('events.powerStone.choiceLabel').replace('{type}', t(`balls.${type}.name`)),
         apply() {
           playerState.ballLevels[type] = (playerState.ballLevels[type] || 1) + 1;
           updateAmmo();
