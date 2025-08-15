@@ -84,6 +84,11 @@ export const enemyState = {
 
 export function startStage(nodeType = 'battle') {
   enemyState.nodeType = nodeType;
+  const enemyGirl = document.getElementById('enemy-girl');
+  enemyGirl.classList.remove('boss-aura');
+  if (enemyState.nodeType === 'boss') {
+    enemyGirl.classList.add('boss-aura');
+  }
   let variants = enemyVariants.normal;
   if (nodeType === 'elite') {
     variants = enemyVariants.elite;
