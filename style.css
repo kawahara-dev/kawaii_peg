@@ -123,12 +123,6 @@ html, body {
   height: 24px;
   margin-right: 4px;
 }
-#player-status {
-  font-size: 14px;
-  font-weight: bold;
-  color: #ff1493;
-  margin-top: 4px;
-}
 #relic-container {
   display: flex;
   gap: 4px;
