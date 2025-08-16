@@ -22,7 +22,7 @@ html, body {
   width: 880px;
   height: 100%;
   background: #fff0f5;
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
   z-index: 1;
   border: 8px solid #ff69b4;
