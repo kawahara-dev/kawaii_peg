@@ -17,7 +17,6 @@ export const translations = {
     hud: {
       hp: 'HP: ',
       ammo: '弾: ',
-      stage: 'ステージ: ',
       untilAttack: '攻撃まで',
       damage: 'ダメージ'
     },
@@ -142,7 +141,6 @@ export const translations = {
     hud: {
       hp: 'HP: ',
       ammo: 'Ammo: ',
-      stage: 'Stage: ',
       untilAttack: 'Until Attack',
       damage: 'Damage'
     },
