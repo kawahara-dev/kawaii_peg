@@ -234,8 +234,11 @@ html, body {
   font-size: 14px;
 }
 #enemy-girl {
-  width: 120%;
+  width: 100%;
   display: block;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto;
 }
 
 .boss-aura {
