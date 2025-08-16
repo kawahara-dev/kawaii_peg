@@ -485,7 +485,6 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
         generateMap(stageSettings[worldStage]);
         updateMapDisplay(mapState);
-        document.getElementById('stage-value').textContent = enemyState.stage;
         updateCoins();
         updateRelicIcons();
         showMapOverlay(mapState, handleNodeSelection);

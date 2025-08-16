@@ -121,7 +121,6 @@ export function startStage(nodeType = 'battle') {
   enemyState.selectNextBall();
   enemyState.updateHPBar();
   enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
-  document.getElementById('stage-value').textContent = enemyState.stage;
   updateAttackCountdown(enemyState);
   enemyState.lastVariantIndex = newIndex;
 }
