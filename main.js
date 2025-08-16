@@ -1,6 +1,6 @@
 import { initEngine, drawSimulatedPath, shootBall, setupCollisionHandler, clearSimulatedPath } from './engine.js';
 import { firePoint } from './engine.js';
-import { playerState } from './player.js';
+import { playerState, saveBallState } from './player.js';
 import { enemyState, startStage } from './enemy.js';
 import { updateAmmo, updatePlayerHP, updateCurrentBall, updateMapDisplay, showShopOverlay, updateCoins, showMapOverlay, rareRewardOverlay, rareRewardButton, xpGained, updateRelicIcons } from './ui.js';
 import { applyRareReward } from './rewards.js';
@@ -48,6 +48,7 @@ const randomEvents = [
           playerState.ballLevels[type] = (playerState.ballLevels[type] || 1) + 1;
           updateAmmo();
           updateCurrentBall(firePoint);
+          saveBallState();
         },
         result: t('events.powerStone.result').replace('{type}', t(`balls.${type}.full`))
       }));
@@ -82,6 +83,7 @@ const randomEvents = [
           playerState.ammo = playerState.ownedBalls.slice();
           playerState.shotQueue = shuffle(playerState.ammo.slice());
           enemyState.selectNextBall();
+          saveBallState();
         },
         resultKey: 'events.foundBall.results.take'
       },
@@ -192,10 +194,11 @@ window.addEventListener('DOMContentLoaded', () => {
   initEngine();
   setupCollisionHandler();
 
-  playerState.ownedBalls = ['normal', 'normal', 'normal'];
-  playerState.ballLevels = { normal: 1 };
   playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
   playerState.playerHP = playerState.playerMaxHP;
+  playerState.ammo = playerState.ownedBalls.slice();
+  playerState.shotQueue = shuffle(playerState.ammo.slice());
+  saveBallState();
   updatePlayerHP();
   updateCoins();
   updateRelicIcons();
@@ -280,6 +283,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     playerState.ammo = playerState.ownedBalls.slice();
     playerState.shotQueue = shuffle(playerState.ammo.slice());
+    saveBallState();
     enemyState.selectNextBall();
     hideOverlay(rewardOverlay);
     proceedToNextLayer();
@@ -464,8 +468,6 @@ window.addEventListener('DOMContentLoaded', () => {
       mapState.currentLayer = 0;
       mapState.currentNode = null;
       mapState.path = [];
-    playerState.ownedBalls = ['normal', 'normal', 'normal'];
-    playerState.ballLevels = { normal: 1 };
     playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
     playerState.playerHP = playerState.playerMaxHP;
     playerState.ammo = playerState.ownedBalls.slice();
@@ -476,6 +478,7 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.reloading = false;
     updatePlayerHP();
     enemyState.selectNextBall();
+    saveBallState();
     if (worldStage > 2) {
         showOverlay(menuOverlay);
         playerState.coins = 0;
@@ -531,6 +534,7 @@ window.addEventListener('DOMContentLoaded', () => {
     playerState.reloading = false;
     updatePlayerHP();
     enemyState.selectNextBall();
+    saveBallState();
     playerState.coins = 0;
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
