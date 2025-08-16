@@ -254,10 +254,10 @@ html, body {
 }
 #enemy-image-wrapper {
   position: relative;
-  border: 8px solid #ff69b4;
-  border-radius: 8px;
   box-sizing: border-box;
-  padding: 4px;
+  /* border: 8px solid #ff69b4; */
+  /* border-radius: 8px; */
+  /* padding: 4px; */
   overflow: hidden;
 }
 #enemy-attack-timer {
