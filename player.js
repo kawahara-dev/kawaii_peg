@@ -5,8 +5,8 @@ export const playerState = {
   playerMaxHP: 100,
   ammo: [],
   shotQueue: [],
-  ownedBalls: [],
-  ballLevels: { normal: 1 },
+  ownedBalls: JSON.parse(localStorage.getItem('ownedBalls') || '["normal","normal","normal"]'),
+  ballLevels: JSON.parse(localStorage.getItem('ballLevels') || '{"normal":1}'),
   nextBall: null,
   reloading: false,
   permXP: parseInt(localStorage.getItem('permXP') || '0', 10),
@@ -15,3 +15,8 @@ export const playerState = {
   coins: parseInt(localStorage.getItem('coins') || '0', 10),
   relics: []
 };
+
+export function saveBallState() {
+  localStorage.setItem('ownedBalls', JSON.stringify(playerState.ownedBalls));
+  localStorage.setItem('ballLevels', JSON.stringify(playerState.ballLevels));
+}

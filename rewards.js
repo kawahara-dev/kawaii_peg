@@ -1,4 +1,4 @@
-import { playerState } from './player.js';
+import { playerState, saveBallState } from './player.js';
 import { shuffle } from './utils.js';
 import { addRelic, getRandomRelic } from './relics.js';
 
@@ -13,6 +13,7 @@ export const rareRewardPools = {
         }
         playerState.ammo = playerState.ownedBalls.slice();
         playerState.shotQueue = shuffle(playerState.ammo.slice());
+        saveBallState();
       }
     },
     {

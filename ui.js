@@ -1,4 +1,4 @@
-import { playerState } from './player.js';
+import { playerState, saveBallState } from './player.js';
 import { handleShoot, onRareRewardClick } from './main.js';
 import { healBallPath } from './constants.js';
 import { firePoint } from './engine.js';
@@ -263,6 +263,7 @@ export function showShopOverlay(onDone) {
     }
     playerState.ammo = playerState.ownedBalls.slice();
     playerState.shotQueue = shuffle(playerState.ammo.slice());
+    saveBallState();
     localStorage.setItem('coins', playerState.coins);
     shopOptions.removeEventListener('click', handleClick);
     shopOverlay.classList.remove('show');
