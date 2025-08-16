@@ -258,10 +258,12 @@ html, body {
 #enemy-image-wrapper {
   position: relative;
   box-sizing: border-box;
-  /* border: 8px solid #ff69b4; */
-  /* border-radius: 8px; */
-  /* padding: 4px; */
-  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 #enemy-attack-timer {
   position: absolute;
