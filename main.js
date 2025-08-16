@@ -410,6 +410,15 @@ window.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('coins', playerState.coins);
     updateCoins();
     updateRelicIcons();
+    playerState.ownedBalls = ['normal', 'normal', 'normal'];
+    playerState.ballLevels = { normal: 1 };
+    playerState.ammo = playerState.ownedBalls.slice();
+    playerState.shotQueue = shuffle(playerState.ammo.slice());
+    playerState.currentBalls = [];
+    playerState.currentShotType = null;
+    playerState.nextBall = null;
+    playerState.reloading = false;
+    saveBallState();
     generateMap(stageSettings[worldStage]);
     updateMapDisplay(mapState);
     showMapOverlay(mapState, handleNodeSelection);
