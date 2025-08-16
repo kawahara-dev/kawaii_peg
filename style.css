@@ -234,7 +234,7 @@ html, body {
   font-size: 14px;
 }
 #enemy-girl {
-  width: 100%;
+  width: 120%;
   display: block;
 }
 
@@ -258,7 +258,7 @@ html, body {
   /* border: 8px solid #ff69b4; */
   /* border-radius: 8px; */
   /* padding: 4px; */
-  overflow: hidden;
+  overflow: visible;
 }
 #enemy-attack-timer {
   position: absolute;
