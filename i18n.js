@@ -5,6 +5,7 @@ export const translations = {
       start: 'スタート',
       upgrade: 'アップグレード',
       skills: 'スキルツリー',
+      gallery: 'ギャラリー',
       reset: '進捗リセット',
       settings: '設定',
       credit: 'クレジット'
@@ -168,6 +169,7 @@ export const translations = {
       start: 'Start',
       upgrade: 'Upgrade',
       skills: 'Skill Tree',
+      gallery: 'Gallery',
       reset: 'Reset Progress',
       settings: 'Settings',
       credit: 'Credits'
