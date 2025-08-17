@@ -892,6 +892,8 @@ canvas {
     z-index: 60;
     opacity: 0;
     transition: opacity .3s;
+    overflow: auto;
+    padding-bottom: 20px;
   }
 
   #credit-overlay.show {
@@ -948,7 +950,7 @@ canvas {
 
   #gallery-image {
     max-width: 80vw;
-    max-height: 80vh;
+    max-height: calc(100% - 120px);
     width: auto;
     height: auto;
     object-fit: contain;
