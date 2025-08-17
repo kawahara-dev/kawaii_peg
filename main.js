@@ -222,6 +222,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const eventOptions = document.getElementById('event-options');
     const gameOverOverlay = document.getElementById('game-over-overlay');
     const gameOverRetry = document.getElementById('game-over-retry-button');
+    const gameClearOverlay = document.getElementById('game-clear-overlay');
+    const gameClearMenu = document.getElementById('game-clear-menu');
     const reloadOverlay = document.getElementById('reload-overlay');
     const victoryOverlay = document.getElementById('victory-overlay');
     const shopOverlay = document.getElementById('shop-overlay');
@@ -240,6 +242,7 @@ window.addEventListener('DOMContentLoaded', () => {
     rareRewardOverlay,
     eventOverlay,
     gameOverOverlay,
+    gameClearOverlay,
     reloadOverlay,
       victoryOverlay,
       shopOverlay,
@@ -489,7 +492,7 @@ window.addEventListener('DOMContentLoaded', () => {
     enemyState.selectNextBall();
     saveBallState();
     if (worldStage > 2) {
-        showOverlay(menuOverlay);
+        showOverlay(gameClearOverlay);
         playerState.relics = [];
         playerState.coins = 0;
         localStorage.setItem('coins', playerState.coins);
@@ -502,6 +505,12 @@ window.addEventListener('DOMContentLoaded', () => {
         updateRelicIcons();
         showMapOverlay(mapState, handleNodeSelection);
     }
+    });
+
+    gameClearMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hideOverlay(gameClearOverlay);
+      showOverlay(menuOverlay);
     });
 
     creditBtn.addEventListener('click', (e) => {

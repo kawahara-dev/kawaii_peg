@@ -49,6 +49,7 @@ export const translations = {
     },
     xp: { title: '経験値GET! +', continue: 'メニューへ' },
     gameOver: { title: 'ゲームオーバー😭', retry: 'リトライ' },
+    gameClear: { title: 'ゲームクリア✨', menu: 'タイトルへ' },
     reload: { text: 'リロード中…' },
     settings: {
       title: '設定',
@@ -174,6 +175,7 @@ export const translations = {
     },
     xp: { title: 'XP Gained! +', continue: 'Menu' },
     gameOver: { title: 'Game Over😭', retry: 'Retry' },
+    gameClear: { title: 'Game Clear✨', menu: 'Back to Title' },
     reload: { text: 'Reloading…' },
     settings: {
       title: 'Settings',
