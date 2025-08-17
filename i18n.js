@@ -84,6 +84,12 @@ export const translations = {
       options: { ja: '日本語', en: 'English' },
       close: '閉じる'
     },
+    gallery: {
+      title: 'ギャラリー',
+      next: '次へ',
+      prev: '前へ',
+      close: '閉じる'
+    },
     credit: { close: '閉じる' },
     progress: { randomEvent: 'ランダムイベント' },
     events: {
@@ -246,6 +252,12 @@ export const translations = {
       title: 'Settings',
       language: 'Language',
       options: { ja: 'Japanese', en: 'English' },
+      close: 'Close'
+    },
+    gallery: {
+      title: 'Gallery',
+      next: 'Next',
+      prev: 'Prev',
       close: 'Close'
     },
     credit: { close: 'Close' },
