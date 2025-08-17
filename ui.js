@@ -5,7 +5,7 @@ import { firePoint, pauseRunner, resumeRunner, setTimeScale } from './engine.js'
 import { shuffle } from './utils.js';
 import { t } from './i18n.js';
 import { getRareReward } from './rewards.js';
-import { relicList } from './relics.js';
+import { relicList, addRelic } from './relics.js';
 
 const hpFill = document.getElementById('hp-fill');
 const hpText = document.getElementById('hp-text');
@@ -230,6 +230,14 @@ const shopImageMap = {
   penetration: './image/balls/penetration_ball.png'
 };
 
+const relicShopData = {
+  timeLag: 30,
+  rebound: 30,
+  killHeal: 40,
+  damageBoost: 40,
+  coinCharm: 50
+};
+
 export function showShopOverlay(onDone) {
   shopOverlay.classList.add('show');
   updateCoins();
@@ -262,7 +270,51 @@ export function showShopOverlay(onDone) {
     shopOptions.appendChild(div);
   });
 
+  const relicTitle = document.createElement('h3');
+  relicTitle.textContent = t('shop.relic');
+  shopOptions.appendChild(relicTitle);
+
+  const relicChoices = shuffle(
+    relicList.filter(r => !(playerState.relics || []).includes(r.key))
+  ).slice(0, 3);
+
+  relicChoices.forEach(relic => {
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    const img = document.createElement('img');
+    img.src = relic.icon;
+    img.alt = relic.name;
+    const label = document.createElement('span');
+    label.textContent = relic.name;
+    const desc = document.createElement('span');
+    desc.textContent = relic.description;
+    const buyBtn = document.createElement('button');
+    buyBtn.className = 'shop-buy-relic';
+    buyBtn.dataset.key = relic.key;
+    buyBtn.textContent = `${t('shop.buyRelic')}(${relicShopData[relic.key]})`;
+    div.appendChild(img);
+    div.appendChild(label);
+    div.appendChild(desc);
+    div.appendChild(buyBtn);
+    shopOptions.appendChild(div);
+  });
+
   const handleClick = (e) => {
+    if (e.target.classList.contains('shop-buy-relic')) {
+      const key = e.target.dataset.key;
+      const price = relicShopData[key];
+      if (playerState.coins >= price) {
+        playerState.coins -= price;
+        addRelic(key);
+        updateRelicIcons();
+        localStorage.setItem('coins', playerState.coins);
+        shopOptions.removeEventListener('click', handleClick);
+        shopOverlay.classList.remove('show');
+        updateCoins();
+        onDone && onDone();
+      }
+      return;
+    }
     const type = e.target.dataset.type;
     if (!type) return;
     if (e.target.classList.contains('shop-buy')) {

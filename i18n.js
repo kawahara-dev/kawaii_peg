@@ -50,7 +50,9 @@ export const translations = {
       close: 'やめる',
       buy: '購入',
       sell: '削除',
-      upgrade: '強化'
+      upgrade: '強化',
+      relic: 'レリック',
+      buyRelic: '入手'
     },
     xp: { title: '経験値GET! +', continue: 'メニューへ' },
     gameOver: { title: 'ゲームオーバー😭', retry: 'リトライ' },
@@ -192,7 +194,9 @@ export const translations = {
       close: 'Leave',
       buy: 'Buy',
       sell: 'Remove',
-      upgrade: 'Upgrade'
+      upgrade: 'Upgrade',
+      relic: 'Relic',
+      buyRelic: 'Buy'
     },
     xp: { title: 'XP Gained! +', continue: 'Menu' },
     gameOver: { title: 'Game Over😭', retry: 'Retry' },
