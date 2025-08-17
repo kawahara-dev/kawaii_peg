@@ -947,8 +947,9 @@ canvas {
   }
 
   #gallery-image {
-    max-width: 80%;
-    max-height: 80%;
+    width: 880px;
+    height: 700px;
+    object-fit: contain;
   }
 
 @keyframes pulse {
