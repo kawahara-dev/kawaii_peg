@@ -1,5 +1,5 @@
-import { playerState, saveBallState } from './player.js';
-import { handleShoot, onRareRewardClick } from './main.js';
+import { playerState, saveBallState, skillTree, saveSkillState } from './player.js';
+import { handleShoot, onRareRewardClick, applySkillEffects } from './main.js';
 import { healBallPath } from './constants.js';
 import { firePoint, pauseRunner, resumeRunner, setTimeScale } from './engine.js';
 import { shuffle } from './utils.js';
@@ -34,6 +34,13 @@ const rareRewardDesc = document.getElementById('rare-reward-desc');
 const rareRewardIcon = document.getElementById('rare-reward-icon');
 const rareRewardButton = document.getElementById('rare-reward-continue');
 
+const mainMenu = document.getElementById('main-menu');
+const skillTreeButton = document.getElementById('skill-tree-button');
+const skillTreeDiv = document.getElementById('skill-tree');
+const skillList = document.getElementById('skill-list');
+const skillBack = document.getElementById('skill-tree-back');
+const skillXpValue = document.getElementById('skill-xp-value');
+
 let isPaused = false;
 if (pauseButton) {
   pauseButton.addEventListener('click', () => {
@@ -52,6 +59,60 @@ if (pauseButton) {
 if (speedSelect) {
   speedSelect.addEventListener('change', (e) => {
     setTimeScale(parseFloat(e.target.value));
+  });
+}
+
+function renderSkillTree() {
+  if (!skillList) return;
+  skillList.innerHTML = '';
+  if (skillXpValue) skillXpValue.textContent = playerState.permXP;
+  skillTree.forEach(skill => {
+    const item = document.createElement('div');
+    item.className = 'skill-item';
+    const name = document.createElement('div');
+    name.textContent = t(`skillTree.skills.${skill.key}.name`);
+    const desc = document.createElement('div');
+    desc.textContent = t(`skillTree.skills.${skill.key}.desc`);
+    const btn = document.createElement('button');
+    if (playerState.skills.includes(skill.key)) {
+      btn.textContent = t('skillTree.unlocked');
+      btn.disabled = true;
+    } else {
+      const costText = t(`skillTree.skills.${skill.key}.cost`);
+      btn.textContent = t('skillTree.unlock').replace('{cost}', costText);
+      if (playerState.permXP < skill.cost) btn.disabled = true;
+      btn.addEventListener('click', () => {
+        if (playerState.permXP < skill.cost) return;
+        playerState.permXP -= skill.cost;
+        localStorage.setItem('permXP', playerState.permXP);
+        playerState.skills.push(skill.key);
+        saveSkillState();
+        if (skillXpValue) skillXpValue.textContent = playerState.permXP;
+        const xpDisplay = document.getElementById('xp-value');
+        if (xpDisplay) xpDisplay.textContent = playerState.permXP;
+        applySkillEffects();
+        renderSkillTree();
+      });
+    }
+    item.appendChild(name);
+    item.appendChild(desc);
+    item.appendChild(btn);
+    skillList.appendChild(item);
+  });
+}
+
+if (skillTreeButton) {
+  skillTreeButton.addEventListener('click', () => {
+    if (mainMenu) mainMenu.style.display = 'none';
+    if (skillTreeDiv) skillTreeDiv.style.display = 'flex';
+    renderSkillTree();
+  });
+}
+
+if (skillBack) {
+  skillBack.addEventListener('click', () => {
+    if (skillTreeDiv) skillTreeDiv.style.display = 'none';
+    if (mainMenu) mainMenu.style.display = 'flex';
   });
 }
 

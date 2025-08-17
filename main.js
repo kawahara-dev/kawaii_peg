@@ -8,6 +8,17 @@ import { healBallPath } from './constants.js';
 import { shuffle } from './utils.js';
 import { setLanguage, t } from './i18n.js';
 
+export function applySkillEffects() {
+  playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
+  if (playerState.skills && playerState.skills.includes('maxHp')) {
+    playerState.playerMaxHP += 20;
+  }
+  if (playerState.playerHP > playerState.playerMaxHP) {
+    playerState.playerHP = playerState.playerMaxHP;
+  }
+  updatePlayerHP();
+}
+
 const ballImageMap = {
   normal: './image/balls/normal_ball.png',
   split: './image/balls/split_ball.png',
@@ -213,12 +224,10 @@ window.addEventListener('DOMContentLoaded', () => {
   initEngine();
   setupCollisionHandler();
 
-  playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
-  playerState.playerHP = playerState.playerMaxHP;
   playerState.ammo = playerState.ownedBalls.slice();
   playerState.shotQueue = shuffle(playerState.ammo.slice());
   saveBallState();
-  updatePlayerHP();
+  applySkillEffects();
   updateCoins();
   updateRelicIcons();
 
@@ -467,9 +476,7 @@ window.addEventListener('DOMContentLoaded', () => {
       playerState.hpLevel += 1;
       localStorage.setItem('permXP', playerState.permXP);
       localStorage.setItem('hpLevel', playerState.hpLevel);
-      playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
-      playerState.playerHP = playerState.playerMaxHP;
-      updatePlayerHP();
+      applySkillEffects();
       xpDisplay.textContent = playerState.permXP;
     }
   });
@@ -499,15 +506,13 @@ window.addEventListener('DOMContentLoaded', () => {
       mapState.currentLayer = 0;
       mapState.currentNode = null;
       mapState.path = [];
-    playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
-    playerState.playerHP = playerState.playerMaxHP;
     playerState.ammo = playerState.ownedBalls.slice();
     playerState.shotQueue = shuffle(playerState.ammo.slice());
     playerState.currentBalls = [];
     playerState.currentShotType = null;
     playerState.nextBall = null;
     playerState.reloading = false;
-    updatePlayerHP();
+    applySkillEffects();
     enemyState.selectNextBall();
     saveBallState();
     if (worldStage > 2) {
@@ -562,15 +567,13 @@ window.addEventListener('DOMContentLoaded', () => {
     enemyState.gameOver = false;
     playerState.ownedBalls = ['normal', 'normal', 'normal'];
     playerState.ballLevels = { normal: 1 };
-    playerState.playerMaxHP = 100 + playerState.hpLevel * 10;
-    playerState.playerHP = playerState.playerMaxHP;
     playerState.ammo = playerState.ownedBalls.slice();
     playerState.shotQueue = shuffle(playerState.ammo.slice());
     playerState.currentBalls = [];
     playerState.currentShotType = null;
     playerState.nextBall = null;
     playerState.reloading = false;
-    updatePlayerHP();
+    applySkillEffects();
     enemyState.selectNextBall();
     saveBallState();
     playerState.coins = 0;
@@ -629,7 +632,18 @@ window.addEventListener('DOMContentLoaded', () => {
     shootBall(angle, type);
     clearTimeout(aimTimer);
     clearSimulatedPath();
-    enemyState.selectNextBall();
+    if (playerState.skills && playerState.skills.includes('doubleShot') && playerState.ammo.length > 0) {
+      enemyState.selectNextBall();
+      const type2 = playerState.nextBall;
+      const idx2 = playerState.ammo.indexOf(type2);
+      if (idx2 !== -1) playerState.ammo.splice(idx2, 1);
+      setTimeout(() => {
+        shootBall(angle, type2);
+        enemyState.selectNextBall();
+      }, 100);
+    } else {
+      enemyState.selectNextBall();
+    }
   };
 
   aimSvg.addEventListener('click', handleShoot);

@@ -4,6 +4,7 @@ export const translations = {
       title: 'Peggy Girls',
       start: 'スタート',
       upgrade: 'アップグレード',
+      skills: 'スキルツリー',
       reset: '進捗リセット',
       settings: '設定',
       credit: 'クレジット'
@@ -13,6 +14,24 @@ export const translations = {
       hp: 'HPアップ(+10) 10XP',
       atk: '攻撃アップ(+10%) 10XP',
       back: '戻る'
+    },
+    skillTree: {
+      title: 'スキルツリー',
+      back: '戻る',
+      unlock: '{cost}で習得',
+      unlocked: '習得済み',
+      skills: {
+        doubleShot: {
+          name: 'ダブルショット',
+          desc: '2連続で撃てるよ☆',
+          cost: '15XP'
+        },
+        maxHp: {
+          name: 'HPアップ',
+          desc: '最大HPが20増えるよ♪',
+          cost: '10XP'
+        }
+      }
     },
     hud: {
       hp: 'HP: ',
@@ -148,6 +167,7 @@ export const translations = {
       title: 'Peggy Girls',
       start: 'Start',
       upgrade: 'Upgrade',
+      skills: 'Skill Tree',
       reset: 'Reset Progress',
       settings: 'Settings',
       credit: 'Credits'
@@ -157,6 +177,24 @@ export const translations = {
       hp: 'HP Up (+10) 10XP',
       atk: 'ATK Up (+10%) 10XP',
       back: 'Back'
+    },
+    skillTree: {
+      title: 'Skill Tree',
+      back: 'Back',
+      unlock: 'Unlock for {cost}',
+      unlocked: 'Unlocked',
+      skills: {
+        doubleShot: {
+          name: 'Double Shot',
+          desc: 'Shoot twice in a row♪',
+          cost: '15XP'
+        },
+        maxHp: {
+          name: 'HP Up',
+          desc: 'Increase max HP by 20☆',
+          cost: '10XP'
+        }
+      }
     },
     hud: {
       hp: 'HP: ',
