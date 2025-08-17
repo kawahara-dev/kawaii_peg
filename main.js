@@ -73,11 +73,11 @@ const randomEvents = [
       }
     ]
   },
-  {
-    textKey: 'events.foundBall.text',
-    choices: [
-      {
-        labelKey: 'events.foundBall.choices.take',
+    {
+      textKey: 'events.foundBall.text',
+      choices: [
+        {
+          labelKey: 'events.foundBall.choices.take',
         apply() {
           playerState.ownedBalls.push('normal');
           playerState.ammo = playerState.ownedBalls.slice();
@@ -91,6 +91,25 @@ const randomEvents = [
         labelKey: 'events.foundBall.choices.skip',
         apply() {},
         resultKey: 'events.foundBall.results.skip'
+      }
+    ]
+  }
+  ,
+  {
+    textKey: 'events.treasure.text',
+    choices: [
+      {
+        labelKey: 'events.treasure.choices.open',
+        apply() {
+          playerState.coins += 30;
+          updateCoins();
+        },
+        resultKey: 'events.treasure.results.open'
+      },
+      {
+        labelKey: 'events.treasure.choices.leave',
+        apply() {},
+        resultKey: 'events.treasure.results.leave'
       }
     ]
   }
