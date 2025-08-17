@@ -490,6 +490,7 @@ window.addEventListener('DOMContentLoaded', () => {
     saveBallState();
     if (worldStage > 2) {
         showOverlay(menuOverlay);
+        playerState.relics = [];
         playerState.coins = 0;
         localStorage.setItem('coins', playerState.coins);
         updateCoins();
