@@ -27,6 +27,17 @@ const ballImageMap = {
   penetration: './image/balls/penetration_ball.png'
 };
 
+const galleryImages = [
+  './image/player/hero1.png',
+  './image/enemies/enemy_normal.png',
+  './image/enemies/enemy2_normal.png',
+  './image/enemies/enemy3_normal.png',
+  './image/enemies/enemy4_normal.png',
+  './image/enemies/enemy5_normal.png'
+];
+
+let galleryIndex = 0;
+
 const randomEvents = [
   {
     textKey: 'events.spring.text',
@@ -263,6 +274,17 @@ window.addEventListener('DOMContentLoaded', () => {
     const settingsClose = document.getElementById('settings-close');
     const languageSelect = document.getElementById('language-select');
 
+    const galleryButton = document.getElementById('gallery-button');
+    const galleryOverlay = document.getElementById('gallery-overlay');
+    const galleryClose = document.getElementById('gallery-close');
+    const galleryPrev = document.getElementById('gallery-prev');
+    const galleryNext = document.getElementById('gallery-next');
+    const galleryImage = document.getElementById('gallery-image');
+
+    function showGallery(index) {
+      galleryImage.src = galleryImages[index];
+    }
+
   const overlays = [
     menuOverlay,
     xpOverlay,
@@ -275,7 +297,8 @@ window.addEventListener('DOMContentLoaded', () => {
       victoryOverlay,
       shopOverlay,
       creditOverlay,
-      settingsOverlay
+      settingsOverlay,
+      galleryOverlay
     ];
 
   const savedLang = localStorage.getItem('lang') || document.documentElement.lang || 'ja';
@@ -555,6 +578,30 @@ window.addEventListener('DOMContentLoaded', () => {
     settingsClose.addEventListener('click', (e) => {
       e.stopPropagation();
       hideOverlay(settingsOverlay);
+    });
+
+    galleryButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      galleryIndex = 0;
+      showGallery(galleryIndex);
+      showOverlay(galleryOverlay);
+    });
+
+    galleryClose.addEventListener('click', (e) => {
+      e.stopPropagation();
+      hideOverlay(galleryOverlay);
+    });
+
+    galleryPrev.addEventListener('click', (e) => {
+      e.stopPropagation();
+      galleryIndex = (galleryIndex - 1 + galleryImages.length) % galleryImages.length;
+      showGallery(galleryIndex);
+    });
+
+    galleryNext.addEventListener('click', (e) => {
+      e.stopPropagation();
+      galleryIndex = (galleryIndex + 1) % galleryImages.length;
+      showGallery(galleryIndex);
     });
 
   setupRewardButtons();
