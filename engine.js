@@ -88,6 +88,24 @@ export function initEngine() {
   createGhostEngine();
 }
 
+export function pauseRunner() {
+  if (runner) {
+    Runner.stop(runner);
+  }
+}
+
+export function resumeRunner() {
+  if (runner) {
+    Runner.run(runner, engine);
+  }
+}
+
+export function setTimeScale(scale) {
+  if (engine) {
+    engine.timing.timeScale = scale;
+  }
+}
+
 export function generatePegs(count, isBoss = enemyState.nodeType === 'boss') {
   initialPegCount = count;
   pegs.forEach((p) => World.remove(world, p));

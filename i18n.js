@@ -18,7 +18,12 @@ export const translations = {
       hp: 'HP: ',
       ammo: '弾: ',
       untilAttack: '攻撃まで',
-      damage: 'ダメージ'
+      damage: 'ダメージ',
+      pause: 'ポーズ',
+      resume: '再開',
+      speed: '速度',
+      speed1: '1x',
+      speed2: '2x'
     },
     balls: {
       normal: { name: 'ノーマル', full: 'ノーマルボール' },
@@ -155,7 +160,12 @@ export const translations = {
       hp: 'HP: ',
       ammo: 'Ammo: ',
       untilAttack: 'Until Attack',
-      damage: 'Damage'
+      damage: 'Damage',
+      pause: 'Pause',
+      resume: 'Resume',
+      speed: 'Speed',
+      speed1: '1x',
+      speed2: '2x'
     },
     balls: {
       normal: { name: 'Normal', full: 'Normal Ball' },

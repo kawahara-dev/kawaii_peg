@@ -1,7 +1,7 @@
 import { playerState, saveBallState } from './player.js';
 import { handleShoot, onRareRewardClick } from './main.js';
 import { healBallPath } from './constants.js';
-import { firePoint } from './engine.js';
+import { firePoint, pauseRunner, resumeRunner, setTimeScale } from './engine.js';
 import { shuffle } from './utils.js';
 import { t } from './i18n.js';
 import { getRareReward } from './rewards.js';
@@ -16,6 +16,8 @@ const playerHpFill = document.getElementById('player-hp-fill');
 const ammoValue = document.getElementById('ammo-value');
 const coinValue = document.getElementById('coin-value');
 const relicContainer = document.getElementById('relic-container');
+const pauseButton = document.getElementById('pause-button');
+const speedSelect = document.getElementById('speed-select');
 const currentBallEl = document.getElementById('current-ball');
 const enemyGirl = document.getElementById('enemy-girl');
 const victoryOverlay = document.getElementById('victory-overlay');
@@ -31,6 +33,27 @@ const rareRewardOverlay = document.getElementById('rare-reward-overlay');
 const rareRewardDesc = document.getElementById('rare-reward-desc');
 const rareRewardIcon = document.getElementById('rare-reward-icon');
 const rareRewardButton = document.getElementById('rare-reward-continue');
+
+let isPaused = false;
+if (pauseButton) {
+  pauseButton.addEventListener('click', () => {
+    if (isPaused) {
+      resumeRunner();
+      isPaused = false;
+      pauseButton.dataset.i18n = 'hud.pause';
+    } else {
+      pauseRunner();
+      isPaused = true;
+      pauseButton.dataset.i18n = 'hud.resume';
+    }
+    pauseButton.textContent = t(pauseButton.dataset.i18n);
+  });
+}
+if (speedSelect) {
+  speedSelect.addEventListener('change', (e) => {
+    setTimeScale(parseFloat(e.target.value));
+  });
+}
 
 const mapOverlay = document.createElement('div');
 mapOverlay.id = 'map-overlay';
