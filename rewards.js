@@ -1,4 +1,4 @@
-import { playerState, saveBallState } from './player.js';
+import { playerState, saveBallState, saveSkillState } from './player.js';
 import { shuffle } from './utils.js';
 import { addRelic, getRandomRelic } from './relics.js';
 
@@ -28,6 +28,7 @@ export const rareRewardPools = {
       apply() {
         playerState.skills = playerState.skills || [];
         playerState.skills.push('doubleShot');
+        saveSkillState();
       }
     }
   ],
