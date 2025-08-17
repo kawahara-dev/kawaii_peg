@@ -28,7 +28,6 @@ const ballImageMap = {
 };
 
 const galleryImages = [
-  './image/player/hero1.png',
   './image/enemies/enemy_normal.png',
   './image/enemies/enemy2_normal.png',
   './image/enemies/enemy3_normal.png',
