@@ -947,8 +947,10 @@ canvas {
   }
 
   #gallery-image {
-    width: 880px;
-    height: 700px;
+    max-width: 80vw;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
     object-fit: contain;
   }
 
