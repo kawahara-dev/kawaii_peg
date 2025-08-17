@@ -99,6 +99,17 @@ export const translations = {
           take: 'ノーマルボールゲットだよ☆',
           skip: 'スルーしたよ〜'
         }
+      },
+      treasure: {
+        text: 'キラキラの宝箱を見つけたよ☆',
+        choices: {
+          open: '開ける💎',
+          leave: 'そのままにする'
+        },
+        results: {
+          open: '30コインをゲットしたよ💰',
+          leave: '何も起きなかった〜'
+        }
       }
     },
       history: {
@@ -224,6 +235,17 @@ export const translations = {
         results: {
           take: 'Got a normal ball☆',
           skip: 'Skipped it~'
+        }
+      },
+      treasure: {
+        text: 'You spot a shiny treasure chest☆',
+        choices: {
+          open: 'Open it💎',
+          leave: 'Leave it'
+        },
+        results: {
+          open: 'Got 30 coins💰',
+          leave: 'Nothing happened~'
         }
       }
     },
