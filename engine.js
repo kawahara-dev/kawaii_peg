@@ -113,6 +113,22 @@ export function generatePegs(count, isBoss = enemyState.nodeType === 'boss') {
   initialPegCount = count;
   pegs.forEach((p) => World.remove(world, p));
   pegs = [];
+  const pegTypeConfig = {
+    normal: { fillStyle: '#ff69b4', baseDamage: 10 },
+    critical: { fillStyle: '#ffd700', baseDamage: 20 },
+    bomb: { sprite: './image/items/bomb.png', xScale: 0.06, yScale: 0.06, baseDamage: 10 },
+    split: { fillStyle: '#7fffd4', baseDamage: 10 },
+    rainbow: { fillStyle: '#9b5de5', baseDamage: 10 }
+  };
+  const specialRate = Math.min(0.65, 0.15 + enemyState.stage * 0.03);
+  const pickPegType = () => {
+    if (Math.random() >= specialRate) return 'normal';
+    const r = Math.random();
+    if (r < 0.25) return 'critical';
+    if (r < 0.5) return 'bomb';
+    if (r < 0.75) return 'split';
+    return 'rainbow';
+  };
   for (let i = 0; i < count; i++) {
     const x = 50 + Math.random() * (width - 100);
     const y = 150 + Math.random() * (height - 250);
@@ -132,47 +148,36 @@ export function generatePegs(count, isBoss = enemyState.nodeType === 'boss') {
         label: 'coin',
         collisionFilter: { category: pegCategory }
       });
-    } else if (r < 0.15) {
-      peg = Bodies.circle(x, y, 10, {
-        isStatic: true,
-        render: {
-          sprite: {
-            texture: './image/items/bomb.png',
-            xScale: 0.06,
-            yScale: 0.06
-          }
-        },
-        label: 'peg-bomb',
-        collisionFilter: { category: pegCategory }
-      });
-      peg.bombHits = 0;
-    } else if (r < 0.35) {
-      peg = Bodies.circle(x, y, 10, {
-        isStatic: true,
-        render: { fillStyle: '#ffd700' },
-        label: 'peg-yellow',
-        collisionFilter: { category: pegCategory }
-      });
+      peg.pegType = 'coin';
     } else {
+      const pegType = pickPegType();
+      const cfg = pegTypeConfig[pegType];
       peg = Bodies.circle(x, y, 10, {
         isStatic: true,
-        render: { fillStyle: '#ff69b4' },
+        render: cfg.sprite
+          ? { sprite: { texture: cfg.sprite, xScale: cfg.xScale, yScale: cfg.yScale } }
+          : { fillStyle: cfg.fillStyle },
         label: 'peg',
         collisionFilter: { category: pegCategory }
       });
+      peg.pegType = pegType;
+      peg.baseDamage = cfg.baseDamage;
+      if (pegType === 'bomb') peg.bombHits = 0;
     }
     pegs.push(peg);
   }
   if (isBoss) {
     const bx = 50 + Math.random() * (width - 100);
     const by = 150 + Math.random() * (height - 250);
-    const bluePeg = Bodies.circle(bx, by, 10, {
+    const rainbowPeg = Bodies.circle(bx, by, 10, {
       isStatic: true,
-      render: { fillStyle: '#1e90ff' },
-      label: 'peg-blue',
+      render: { fillStyle: '#9b5de5' },
+      label: 'peg',
       collisionFilter: { category: pegCategory }
     });
-    pegs.push(bluePeg);
+    rainbowPeg.pegType = 'rainbow';
+    rainbowPeg.baseDamage = 10;
+    pegs.push(rainbowPeg);
   }
   World.add(world, pegs);
 
@@ -193,6 +198,7 @@ export function generatePegs(count, isBoss = enemyState.nodeType === 'boss') {
       label: 'coin',
       collisionFilter: { category: pegCategory }
     });
+    coin.pegType = 'coin';
     pegs.push(coin);
     World.add(world, coin);
   }
@@ -330,13 +336,54 @@ export function shootBall(angle, type) {
 function calculateHitDamage(baseDamage, ball, pegType = 'normal') {
   const comboDamage = baseDamage * (1 + shotCombo * comboBonus);
   let damage = comboDamage * (ball.damageMultiplier || 1) * (1 + playerState.atkLevel * 0.1);
-  if (pegType === 'blue') {
-    damage *= 1.1;
+  if (pegType === 'critical') {
+    damage *= 2;
   }
   if (playerState.relics && playerState.relics.includes('damageBoost')) {
     damage += Math.floor(Math.random() * 3) + 1;
   }
   return damage;
+}
+
+function spawnSplitBalls(peg, ball) {
+  const speed = 12;
+  const radius = 10;
+  [-0.35, 0.35].forEach(offset => {
+    const extraBall = Bodies.circle(peg.position.x, peg.position.y, radius, {
+      restitution: 0.9,
+      label: 'ball',
+      render: ball.render
+    });
+    extraBall.damageMultiplier = (ball.damageMultiplier || 1) * 0.7;
+    extraBall.ballType = 'split';
+    Body.setVelocity(extraBall, {
+      x: Math.cos(offset) * speed,
+      y: -Math.abs(Math.sin(offset) * speed)
+    });
+    World.add(world, extraBall);
+    playerState.currentBalls.push(extraBall);
+  });
+}
+
+function handlePegHit(peg, ball) {
+  const pegType = peg.pegType || 'normal';
+  if (pegType === 'bomb') {
+    if (!peg.bombHits) {
+      peg.bombHits = 1;
+      peg.render.sprite.texture = './image/items/bomb_2.png';
+      return;
+    }
+    explodeBomb(peg, ball);
+    return;
+  }
+  World.remove(world, peg);
+  pegs = pegs.filter(p => p !== peg);
+  applyHit(peg.baseDamage || 10, ball, peg, pegType);
+  if (pegType === 'split') spawnSplitBalls(peg, ball);
+  if (pegType === 'rainbow') {
+    shotCombo += 5;
+    updateShotStats(shotCombo, shotTotalDamage);
+  }
 }
 
 function applyHit(baseDamage, ball, peg, pegType = 'normal') {
@@ -364,19 +411,7 @@ function handlePenetrationHits() {
       const dist = Math.sqrt(dx * dx + dy * dy);
       const radius = (ball.circleRadius || 0) + (peg.circleRadius || 0);
       if (dist > radius) return;
-      if (peg.label === 'peg-bomb') {
-        if (!peg.bombHits) {
-          peg.bombHits = 1;
-          peg.render.sprite.texture = './image/items/bomb_2.png';
-        } else {
-          explodeBomb(peg, ball);
-        }
-      } else if (peg.label === 'peg-blue') {
-        World.remove(world, peg);
-        pegs = pegs.filter(p => p !== peg);
-        applyHit(10, ball, peg, 'blue');
-        generatePegs(initialPegCount, enemyState.nodeType === 'boss');
-      } else if (peg.label === 'coin') {
+      if (peg.label === 'coin') {
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
         currentShotHits++;
@@ -386,10 +421,8 @@ function handlePenetrationHits() {
         playerState.coins += gain;
         localStorage.setItem('coins', playerState.coins);
         updateCoins();
-      } else if (peg.label === 'peg' || peg.label === 'peg-yellow') {
-        World.remove(world, peg);
-        pegs = pegs.filter(p => p !== peg);
-        applyHit(peg.label === 'peg-yellow' ? 20 : 10, ball, peg);
+      } else if (peg.label === 'peg') {
+        handlePegHit(peg, ball);
       }
     });
   });
@@ -399,23 +432,7 @@ export function setupCollisionHandler() {
   Events.on(engine, 'collisionStart', (event) => {
     event.pairs.forEach(pair => {
       const labels = [pair.bodyA.label, pair.bodyB.label];
-      if (labels.includes('ball') && labels.includes('peg-bomb')) {
-        const peg = pair.bodyA.label === 'peg-bomb' ? pair.bodyA : pair.bodyB;
-        const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
-        if (!peg.bombHits) {
-          peg.bombHits = 1;
-          peg.render.sprite.texture = './image/items/bomb_2.png';
-        } else {
-          explodeBomb(peg, ball);
-        }
-      } else if (labels.includes('ball') && labels.includes('peg-blue')) {
-        const peg = pair.bodyA.label === 'peg-blue' ? pair.bodyA : pair.bodyB;
-        const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
-        World.remove(world, peg);
-        pegs = pegs.filter(p => p !== peg);
-        applyHit(10, ball, peg, 'blue');
-        generatePegs(initialPegCount, enemyState.nodeType === 'boss');
-      } else if (labels.includes('ball') && labels.includes('coin')) {
+      if (labels.includes('ball') && labels.includes('coin')) {
         const coin = pair.bodyA.label === 'coin' ? pair.bodyA : pair.bodyB;
         World.remove(world, coin);
         pegs = pegs.filter(p => p !== coin);
@@ -426,12 +443,10 @@ export function setupCollisionHandler() {
         playerState.coins += gain;
         localStorage.setItem('coins', playerState.coins);
         updateCoins();
-      } else if (labels.includes('ball') && (labels.includes('peg') || labels.includes('peg-yellow'))) {
+      } else if (labels.includes('ball') && labels.includes('peg')) {
         const peg = pair.bodyA.label === 'ball' ? pair.bodyB : pair.bodyA;
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
-        World.remove(world, peg);
-        pegs = pegs.filter(p => p !== peg);
-        applyHit(peg.label === 'peg-yellow' ? 20 : 10, ball, peg);
+        handlePegHit(peg, ball);
       }
       if (labels.includes('ball') && labels.includes('bottom-sensor')) {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
@@ -497,13 +512,11 @@ export function explodeBomb(peg, ball) {
   showBombExplosion(x, y);
   const bodies = Composite.allBodies(engine.world);
   bodies.forEach(body => {
-    if (['peg', 'peg-yellow', 'peg-bomb'].includes(body.label)) {
+    if (body.label === 'peg') {
       const dx = body.position.x - x;
       const dy = body.position.y - y;
       if (Math.sqrt(dx * dx + dy * dy) <= 80) {
-        World.remove(world, body);
-        pegs = pegs.filter(p => p !== body);
-        applyHit(body.label === 'peg-yellow' ? 20 : 10, ball, body);
+        handlePegHit(body, ball);
       }
     }
   });
@@ -514,4 +527,3 @@ export function explodeBomb(peg, ball) {
 }
 
 export { engine, world, render, runner };
-
