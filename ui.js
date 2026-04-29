@@ -678,8 +678,10 @@ export function selectNextBall(firePoint) {
 
 export function flashEnemyDamage(enemyState) {
   const { damageImage, normalImage, enemyHP } = enemyState;
+  enemyGirl.classList.add('enemy-hit-flash', 'enemy-hit-shake');
   enemyGirl.src = damageImage;
   setTimeout(() => {
+    enemyGirl.classList.remove('enemy-hit-flash', 'enemy-hit-shake');
     if (enemyHP > 0) {
       enemyGirl.src = normalImage;
     }
@@ -719,8 +721,33 @@ export function showBombExplosion(x, y) {
   boom.className = 'bomb-explosion';
   boom.style.left = `${x - 80}px`;
   boom.style.top = `${y - 80}px`;
-  document.getElementById('game-wrapper').appendChild(boom);
+  const ripple = document.createElement('div');
+  ripple.className = 'bomb-ripple';
+  ripple.style.left = `${x - 80}px`;
+  ripple.style.top = `${y - 80}px`;
+  const wrapper = document.getElementById('game-wrapper');
+  wrapper.appendChild(ripple);
+  wrapper.appendChild(boom);
+  setTimeout(() => ripple.remove(), 550);
   setTimeout(() => boom.remove(), 500);
+}
+
+export function showCriticalText(x, y) {
+  const txt = document.createElement('div');
+  txt.className = 'critical-text';
+  txt.textContent = 'CRITICAL!';
+  txt.style.left = `${x - 40}px`;
+  txt.style.top = `${y - 44}px`;
+  document.getElementById('game-wrapper').appendChild(txt);
+  setTimeout(() => txt.remove(), 850);
+}
+
+export function showComboBanner(combo) {
+  const banner = document.createElement('div');
+  banner.className = 'combo-banner';
+  banner.textContent = `COMBO x${combo}`;
+  document.getElementById('game-wrapper').appendChild(banner);
+  setTimeout(() => banner.remove(), 550);
 }
 
 export function showDamageOverlay() {
@@ -739,9 +766,15 @@ export function showDamageOverlay() {
 }
 
 export function shakeContainer() {
+  screenShake(8, 300);
+}
+
+export function screenShake(intensity = 8, duration = 300) {
   const cont = document.getElementById('container');
+  cont.style.setProperty('--shake-intensity', `${intensity}px`);
+  cont.style.setProperty('--shake-duration', `${duration}ms`);
   cont.classList.add('shake');
-  setTimeout(() => cont.classList.remove('shake'), 300);
+  setTimeout(() => cont.classList.remove('shake'), duration);
 }
 
 export function launchHeartAttack() {
