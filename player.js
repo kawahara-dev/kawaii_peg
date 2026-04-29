@@ -17,6 +17,13 @@ export const playerState = {
   permXP: parseInt(localStorage.getItem('permXP') || '0', 10),
   hpLevel: parseInt(localStorage.getItem('hpLevel') || '0', 10),
   atkLevel: parseInt(localStorage.getItem('atkLevel') || '0', 10),
+  baseDamage: parseInt(localStorage.getItem('baseDamage') || '0', 10),
+  comboBonus: parseInt(localStorage.getItem('comboBonus') || '0', 10),
+  restitution: parseFloat(localStorage.getItem('restitution') || '0'),
+  shotPower: parseInt(localStorage.getItem('shotPower') || '0', 10),
+  multiballCount: parseInt(localStorage.getItem('multiballCount') || '0', 10),
+  critRate: parseFloat(localStorage.getItem('critRate') || '0'),
+  critMultiplier: parseFloat(localStorage.getItem('critMultiplier') || '0'),
   coins: parseInt(localStorage.getItem('coins') || '0', 10),
   relics: [],
   skills: JSON.parse(localStorage.getItem('skills') || '[]')

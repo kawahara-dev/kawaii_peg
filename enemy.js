@@ -1,6 +1,6 @@
 import { playerState } from './player.js';
 import { firePoint, generatePegs } from './engine.js';
-import { updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, selectNextBall as uiSelectNextBall, updateAttackCountdown } from './ui.js';
+import { updateHPBar, updatePlayerHP, flashEnemyDamage, showDamageOverlay, shakeContainer, selectNextBall as uiSelectNextBall, updateAttackCountdown, updateStageDisplay } from './ui.js';
 import { shuffle } from './utils.js';
 
 export const enemyVariants = {
@@ -117,7 +117,8 @@ export function startStage(nodeType = 'battle') {
   enemyState.attackDamage = variant.attackDamage;
   document.getElementById('enemy-girl').src = enemyState.normalImage;
   generatePegs(50 + (enemyState.stage - 1) * 10, enemyState.nodeType === 'boss');
-  enemyState.maxEnemyHP = (100 + (enemyState.stage - 1) * 100) * variant.hpMultiplier;
+  const baseEnemyHP = Math.floor(100 * Math.pow(1.8, enemyState.stage - 1));
+  enemyState.maxEnemyHP = Math.floor(baseEnemyHP * variant.hpMultiplier);
   enemyState.enemyHP = enemyState.maxEnemyHP;
   enemyState.pendingDamage = 0;
   enemyState.pendingRareReward = null;
@@ -127,6 +128,7 @@ export function startStage(nodeType = 'battle') {
   playerState.shotQueue = shuffle(playerState.ammo.slice());
   enemyState.selectNextBall();
   enemyState.updateHPBar();
+  updateStageDisplay(enemyState.stage);
   enemyState.attackCountdown = Math.floor(Math.random() * 3) + 1;
   updateAttackCountdown(enemyState);
   enemyState.lastVariantIndex = newIndex;

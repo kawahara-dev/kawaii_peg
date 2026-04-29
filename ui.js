@@ -3,6 +3,7 @@ import { handleShoot, onRareRewardClick, applySkillEffects } from './main.js';
 import { healBallPath } from './constants.js';
 import { firePoint, pauseRunner, resumeRunner, setTimeScale } from './engine.js';
 import { shuffle } from './utils.js';
+import { startStage } from './enemy.js';
 import { t } from './i18n.js';
 import { getRareReward } from './rewards.js';
 import { relicList, addRelic } from './relics.js';
@@ -33,6 +34,9 @@ const rareRewardOverlay = document.getElementById('rare-reward-overlay');
 const rareRewardDesc = document.getElementById('rare-reward-desc');
 const rareRewardIcon = document.getElementById('rare-reward-icon');
 const rareRewardButton = document.getElementById('rare-reward-continue');
+const upgradeCardOverlay = document.getElementById('upgrade-card-overlay');
+const upgradeCardOptions = document.getElementById('upgrade-card-options');
+const stageValue = document.getElementById('stage-value');
 
 const mainMenu = document.getElementById('main-menu');
 const skillTreeButton = document.getElementById('skill-tree-button');
@@ -149,6 +153,41 @@ export function showRareRewardOverlay(reward) {
 
 export { rareRewardOverlay, rareRewardButton };
 
+const upgradeCardPool = [
+  { key: 'baseDamage', label: 'Base Damage +5', apply: () => { playerState.baseDamage += 5; localStorage.setItem('baseDamage', playerState.baseDamage); } },
+  { key: 'comboBonus', label: 'Combo Bonus +10', apply: () => { playerState.comboBonus += 10; localStorage.setItem('comboBonus', playerState.comboBonus); } },
+  { key: 'restitution', label: 'Restitution +0.05', apply: () => { playerState.restitution = +(playerState.restitution + 0.05).toFixed(2); localStorage.setItem('restitution', playerState.restitution); } },
+  { key: 'shotPower', label: 'Shot Power +1', apply: () => { playerState.shotPower += 1; localStorage.setItem('shotPower', playerState.shotPower); } },
+  { key: 'multiballCount', label: 'Multiball +1', apply: () => { playerState.multiballCount += 1; localStorage.setItem('multiballCount', playerState.multiballCount); } },
+  { key: 'critRate', label: 'Crit Rate +2%', apply: () => { playerState.critRate = +(playerState.critRate + 0.02).toFixed(2); localStorage.setItem('critRate', playerState.critRate); } },
+  { key: 'critMultiplier', label: 'Crit Dmg +0.1', apply: () => { playerState.critMultiplier = +(playerState.critMultiplier + 0.1).toFixed(2); localStorage.setItem('critMultiplier', playerState.critMultiplier); } }
+];
+
+function showUpgradeCardOverlay(enemyState, onDone) {
+  const cards = shuffle(upgradeCardPool.slice()).slice(0, 3);
+  upgradeCardOptions.innerHTML = '';
+  cards.forEach((card) => {
+    const btn = document.createElement('button');
+    btn.className = 'upgrade-card-button';
+    btn.textContent = card.label;
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      card.apply();
+      upgradeCardOverlay.classList.remove('show');
+      enemyState.stage += 1;
+      startStage(enemyState.nodeType);
+      if (onDone) onDone();
+    }, { once: true });
+    upgradeCardOptions.appendChild(btn);
+  });
+  upgradeCardOverlay.classList.add('show');
+}
+
+export function updateStageDisplay(stage) {
+  if (stageValue) stageValue.textContent = stage;
+}
+
+
 export function updateAttackCountdown(enemyState) {
   const timer = document.getElementById('enemy-attack-timer');
   if (timer) {
@@ -192,13 +231,15 @@ export function updateHPBar(enemyState) {
         victoryOverlay.classList.remove('show');
         enemyState.gameOver = false;
         document.getElementById('aim-svg').addEventListener('click', handleShoot);
-        if (enemyState.nodeType === 'elite' || enemyState.nodeType === 'boss') {
-          const reward = getRareReward(enemyState.nodeType);
-          enemyState.pendingRareReward = reward;
-          showRareRewardOverlay(reward);
-        } else {
-          rewardOverlay.classList.add('show');
-        }
+        showUpgradeCardOverlay(enemyState, () => {
+          if (enemyState.nodeType === 'elite' || enemyState.nodeType === 'boss') {
+            const reward = getRareReward(enemyState.nodeType);
+            enemyState.pendingRareReward = reward;
+            showRareRewardOverlay(reward);
+          } else {
+            rewardOverlay.classList.add('show');
+          }
+        });
       };
       victoryOverlay.addEventListener('click', (e) => { e.stopPropagation(); proceed(); }, { once: true });
     }, 200);
