@@ -161,13 +161,13 @@ export function showRareRewardOverlay(reward) {
 export { rareRewardOverlay, rareRewardButton };
 
 const upgradeCardPool = [
-  { key: 'baseDamage', label: 'Base Damage +5', apply: () => { playerState.baseDamage += 5; localStorage.setItem('baseDamage', playerState.baseDamage); } },
-  { key: 'comboBonus', label: 'Combo Bonus +10', apply: () => { playerState.comboBonus += 10; localStorage.setItem('comboBonus', playerState.comboBonus); } },
+  { key: 'baseDamage', label: 'Base Damage +8', apply: () => { playerState.baseDamage += 8; localStorage.setItem('baseDamage', playerState.baseDamage); } },
+  { key: 'comboBonus', label: 'Combo Bonus +0.05', apply: () => { playerState.comboBonus = +(playerState.comboBonus + 0.05).toFixed(2); localStorage.setItem('comboBonus', playerState.comboBonus); } },
   { key: 'restitution', label: 'Restitution +0.05', apply: () => { playerState.restitution = +(playerState.restitution + 0.05).toFixed(2); localStorage.setItem('restitution', playerState.restitution); } },
   { key: 'shotPower', label: 'Shot Power +1', apply: () => { playerState.shotPower += 1; localStorage.setItem('shotPower', playerState.shotPower); } },
   { key: 'multiballCount', label: 'Multiball +1', apply: () => { playerState.multiballCount += 1; localStorage.setItem('multiballCount', playerState.multiballCount); } },
-  { key: 'critRate', label: 'Crit Rate +2%', apply: () => { playerState.critRate = +(playerState.critRate + 0.02).toFixed(2); localStorage.setItem('critRate', playerState.critRate); } },
-  { key: 'critMultiplier', label: 'Crit Dmg +0.1', apply: () => { playerState.critMultiplier = +(playerState.critMultiplier + 0.1).toFixed(2); localStorage.setItem('critMultiplier', playerState.critMultiplier); } }
+  { key: 'critRate', label: 'Crit Rate +3%', apply: () => { playerState.critRate = +(playerState.critRate + 0.03).toFixed(2); localStorage.setItem('critRate', playerState.critRate); } },
+  { key: 'critMultiplier', label: 'Crit Dmg +0.2', apply: () => { playerState.critMultiplier = +(playerState.critMultiplier + 0.2).toFixed(2); localStorage.setItem('critMultiplier', playerState.critMultiplier); } }
 ];
 
 function showUpgradeCardOverlay(enemyState, onDone) {
@@ -709,13 +709,24 @@ export function flashEnemyDamage(enemyState) {
   }, 500);
 }
 
+const MAX_ACTIVE_EFFECTS = 30;
+
+function appendEffectWithLimit(node) {
+  const wrapper = document.getElementById('game-wrapper');
+  const activeEffects = wrapper.querySelectorAll('.damage-text, .hit-spark, .heal-spark, .bomb-explosion, .bomb-ripple, .critical-text, .combo-banner');
+  if (activeEffects.length >= MAX_ACTIVE_EFFECTS) {
+    activeEffects[0].remove();
+  }
+  wrapper.appendChild(node);
+}
+
 export function showDamageText(x, y, text, isHeal = false) {
   const dmg = document.createElement('div');
   dmg.className = isHeal ? 'damage-text heal-text' : 'damage-text';
   dmg.textContent = text;
   dmg.style.left = `${x}px`;
   dmg.style.top = `${y}px`;
-  document.getElementById('game-wrapper').appendChild(dmg);
+  appendEffectWithLimit(dmg);
   setTimeout(() => dmg.remove(), 1000);
 }
 
@@ -724,7 +735,7 @@ export function showHitSpark(x, y) {
   spark.className = 'hit-spark';
   spark.style.left = `${x - 10}px`;
   spark.style.top = `${y - 10}px`;
-  document.getElementById('game-wrapper').appendChild(spark);
+  appendEffectWithLimit(spark);
   setTimeout(() => spark.remove(), 400);
 }
 
@@ -733,7 +744,7 @@ export function showHealSpark(x, y) {
   spark.className = 'heal-spark';
   spark.style.left = `${x - 10}px`;
   spark.style.top = `${y - 10}px`;
-  document.getElementById('game-wrapper').appendChild(spark);
+  appendEffectWithLimit(spark);
   setTimeout(() => spark.remove(), 400);
 }
 
@@ -747,8 +758,8 @@ export function showBombExplosion(x, y) {
   ripple.style.left = `${x - 80}px`;
   ripple.style.top = `${y - 80}px`;
   const wrapper = document.getElementById('game-wrapper');
-  wrapper.appendChild(ripple);
-  wrapper.appendChild(boom);
+  appendEffectWithLimit(ripple);
+  appendEffectWithLimit(boom);
   setTimeout(() => ripple.remove(), 550);
   setTimeout(() => boom.remove(), 500);
 }
@@ -759,7 +770,7 @@ export function showCriticalText(x, y) {
   txt.textContent = 'CRITICAL!';
   txt.style.left = `${x - 40}px`;
   txt.style.top = `${y - 44}px`;
-  document.getElementById('game-wrapper').appendChild(txt);
+  appendEffectWithLimit(txt);
   setTimeout(() => txt.remove(), 850);
 }
 
@@ -767,7 +778,7 @@ export function showComboBanner(combo) {
   const banner = document.createElement('div');
   banner.className = 'combo-banner';
   banner.textContent = `COMBO x${combo}`;
-  document.getElementById('game-wrapper').appendChild(banner);
+  appendEffectWithLimit(banner);
   setTimeout(() => banner.remove(), 550);
 }
 
