@@ -21,7 +21,7 @@ export const playerState = {
   comboBonus: parseInt(localStorage.getItem('comboBonus') || '0', 10),
   restitution: parseFloat(localStorage.getItem('restitution') || '0'),
   shotPower: parseInt(localStorage.getItem('shotPower') || '0', 10),
-  multiballCount: parseInt(localStorage.getItem('multiballCount') || '0', 10),
+  multiballCount: Math.max(1, parseInt(localStorage.getItem('multiballCount') || '1', 10)),
   critRate: parseFloat(localStorage.getItem('critRate') || '0'),
   critMultiplier: parseFloat(localStorage.getItem('critMultiplier') || '0'),
   coins: parseInt(localStorage.getItem('coins') || '0', 10),

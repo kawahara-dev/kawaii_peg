@@ -672,10 +672,19 @@ window.addEventListener('DOMContentLoaded', () => {
     const dx = e.clientX - rect.left - firePoint.x;
     const dy = e.clientY - rect.top - firePoint.y;
     const angle = Math.atan2(dy, dx);
+    const fireMultiball = (baseAngle, ballType) => {
+      const count = Math.max(1, playerState.multiballCount || 1);
+      const step = 0.06;
+      const center = (count - 1) / 2;
+      for (let i = 0; i < count; i += 1) {
+        const offset = (i - center) * step;
+        shootBall(baseAngle + offset, ballType);
+      }
+    };
     const type = playerState.nextBall;
     const idx = playerState.ammo.indexOf(type);
     if (idx !== -1) playerState.ammo.splice(idx, 1);
-    shootBall(angle, type);
+    fireMultiball(angle, type);
     clearTimeout(aimTimer);
     clearSimulatedPath();
     if (playerState.skills && playerState.skills.includes('doubleShot') && playerState.ammo.length > 0) {
@@ -684,7 +693,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const idx2 = playerState.ammo.indexOf(type2);
       if (idx2 !== -1) playerState.ammo.splice(idx2, 1);
       setTimeout(() => {
-        shootBall(angle, type2);
+        fireMultiball(angle, type2);
         enemyState.selectNextBall();
       }, 100);
     } else {
