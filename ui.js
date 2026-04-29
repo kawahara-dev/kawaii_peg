@@ -39,6 +39,11 @@ const upgradeCardOptions = document.getElementById('upgrade-card-options');
 const stageValue = document.getElementById('stage-value');
 const currentComboValue = document.getElementById('current-combo-value');
 const shotTotalDamageValue = document.getElementById('shot-total-damage-value');
+const enemyHpValue = document.getElementById('enemy-hp-value');
+const baseDamageValue = document.getElementById('base-damage-value');
+const comboBonusValue = document.getElementById('combo-bonus-value');
+const multiballValue = document.getElementById('multiball-value');
+const criticalRateValue = document.getElementById('critical-rate-value');
 
 const mainMenu = document.getElementById('main-menu');
 const skillTreeButton = document.getElementById('skill-tree-button');
@@ -175,6 +180,7 @@ function showUpgradeCardOverlay(enemyState, onDone) {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       card.apply();
+      updateCombatStats();
       upgradeCardOverlay.classList.remove('show');
       enemyState.stage += 1;
       startStage(enemyState.nodeType);
@@ -186,13 +192,27 @@ function showUpgradeCardOverlay(enemyState, onDone) {
 }
 
 
+
+export function updateCombatStats(state = {}) {
+  if (stageValue) stageValue.textContent = String(state.stage ?? stageValue.textContent ?? '1');
+  if (enemyHpValue && hpDisplay) enemyHpValue.textContent = hpDisplay.textContent;
+  if (baseDamageValue) baseDamageValue.textContent = String(state.baseDamage ?? playerState.baseDamage ?? 0);
+  if (comboBonusValue) comboBonusValue.textContent = String(state.comboBonus ?? playerState.comboBonus ?? 0);
+  if (multiballValue) multiballValue.textContent = String(state.multiballCount ?? playerState.multiballCount ?? 1);
+  if (criticalRateValue) {
+    const rate = state.critRate ?? playerState.critRate ?? 0;
+    criticalRateValue.textContent = `${Math.round(rate * 100)}%`;
+  }
+  if (currentComboValue) currentComboValue.textContent = String(Math.max(0, state.currentCombo ?? 0));
+  if (shotTotalDamageValue) shotTotalDamageValue.textContent = String(Math.max(0, Math.round(state.shotTotalDamage ?? 0)));
+}
+
 export function updateShotStats(combo, totalDamage) {
-  if (currentComboValue) currentComboValue.textContent = String(Math.max(0, combo));
-  if (shotTotalDamageValue) shotTotalDamageValue.textContent = String(Math.max(0, Math.round(totalDamage)));
+  updateCombatStats({ currentCombo: combo, shotTotalDamage: totalDamage });
 }
 
 export function updateStageDisplay(stage) {
-  if (stageValue) stageValue.textContent = stage;
+  updateCombatStats({ stage });
 }
 
 
@@ -209,6 +229,7 @@ export function updateHPBar(enemyState) {
   const hp = Math.max(0, Math.ceil(enemyState.enemyHP));
   hpText.textContent = `${hp}`;
   hpDisplay.textContent = `${hp} / ${Math.ceil(enemyState.maxEnemyHP)}`;
+  updateCombatStats();
   if (enemyState.enemyHP <= 0 && !enemyState.gameOver) {
     enemyState.gameOver = true;
     let coinsEarned = enemyState.stage * 3;
@@ -795,4 +816,4 @@ export function updateMapDisplay(state) {
 }
 
 updateCoins();
-updateShotStats(0, 0);
+updateCombatStats({ currentCombo: 0, shotTotalDamage: 0 });
