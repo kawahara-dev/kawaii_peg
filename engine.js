@@ -1,4 +1,4 @@
-import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchHeartAttack, updateCoins, updateShotStats } from './ui.js';
+import { showBombExplosion, showComboBanner, showCriticalText, showDamageText, showHealSpark, showHitSpark, launchHeartAttack, screenShake, updateCoins, updateShotStats } from './ui.js';
 import { updateCurrentBall } from './ui.js';
 import { updateAttackCountdown } from './ui.js';
 import { playerState } from './player.js';
@@ -336,13 +336,19 @@ export function shootBall(angle, type) {
 function calculateHitDamage(baseDamage, ball, pegType = 'normal') {
   const comboDamage = baseDamage * (1 + shotCombo * comboBonus);
   let damage = comboDamage * (ball.damageMultiplier || 1) * (1 + playerState.atkLevel * 0.1);
+  let isCritical = false;
   if (pegType === 'critical') {
     damage *= 2;
+    isCritical = true;
+  }
+  if (Math.random() < playerState.critRate) {
+    damage *= playerState.critMultiplier;
+    isCritical = true;
   }
   if (playerState.relics && playerState.relics.includes('damageBoost')) {
     damage += Math.floor(Math.random() * 3) + 1;
   }
-  return damage;
+  return { damage, isCritical };
 }
 
 function spawnSplitBalls(peg, ball) {
@@ -389,11 +395,13 @@ function handlePegHit(peg, ball) {
 function applyHit(baseDamage, ball, peg, pegType = 'normal') {
   currentShotHits++;
   shotCombo++;
-  const damage = calculateHitDamage(baseDamage, ball, pegType);
+  const { damage, isCritical } = calculateHitDamage(baseDamage, ball, pegType);
   enemyState.pendingDamage += damage;
   shotTotalDamage += damage;
   updateShotStats(shotCombo, shotTotalDamage);
   showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
+  if (isCritical) showCriticalText(Math.round(peg.position.x), Math.round(peg.position.y));
+  if (shotCombo >= 10) showComboBanner(shotCombo);
   if (ball.ballType === 'heal') {
     showHealSpark(peg.position.x, peg.position.y);
   } else {
@@ -482,6 +490,9 @@ export function setupCollisionHandler() {
               enemyState.flashEnemyDamage();
               showDamageText(Math.round(x), Math.round(y), '-' + Math.round(totalDamage));
               showHitSpark(x, y);
+              if (totalDamage >= enemyState.maxEnemyHP * 0.08) {
+                screenShake(14, 420);
+              }
             }
           }
           enemyState.pendingDamage = 0;

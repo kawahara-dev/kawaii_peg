@@ -294,6 +294,32 @@ canvas {
   animation: rise 1s ease-out forwards;
   z-index: 11;
 }
+.critical-text {
+  position: absolute;
+  color: #ffe066;
+  text-shadow: 0 0 8px rgba(255, 80, 80, 0.95);
+  font-weight: 900;
+  font-size: 24px;
+  letter-spacing: 1px;
+  pointer-events: none;
+  animation: rise 0.85s ease-out forwards;
+  z-index: 14;
+}
+.combo-banner {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff1493, #ff7a00);
+  animation: comboPop 0.55s ease-out forwards;
+  pointer-events: none;
+  z-index: 13;
+}
 
 .heal-text {
   color: #32cd32;
@@ -359,6 +385,16 @@ canvas {
   animation: boom 0.5s ease-out forwards;
   z-index: 9;
 }
+.bomb-ripple {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 180, 80, 0.8);
+  pointer-events: none;
+  animation: bombRipple 0.55s ease-out forwards;
+  z-index: 8;
+}
 @keyframes spark {
   from { transform: scale(0.5); opacity: 1; }
   to   { transform: scale(2); opacity: 0; }
@@ -383,14 +419,33 @@ canvas {
   to   { opacity: 0; }
 }
 .shake {
-  animation: shake 0.3s;
+  animation: shake var(--shake-duration, 0.3s);
 }
 @keyframes shake {
   0% { transform: translate(0, 0); }
-  25% { transform: translate(-5px, 5px); }
-  50% { transform: translate(5px, -5px); }
-  75% { transform: translate(-5px, -5px); }
+  25% { transform: translate(calc(var(--shake-intensity, 8px) * -1), var(--shake-intensity, 8px)); }
+  50% { transform: translate(var(--shake-intensity, 8px), calc(var(--shake-intensity, 8px) * -1)); }
+  75% { transform: translate(calc(var(--shake-intensity, 8px) * -1), calc(var(--shake-intensity, 8px) * -1)); }
   100% { transform: translate(0, 0); }
+}
+@keyframes bombRipple {
+  from { transform: scale(0.4); opacity: 1; }
+  to { transform: scale(1.7); opacity: 0; }
+}
+@keyframes comboPop {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.8); }
+  20% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-16px) scale(1); }
+}
+.enemy-hit-flash {
+  filter: brightness(1.7) saturate(1.3);
+}
+.enemy-hit-shake {
+  animation: enemyHitShake 0.2s ease-in-out 2;
+}
+@keyframes enemyHitShake {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-6px); }
 }
 #victory-overlay {
   position: absolute;
