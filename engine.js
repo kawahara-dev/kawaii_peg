@@ -1,4 +1,4 @@
-import { showBombExplosion, showComboBanner, showCriticalText, showDamageText, showHealSpark, showHitSpark, launchHeartAttack, screenShake, updateCoins, updateShotStats } from './ui.js';
+import { showBombExplosion, showComboBanner, showCriticalText, showDamageText, showHealSpark, showHitSpark, launchHeartAttack, screenShake, updateCoins, updateShotStats, updateCombatStats } from './ui.js';
 import { updateCurrentBall } from './ui.js';
 import { updateAttackCountdown } from './ui.js';
 import { playerState } from './player.js';
@@ -389,6 +389,7 @@ function handlePegHit(peg, ball) {
   if (pegType === 'rainbow') {
     shotCombo += 5;
     updateShotStats(shotCombo, shotTotalDamage);
+    updateCombatStats();
   }
 }
 
@@ -498,6 +499,7 @@ export function setupCollisionHandler() {
           enemyState.pendingDamage = 0;
           shotTotalDamage = 0;
           updateShotStats(shotCombo, shotTotalDamage);
+          updateCombatStats();
           playerState.currentShotType = null;
           currentShotHits = 0;
           enemyState.attackCountdown--;
