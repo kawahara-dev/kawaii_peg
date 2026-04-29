@@ -37,6 +37,8 @@ const rareRewardButton = document.getElementById('rare-reward-continue');
 const upgradeCardOverlay = document.getElementById('upgrade-card-overlay');
 const upgradeCardOptions = document.getElementById('upgrade-card-options');
 const stageValue = document.getElementById('stage-value');
+const currentComboValue = document.getElementById('current-combo-value');
+const shotTotalDamageValue = document.getElementById('shot-total-damage-value');
 
 const mainMenu = document.getElementById('main-menu');
 const skillTreeButton = document.getElementById('skill-tree-button');
@@ -181,6 +183,12 @@ function showUpgradeCardOverlay(enemyState, onDone) {
     upgradeCardOptions.appendChild(btn);
   });
   upgradeCardOverlay.classList.add('show');
+}
+
+
+export function updateShotStats(combo, totalDamage) {
+  if (currentComboValue) currentComboValue.textContent = String(Math.max(0, combo));
+  if (shotTotalDamageValue) shotTotalDamageValue.textContent = String(Math.max(0, Math.round(totalDamage)));
 }
 
 export function updateStageDisplay(stage) {
@@ -754,3 +762,4 @@ export function updateMapDisplay(state) {
 }
 
 updateCoins();
+updateShotStats(0, 0);

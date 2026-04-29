@@ -1,4 +1,4 @@
-import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchHeartAttack, updateCoins } from './ui.js';
+import { showBombExplosion, showDamageText, showHealSpark, showHitSpark, launchHeartAttack, updateCoins, updateShotStats } from './ui.js';
 import { updateCurrentBall } from './ui.js';
 import { updateAttackCountdown } from './ui.js';
 import { playerState } from './player.js';
@@ -23,6 +23,9 @@ let initialPegCount = 0;
 let ghostEngine;
 let ghostBall;
 let currentShotHits = 0;
+let shotCombo = 0;
+let shotTotalDamage = 0;
+const comboBonus = 0.1;
 const comboThreshold = 20;
 const comboBonusDamage = 50;
 
@@ -323,6 +326,34 @@ export function shootBall(angle, type) {
   updateCurrentBall(firePoint);
 }
 
+
+function calculateHitDamage(baseDamage, ball, pegType = 'normal') {
+  const comboDamage = baseDamage * (1 + shotCombo * comboBonus);
+  let damage = comboDamage * (ball.damageMultiplier || 1) * (1 + playerState.atkLevel * 0.1);
+  if (pegType === 'blue') {
+    damage *= 1.1;
+  }
+  if (playerState.relics && playerState.relics.includes('damageBoost')) {
+    damage += Math.floor(Math.random() * 3) + 1;
+  }
+  return damage;
+}
+
+function applyHit(baseDamage, ball, peg, pegType = 'normal') {
+  currentShotHits++;
+  shotCombo++;
+  const damage = calculateHitDamage(baseDamage, ball, pegType);
+  enemyState.pendingDamage += damage;
+  shotTotalDamage += damage;
+  updateShotStats(shotCombo, shotTotalDamage);
+  showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
+  if (ball.ballType === 'heal') {
+    showHealSpark(peg.position.x, peg.position.y);
+  } else {
+    showHitSpark(peg.position.x, peg.position.y);
+  }
+}
+
 function handlePenetrationHits() {
   const penetrationBalls = playerState.currentBalls.filter(b => b.ballType === 'penetration');
   if (penetrationBalls.length === 0) return;
@@ -343,25 +374,14 @@ function handlePenetrationHits() {
       } else if (peg.label === 'peg-blue') {
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
-        currentShotHits++;
-        let damage = 10;
-        damage *= ball.damageMultiplier || 1;
-        damage *= 1 + playerState.atkLevel * 0.1;
-        if (playerState.relics && playerState.relics.includes('damageBoost')) {
-          damage += Math.floor(Math.random() * 3) + 1;
-        }
-        enemyState.pendingDamage += damage;
-        showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
-        if (ball.ballType === 'heal') {
-          showHealSpark(peg.position.x, peg.position.y);
-        } else {
-          showHitSpark(peg.position.x, peg.position.y);
-        }
+        applyHit(10, ball, peg, 'blue');
         generatePegs(initialPegCount, enemyState.nodeType === 'boss');
       } else if (peg.label === 'coin') {
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
         currentShotHits++;
+        shotCombo++;
+        updateShotStats(shotCombo, shotTotalDamage);
         const gain = enemyState.stage;
         playerState.coins += gain;
         localStorage.setItem('coins', playerState.coins);
@@ -369,20 +389,7 @@ function handlePenetrationHits() {
       } else if (peg.label === 'peg' || peg.label === 'peg-yellow') {
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
-        currentShotHits++;
-        let damage = peg.label === 'peg-yellow' ? 20 : 10;
-        damage *= ball.damageMultiplier || 1;
-        damage *= 1 + playerState.atkLevel * 0.1;
-        if (playerState.relics && playerState.relics.includes('damageBoost')) {
-          damage += Math.floor(Math.random() * 3) + 1;
-        }
-        enemyState.pendingDamage += damage;
-        showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
-        if (ball.ballType === 'heal') {
-          showHealSpark(peg.position.x, peg.position.y);
-        } else {
-          showHitSpark(peg.position.x, peg.position.y);
-        }
+        applyHit(peg.label === 'peg-yellow' ? 20 : 10, ball, peg);
       }
     });
   });
@@ -406,26 +413,15 @@ export function setupCollisionHandler() {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
-        currentShotHits++;
-        let damage = 10;
-        damage *= ball.damageMultiplier || 1;
-        damage *= 1 + playerState.atkLevel * 0.1;
-        if (playerState.relics && playerState.relics.includes('damageBoost')) {
-          damage += Math.floor(Math.random() * 3) + 1;
-        }
-        enemyState.pendingDamage += damage;
-        showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
-        if (ball.ballType === 'heal') {
-          showHealSpark(peg.position.x, peg.position.y);
-        } else {
-          showHitSpark(peg.position.x, peg.position.y);
-        }
+        applyHit(10, ball, peg, 'blue');
         generatePegs(initialPegCount, enemyState.nodeType === 'boss');
       } else if (labels.includes('ball') && labels.includes('coin')) {
         const coin = pair.bodyA.label === 'coin' ? pair.bodyA : pair.bodyB;
         World.remove(world, coin);
         pegs = pegs.filter(p => p !== coin);
         currentShotHits++;
+        shotCombo++;
+        updateShotStats(shotCombo, shotTotalDamage);
         const gain = enemyState.stage;
         playerState.coins += gain;
         localStorage.setItem('coins', playerState.coins);
@@ -435,23 +431,12 @@ export function setupCollisionHandler() {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         World.remove(world, peg);
         pegs = pegs.filter(p => p !== peg);
-        currentShotHits++;
-        let damage = peg.label === 'peg-yellow' ? 20 : 10;
-        damage *= ball.damageMultiplier || 1;
-        damage *= 1 + playerState.atkLevel * 0.1;
-        if (playerState.relics && playerState.relics.includes('damageBoost')) {
-          damage += Math.floor(Math.random() * 3) + 1;
-        }
-        enemyState.pendingDamage += damage;
-        showDamageText(Math.round(peg.position.x), Math.round(peg.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
-        if (ball.ballType === 'heal') {
-          showHealSpark(peg.position.x, peg.position.y);
-        } else {
-          showHitSpark(peg.position.x, peg.position.y);
-        }
+        applyHit(peg.label === 'peg-yellow' ? 20 : 10, ball, peg);
       }
       if (labels.includes('ball') && labels.includes('bottom-sensor')) {
         const ball = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
+        shotCombo = 0;
+        updateShotStats(shotCombo, shotTotalDamage);
         if (playerState.relics && playerState.relics.includes('rebound') && Math.random() < 0.5) {
           Body.setPosition(ball, { x: ball.position.x, y: 0 });
           Body.setVelocity(ball, { x: 0, y: 20 });
@@ -465,6 +450,7 @@ export function setupCollisionHandler() {
             enemyState.pendingDamage += comboBonusDamage;
             showDamageText(Math.round(x), Math.round(y), 'コンボ！');
           }
+          shotCombo = 0;
           let totalDamage = enemyState.pendingDamage;
           if (playerState.currentShotType !== 'heal') {
             totalDamage = Math.min(totalDamage, Math.max(enemyState.enemyHP, 0));
@@ -484,6 +470,8 @@ export function setupCollisionHandler() {
             }
           }
           enemyState.pendingDamage = 0;
+          shotTotalDamage = 0;
+          updateShotStats(shotCombo, shotTotalDamage);
           playerState.currentShotType = null;
           currentShotHits = 0;
           enemyState.attackCountdown--;
@@ -515,20 +503,7 @@ export function explodeBomb(peg, ball) {
       if (Math.sqrt(dx * dx + dy * dy) <= 80) {
         World.remove(world, body);
         pegs = pegs.filter(p => p !== body);
-        currentShotHits++;
-        let dmg = body.label === 'peg-yellow' ? 20 : 10;
-        dmg *= ball.damageMultiplier || 1;
-        dmg *= 1 + playerState.atkLevel * 0.1;
-        if (playerState.relics && playerState.relics.includes('damageBoost')) {
-          dmg += Math.floor(Math.random() * 3) + 1;
-        }
-        enemyState.pendingDamage += dmg;
-        showDamageText(Math.round(body.position.x), Math.round(body.position.y), '+' + Math.round(enemyState.pendingDamage), ball.ballType === 'heal');
-        if (ball.ballType === 'heal') {
-          showHealSpark(body.position.x, body.position.y);
-        } else {
-          showHitSpark(body.position.x, body.position.y);
-        }
+        applyHit(body.label === 'peg-yellow' ? 20 : 10, ball, body);
       }
     }
   });
