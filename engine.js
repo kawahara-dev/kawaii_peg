@@ -25,7 +25,7 @@ let ghostBall;
 let currentShotHits = 0;
 let shotCombo = 0;
 let shotTotalDamage = 0;
-const comboBonus = 0.1;
+const MAX_ACTIVE_BALLS = 8;
 const comboThreshold = 20;
 const comboBonusDamage = 50;
 
@@ -246,12 +246,18 @@ export function clearSimulatedPath() {
   ghostBall = null;
 }
 
+function canSpawnBall(count = 1) {
+  return playerState.currentBalls.length + count <= MAX_ACTIVE_BALLS;
+}
+
 export function shootBall(angle, type) {
+  if (!canSpawnBall()) return;
   const power = 10;
   const lvl = playerState.ballLevels[type] || 1;
   const dmgMul = 1 + (lvl - 1) * 0.2;
   const sizeMul = 1 + (lvl - 1) * 0.1;
   if (type === 'split') {
+    if (!canSpawnBall(2)) return;
     const offset = 0.2;
     const radius = 15 * sizeMul;
     const scale = (radius * 2) / healBallWidth;
@@ -334,7 +340,9 @@ export function shootBall(angle, type) {
 
 
 function calculateHitDamage(baseDamage, ball, pegType = 'normal') {
-  const comboDamage = baseDamage * (1 + shotCombo * comboBonus);
+  const comboScale = 1 + shotCombo * (playerState.comboBonus || 0);
+  const rawBaseDamage = baseDamage + (playerState.baseDamage || 0);
+  const comboDamage = rawBaseDamage * comboScale;
   let damage = comboDamage * (ball.damageMultiplier || 1) * (1 + playerState.atkLevel * 0.1);
   let isCritical = false;
   if (pegType === 'critical') {
@@ -342,7 +350,7 @@ function calculateHitDamage(baseDamage, ball, pegType = 'normal') {
     isCritical = true;
   }
   if (Math.random() < playerState.critRate) {
-    damage *= playerState.critMultiplier;
+    damage *= Math.max(playerState.critMultiplier || 1, 1);
     isCritical = true;
   }
   if (playerState.relics && playerState.relics.includes('damageBoost')) {
@@ -352,6 +360,7 @@ function calculateHitDamage(baseDamage, ball, pegType = 'normal') {
 }
 
 function spawnSplitBalls(peg, ball) {
+  if (!canSpawnBall(2)) return;
   const speed = 12;
   const radius = 10;
   [-0.35, 0.35].forEach(offset => {
